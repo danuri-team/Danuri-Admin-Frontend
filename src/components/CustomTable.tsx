@@ -1,12 +1,12 @@
-type UsageData = {
-    place: string,
-    startTime:string, 
-    endTime: string, 
-    user: string
+type UsageData = Record<string, string>;
+
+type HeaderType = {
+    name: string,
+    id: string
 }
 
 
-const CustomTable = ({header, data}:{header:string[], data: UsageData[]}) => {
+const CustomTable = ({header, data}:{header:HeaderType[], data: UsageData[]}) => {
     return(
         <div className="w-full flex justify-center">
             <table className="w-full table-fixed">
@@ -14,7 +14,7 @@ const CustomTable = ({header, data}:{header:string[], data: UsageData[]}) => {
                     <tr>
                         {
                             header.map((item) => (
-                                <th className="font-normal p-[20px] text-danuri-text" key={item}>{item}</th>
+                                <th className="font-normal p-[20px] text-danuri-text" key={item.id}>{item.name}</th>
                             ))
                         }
                     </tr>
@@ -23,10 +23,11 @@ const CustomTable = ({header, data}:{header:string[], data: UsageData[]}) => {
                     {
                         data.map((item) => (
                             <tr>
-                                <td className="text-center text-danuri-text ">{item.place}</td>
-                                <td className="text-center text-danuri-text">{item.startTime}</td>
-                                <td className="text-center text-danuri-text p-[20px]">{item.endTime}</td>
-                                <td className="text-center text-danuri-400 p-[10px]">{item.user}</td>
+                                {
+                                    header.map((i) => (
+                                        <td className={`${i.id === 'user' ? 'text-danuri-400' :'text-danuri-text'} text-center p-[20px]`}>{item[i.id]}</td>
+                                    ))
+                                }
                             </tr>
                         ))
                     }
