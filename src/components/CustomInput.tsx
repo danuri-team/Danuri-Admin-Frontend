@@ -11,7 +11,7 @@ const CustomInput = ({placeholder, label, value, onChange}:CustomInputType) => {
             <p className="text-danuri-text mb-[10px]">{label}</p>
             <input 
                 className="outline-none border border-gray-200 bg-danuri-100 rounded-md p-[10px] w-[40%] min-w-xs" 
-                type="text" 
+                type={label==='비밀번호' ? 'password' : 'text'} 
                 placeholder={placeholder} 
                 value={value} 
                 onChange={onChange} />
