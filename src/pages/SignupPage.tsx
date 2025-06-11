@@ -2,7 +2,8 @@
 import { useReducer } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { postSignup } from "../api/AuthAPI";
 
 type SignupState = {
     company_id: string,
@@ -36,17 +37,32 @@ const signupReducer = (state:SignupState, action:SignupAction) => {
 }
 
 const SignupPage = () => {
-    const [SignupForm, dispatch] = useReducer(signupReducer, initialSignupForm);
+    const navigate = useNavigate();
+    const [signupForm, dispatch] = useReducer(signupReducer, initialSignupForm);
     
     const loginInputs = [
-        {label:'회사ID', key: 'company_id', value: SignupForm.company_id},
-        {label:'이메일', key: 'email', value: SignupForm.email},
-        {label:'비밀번호', key: 'password', value: SignupForm.password},
-        {label:'전화번호', key: 'phone', value: SignupForm.phone},
+        {label:'회사ID', key: 'company_id', value: signupForm.company_id},
+        {label:'이메일', key: 'email', value: signupForm.email},
+        {label:'비밀번호', key: 'password', value: signupForm.password},
+        {label:'전화번호', key: 'phone', value: signupForm.phone},
     ]
 
-    const onclickLogin = () => {
+    const onclickSignup = async () => {
+        console.log('실행');
+
+        const res = await postSignup({
+            company_id: signupForm.company_id, 
+            email: signupForm.email, 
+            password:signupForm.password, 
+            phone: signupForm.phone })
         
+        if(res.pass){
+            dispatch({type:'RESET'})
+            navigate('/auth/login');
+        }
+        else {
+            console.log('회원가입 실패', res.data);
+        }
     }
 
     return(
@@ -61,7 +77,7 @@ const SignupPage = () => {
                 <div className="justify-self-end text-xs text-danuri-400 cursor-pointer underline">
                     <Link to={'/auth/login'}>로그인</Link>
                 </div>
-                <CustomButton value="회원가입" onClick={()=>onclickLogin}/>
+                <CustomButton value="회원가입" onClick={()=>onclickSignup}/>
             </div>
         </div>
     )
