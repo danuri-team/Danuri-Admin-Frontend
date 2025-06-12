@@ -16,7 +16,7 @@ const MainHeader = () => {
             <div>
                 {
                     navList.map((item) => (
-                        <Link className="text-base font-semibold m-[20px]" to={item.path}>{item.name}</Link>
+                        <Link key={item.name} className="text-base font-semibold m-[20px]" to={item.path}>{item.name}</Link>
                     ))
                 }
             </div>

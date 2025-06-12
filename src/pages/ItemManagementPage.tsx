@@ -3,6 +3,7 @@ import TableButton from "../components/TableButton";
 import PagenationButton from "../components/PagenationButton";
 import MainHeader from "../components/MainHeader";
 import BannerButton from "../components/BannerButton";
+import CustomSelect from "../components/CustomSelect";
 
 const tableHeader = [
     {name:'물품', id:'name'},
@@ -13,7 +14,7 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects = [
-    {type: 'select' , option: ['재고순', '이름순', '이용 가능 여부 순']},
+    {id: 1, type: 'select' , options: ['재고순', '이름순', '이용 가능 여부 순']},
 ]
 
 const mockData = [
@@ -30,12 +31,16 @@ const ItemManagementPage = () => {
             <MainHeader />
             <BannerButton />
             <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
-                <div className="mr-[20px] ml-[20px] mb-[30px] flex items-center justify-between">
-                    <div>
+                <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
+                    <div className="flex items-center">
                         <h1 className="text-xl font-bold">물품 관리</h1>
+                        {
+                            filterSelects.map((item) => (
+                                <CustomSelect key={item.id} options={item.options}/>
+                            ))
+                        }
                     </div>
                     <div className="flex gap-[10px]">
-                        <TableButton value="다운로드" />
                         <TableButton value="추가" />
                         <TableButton value="검색" />
                     </div>

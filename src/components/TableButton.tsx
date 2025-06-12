@@ -10,7 +10,7 @@ type TableButtonType = {
 const TableButton = ({value, onClick}:TableButtonType) => {
     return(
         <button 
-            className="flex items-center text-danuri-text bg-gray-100 p-[10px] pr-[15px] pl-[15px] text-sm rounded-xl cursor-pointer"
+            className="flex items-center bg-gray-100 p-[10px] pr-[15px] pl-[15px] text-sm rounded-xl cursor-pointer"
             onClick={onClick}
             >
             {
