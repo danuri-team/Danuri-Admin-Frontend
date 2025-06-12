@@ -1,6 +1,5 @@
 import CustomTable from "../components/CustomTable";
 import TableButton from "../components/TableButton";
-import PagenationButton from "../components/PagenationButton";
 import MainHeader from "../components/MainHeader";
 import BannerButton from "../components/BannerButton";
 import CustomSelect from "../components/CustomSelect";
@@ -18,12 +17,187 @@ const filterSelects = [
 ]
 
 const mockData = [
-    {process: 'X', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-    {process: 'O', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-    {process: 'X', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-    {process: 'X', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-    {process: 'O', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-]
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "f4fb919b-3733-4591-8742-6606e5c0879a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "충전기",
+        "total_quantity": 10,
+        "available_quantity": 9,
+        "status": "AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
+];
 
 const ItemManagementPage = () => {
     return(
@@ -45,7 +219,7 @@ const ItemManagementPage = () => {
                         <TableButton value="검색" />
                     </div>
                 </div>
-                
+                <CustomTable header={tableHeader} data={mockData}/>
             </div>
         </div>
     )

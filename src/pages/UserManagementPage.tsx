@@ -1,6 +1,6 @@
 import CustomTable from "../components/CustomTable";
 import ExcelButton from "../components/TableButton";
-import PagenationButton from "../components/PagenationButton";
+import PagenationButton from "../components/PaginationButton";
 import MainHeader from "../components/MainHeader";
 
 const tableHeader = [
