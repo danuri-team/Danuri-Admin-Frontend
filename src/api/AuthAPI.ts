@@ -26,7 +26,6 @@ export const postSignup = async ({company_id, email, password, phone}: {company_
             phone
         });
         return {data: res, pass: true}
-
     }
     catch (error) {
         return {data: error, pass: false}
