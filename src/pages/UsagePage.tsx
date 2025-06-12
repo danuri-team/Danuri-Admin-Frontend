@@ -1,7 +1,7 @@
 import CustomTable from "../components/CustomTable";
-import ExcelButton from "../components/ExcelButton";
+import ExcelButton from "../components/TableButton";
 import PagenationButton from "../components/PagenationButton";
-import SideNav from "../components/SideNav";
+import MainHeader from "../components/MainHeader";
 
 const tableHeader = [
     {name:'공간', id:'place'},
@@ -21,7 +21,7 @@ const mockData = [
 const UsagePage = () => {
     return(
         <div className="flex w-screen">
-            <SideNav />
+            <MainHeader />
             <div className="flex-1 m-[40px] mt-[60px] mb-[60px] flex flex-col">
                 <div className="mb-[30px] flex items-center justify-between">
                     <h1 className="text-2xl font-bold">이용 현황</h1>

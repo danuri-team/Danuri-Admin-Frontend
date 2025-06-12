@@ -1,15 +1,20 @@
 import CustomTable from "../components/CustomTable";
-import ExcelButton from "../components/ExcelButton";
+import TableButton from "../components/TableButton";
 import PagenationButton from "../components/PagenationButton";
-import SideNav from "../components/SideNav";
+import MainHeader from "../components/MainHeader";
+import BannerButton from "../components/BannerButton";
 
 const tableHeader = [
-    {name:'처리여부', id:'process'}, 
-    {name:'물품', id:'item'},
-    {name:'시작시간', id:'startTime'}, 
-    {name:'종료시간', id: 'endTime'}, 
-    {name:'유저', id:'user'}
+    {name:'물품', id:'name'},
+    {name:'총 수량', id:'total_quantity'}, 
+    {name:'이용 가능 개수', id: 'available_quantity'}, 
+    {name:'상태', id:'status'}
 ];
+
+//type = 'select' || 'date'
+const filterSelects = [
+    {type: 'select' , option: ['재고순', '이름순', '이용 가능 여부 순']},
+]
 
 const mockData = [
     {process: 'X', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
@@ -21,17 +26,21 @@ const mockData = [
 
 const ItemManagementPage = () => {
     return(
-        <div className="flex w-screen">
-            <SideNav />
-            <div className="flex-1 m-[40px] mt-[60px] mb-[60px] flex flex-col">
-                <div className="mb-[30px] flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">물품 관리</h1>
-                    <ExcelButton />
+        <div className="w-screen">
+            <MainHeader />
+            <BannerButton />
+            <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
+                <div className="mr-[20px] ml-[20px] mb-[30px] flex items-center justify-between">
+                    <div>
+                        <h1 className="text-xl font-bold">물품 관리</h1>
+                    </div>
+                    <div className="flex gap-[10px]">
+                        <TableButton value="다운로드" />
+                        <TableButton value="추가" />
+                        <TableButton value="검색" />
+                    </div>
                 </div>
-                <CustomTable header={tableHeader} data={mockData} />
-                <div className="mt-auto self-end">
-                    <PagenationButton />    
-                </div>
+                
             </div>
         </div>
     )

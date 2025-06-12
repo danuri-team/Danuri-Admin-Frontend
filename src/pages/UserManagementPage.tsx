@@ -1,7 +1,7 @@
 import CustomTable from "../components/CustomTable";
-import ExcelButton from "../components/ExcelButton";
+import ExcelButton from "../components/TableButton";
 import PagenationButton from "../components/PagenationButton";
-import SideNav from "../components/SideNav";
+import MainHeader from "../components/MainHeader";
 
 const tableHeader = [
     {name:'이름', id:'name'}, 
@@ -22,7 +22,7 @@ const mockData = [
 const UserManagementPage = () => {
     return(
         <div className="flex w-screen">
-            <SideNav />
+            <MainHeader />
             <div className="flex-1 m-[40px] mt-[60px] mb-[60px] flex flex-col">
                 <div className="mb-[30px] flex items-center justify-between">
                     <h1 className="text-2xl font-bold">사용자 관리</h1>

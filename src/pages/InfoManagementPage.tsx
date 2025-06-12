@@ -1,10 +1,10 @@
 import CustomInput from "../components/CustomInput";
-import SideNav from "../components/SideNav";
+import MainHeader from "../components/MainHeader";
 
 const InfoManagementPage = () => {
     return(
         <div className="flex w-screen">
-            <SideNav />
+            <MainHeader />
             <div className="flex-1 m-[40px] mt-[60px] mb-[60px] flex flex-col">
                 <div className="mb-[30px] flex items-center justify-between">
                     <h1 className="text-2xl font-bold">정보 관리</h1>
