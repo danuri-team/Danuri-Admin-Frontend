@@ -10,7 +10,7 @@ const tableHeader = [
     {name:'사용 ID', id:'sex'},
     {name:'대여 개수', id:'age'}, 
     {name:'반납 개수', id:'created_at'},
-    {name:'상태 ', id:'created_at'}
+    {name:'상태 ', id:'updated_at'}
 ];
 
 //type = 'select' || 'date'
@@ -94,7 +94,7 @@ const RentalManagementPage = () => {
                         <h1 className="text-xl font-bold">대여 관리</h1>
                         {
                             filterSelects.map((item) => (
-                                <CustomSelect key={item.id} options={item.options}/>
+                                <CustomSelect key={item.id} type={item.type} options={item.options}/>
                             ))
                         }
                     </div>

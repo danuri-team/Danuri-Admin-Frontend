@@ -11,13 +11,6 @@ const tableHeader = [
     {name:'상태', id:'status'}
 ];
 
-//type = 'select' || 'date'
-const filterSelects = [
-    {id: 1, type: 'date' , options: ['가입일']},
-    {id: 2, type: 'select' , options: ['나이대']},
-    {id: 3, type: 'select' , options: ['성별', '남', '여']},
-]
-
 const mockData = [
     {
         "id": "0e97af91-77ca-44a2-98c9-66a47ecf000a",

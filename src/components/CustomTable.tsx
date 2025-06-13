@@ -3,7 +3,7 @@ import StatusTag from './StatusTag';
 import PageJump from './PageJump';
 import PaginationButton from './PaginationButton';
 import PageSizeSelector from './PageSizeSelector';
-import dayjs from 'dayjs';
+import { format, isAfter, isBefore, set } from 'date-fns';
 
 export type UsageData = Record<string, string | number | number[]>;
 
@@ -22,11 +22,11 @@ const CustomTable = ({header, data}:{header:HeaderType[], data: UsageData[]}) =>
 
             if(item.name == '시작시간' || item.name === '종료시간'){
                 const timeArray = rowData[item.id] as number[];
-                const time = dayjs()
-                    .set('hour', timeArray[0])
-                    .set('minute', timeArray[1])
-                    .set('second', timeArray[2] || 0)
-                    .format('HH:mm:ss')
+                const time = format(set(new Date(), {
+                    hours: timeArray[0],
+                    minutes: timeArray[1],
+                    seconds: timeArray[2] || 0
+                }), 'HH:mm:ss');
                 return <p>{time}</p>
 
             }
@@ -38,27 +38,29 @@ const CustomTable = ({header, data}:{header:HeaderType[], data: UsageData[]}) =>
                 if(header.some((h)=>h.name === '시작일')){
                     const start = rowData['start_at'] as number;
                     const end = rowData['end_at'] as number;
-                    const now = dayjs();
+                    const now = new Date();
 
-                    const statusValue = now.isAfter(dayjs(start)) && now.isBefore(dayjs(end)) ? 'USE' : 'NOT_USE';
+                    const statusValue = isAfter(now, new Date(start)) && isBefore(now, new Date(end)) ? 'USE' : 'NOT_USE';
                     return <StatusTag value={statusValue}/>
                 }
                 else {
                     const start = rowData['start_at'] as number[];
                     const end = rowData['end_at'] as number[];
 
-                    const startTime = dayjs()
-                    .set('hour', start[0])
-                    .set('minute', start[1])
-                    .set('second', start[2] || 0)
+                    const startTime = set(new Date(), {
+                        hours: start[0],
+                        minutes: start[1],
+                        seconds: start[2] || 0
+                    })
 
-                    const endTime = dayjs()
-                    .set('hour', end[0])
-                    .set('minute', end[1])
-                    .set('second', end[2] || 0)
-                    const now = dayjs();
+                    const endTime = set(new Date(), {
+                        hours: end[0],
+                        minutes: end[1],
+                        seconds: end[2] || 0
+                    })
+                    const now = new Date();
 
-                    const statusValue = now.isAfter(dayjs(startTime)) && now.isBefore(dayjs(endTime)) ? 'AVAILABLE' : 'NOT_AVAILABLE';
+                    const statusValue = isAfter(now, new Date(startTime)) && isBefore(now, new Date(endTime)) ? 'AVAILABLE' : 'NOT_AVAILABLE';
                     return <StatusTag value={statusValue}/>
                     
                 }

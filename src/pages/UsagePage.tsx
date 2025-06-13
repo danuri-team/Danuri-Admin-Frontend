@@ -151,7 +151,7 @@ const UsagePage = () => {
                         <h1 className="text-xl font-bold">이용 현황</h1>
                         {
                             filterSelects.map((item) => (
-                                <CustomSelect key={item.id} options={item.options}/>
+                                <CustomSelect key={item.id} type={item.type} options={item.options}/>
                             ))
                         }
                     </div>

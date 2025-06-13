@@ -93,7 +93,7 @@ const UserManagementPage = () => {
                         <h1 className="text-xl font-bold">사용자 관리</h1>
                         {
                             filterSelects.map((item) => (
-                                <CustomSelect key={item.id} options={item.options}/>
+                                <CustomSelect type={item.type} key={item.id} options={item.options}/>
                             ))
                         }
                     </div>
