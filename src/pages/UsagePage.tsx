@@ -6,8 +6,8 @@ import TableButton from "../components/TableButton";
 
 const tableHeader = [
     {name:'공간', id:'space_name'},
-    {name:'시작시간', id:'start_at'}, 
-    {name:'종료시간', id: 'end_at'}, 
+    {name:'시작일', id:'start_at'}, 
+    {name:'종료일', id: 'end_at'}, 
     {name:'유저', id:'user_name'},
     {name:'상태', id:'status'},
 ];

@@ -4,9 +4,9 @@ import { BsPersonFill } from "react-icons/bs";
 const navList = [
     {name: '이용 현황', path: '/usage'},
     {name: '물품 관리', path: '/item'},
-    {name: '정보 관리', path: '/info'},
+    {name: '공간 관리', path: '/space'},
     {name: '사용자 관리', path: '/user'},
-    {name: '대여 관리', path: '/user'},
+    {name: '대여 관리', path: '/rental'},
 ];
 
 const MainHeader = () => {

@@ -5,7 +5,7 @@ import PaginationButton from './PaginationButton';
 import PageSizeSelector from './PageSizeSelector';
 import dayjs from 'dayjs';
 
-export type UsageData = Record<string, string | number>;
+export type UsageData = Record<string, string | number | number[]>;
 
 type HeaderType = {
     name: string,
@@ -20,17 +20,49 @@ const CustomTable = ({header, data}:{header:HeaderType[], data: UsageData[]}) =>
             const value = getValue() as string;
             const rowData = row.original;
 
-            if(item.id === 'status'){
+            if(item.name == '시작시간' || item.name === '종료시간'){
+                const timeArray = rowData[item.id] as number[];
+                const time = dayjs()
+                    .set('hour', timeArray[0])
+                    .set('minute', timeArray[1])
+                    .set('second', timeArray[2] || 0)
+                    .format('HH:mm:ss')
+                return <p>{time}</p>
+
+            }
+            else if(item.id === 'status'){
+                //상태 값 있을 때
                 if(value) return <StatusTag value={value}/>
-                else {
-                    const start = rowData['start_at'];
-                    const end = rowData['end_at'];
+
+                //상태 값 없을 때 시간 비교
+                if(header.some((h)=>h.name === '시작일')){
+                    const start = rowData['start_at'] as number;
+                    const end = rowData['end_at'] as number;
                     const now = dayjs();
 
                     const statusValue = now.isAfter(dayjs(start)) && now.isBefore(dayjs(end)) ? 'USE' : 'NOT_USE';
                     return <StatusTag value={statusValue}/>
                 }
-            } 
+                else {
+                    const start = rowData['start_at'] as number[];
+                    const end = rowData['end_at'] as number[];
+
+                    const startTime = dayjs()
+                    .set('hour', start[0])
+                    .set('minute', start[1])
+                    .set('second', start[2] || 0)
+
+                    const endTime = dayjs()
+                    .set('hour', end[0])
+                    .set('minute', end[1])
+                    .set('second', end[2] || 0)
+                    const now = dayjs();
+
+                    const statusValue = now.isAfter(dayjs(startTime)) && now.isBefore(dayjs(endTime)) ? 'AVAILABLE' : 'NOT_AVAILABLE';
+                    return <StatusTag value={statusValue}/>
+                    
+                }
+            }
             else if(item.id === 'sex'){
                 const sex = value === 'MALE' ? '남' : '여'
                 return <p>{sex}</p>
