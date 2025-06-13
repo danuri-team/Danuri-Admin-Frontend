@@ -17,7 +17,7 @@ const CustomSelect = ({options}:CustomSelectType) => {
             >{selectedOption}<IoChevronDown size={20}/></button>
             {
                 isDropdownOpen && (
-                    <ul className="absolute border-1 border-gray-200 rounded-xl p-[10px] w-[300px] mt-[15px]">
+                    <ul className="absolute border-1 border-gray-200 rounded-xl p-[10px] w-[300px] mt-[15px] bg-white">
                         {
                             options.map((item) => (
                                 <li key={item} className={`${item === selectedOption ? 'bg-gray-100' : 'bg-white' } cursor-pointer p-[10px] rounded-lg`} onClick={()=>{setSelectedOption(item); setIsDropdownOpen(false)}}>{item}</li>

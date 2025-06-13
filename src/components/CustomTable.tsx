@@ -1,14 +1,15 @@
 import { getCoreRowModel, getPaginationRowModel, useReactTable, type ColumnDef, flexRender } from '@tanstack/react-table';
 import StatusTag from './StatusTag';
+import PageJump from './PageJump';
+import PaginationButton from './PaginationButton';
+import PageSizeSelector from './PageSizeSelector';
 
-
-type UsageData = Record<string, string | number>;
+export type UsageData = Record<string, string | number>;
 
 type HeaderType = {
     name: string,
     id: string
 }
-
 
 const CustomTable = ({header, data}:{header:HeaderType[], data: UsageData[]}) => {
     const columns:ColumnDef<UsageData>[] = header.map((item) => ({
@@ -51,18 +52,24 @@ const CustomTable = ({header, data}:{header:HeaderType[], data: UsageData[]}) =>
                             <tr key={row.id} className='border-b-1 border-gray-200'>
                                 {
                                     row.getVisibleCells().map((cell) =>(
-                                        <td key={cell.id} className='p-[10px]'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                                        <td key={cell.id} className='p-[10px] text-sm'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
                                     ))
                                 }
                             </tr>
                         ))
                     }
                 </tbody>
-                <div className=''>
-                    {table.getState().pagination.pageIndex + 1}
-                    {table.getPageCount()}
-                    {table.getState().pagination.pageSize}
-                </div>
+                <tfoot>
+                    <tr>
+                        <td colSpan={header.length}>
+                            <div className='flex justify-between items-center p-[10px]'>
+                                <PageSizeSelector table={table}/>
+                                <PaginationButton table={table}/>
+                                <PageJump table={table}/>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     )

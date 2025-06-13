@@ -197,11 +197,236 @@ const mockData = [
         "available_quantity": 0,
         "status": "NOT_AVAILABLE"
     },
+    {
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },{
+        "id": "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "마이크",
+        "total_quantity": 1,
+        "available_quantity": 0,
+        "status": "NOT_AVAILABLE"
+    },
 ];
 
 const ItemManagementPage = () => {
     return(
-        <div className="w-screen">
+        <div className="w-full">
             <MainHeader />
             <BannerButton />
             <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
