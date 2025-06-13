@@ -1,6 +1,8 @@
 const valueChange:Record<string,string> = {
     'NOT_AVAILABLE':'이용불가',
-    'AVAILABLE':'이용가능'
+    'AVAILABLE':'이용가능',
+    'USE': '이용중',
+    'NOT_USE': '종료됨'
 }
 
 const StatusTag = ({value}:{value:string}) => {

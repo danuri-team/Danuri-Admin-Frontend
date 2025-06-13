@@ -3,6 +3,7 @@ import StatusTag from './StatusTag';
 import PageJump from './PageJump';
 import PaginationButton from './PaginationButton';
 import PageSizeSelector from './PageSizeSelector';
+import dayjs from 'dayjs';
 
 export type UsageData = Record<string, string | number>;
 
@@ -15,11 +16,39 @@ const CustomTable = ({header, data}:{header:HeaderType[], data: UsageData[]}) =>
     const columns:ColumnDef<UsageData>[] = header.map((item) => ({
         accessorKey: item.id,
         header: item.name,
-        cell: ({getValue}) => {
+        cell: ({getValue, row}) => {
             const value = getValue() as string;
+            const rowData = row.original;
 
-            if(item.id === 'status') return <StatusTag value={value}/>
-            return <p>{getValue() as string}</p>
+            if(item.id === 'status'){
+                if(value) return <StatusTag value={value}/>
+                else {
+                    const start = rowData['start_at'];
+                    const end = rowData['end_at'];
+                    const now = dayjs();
+
+                    const statusValue = now.isAfter(dayjs(start)) && now.isBefore(dayjs(end)) ? 'USE' : 'NOT_USE';
+                    return <StatusTag value={statusValue}/>
+                }
+            } 
+            else if(item.id === 'sex'){
+                const sex = value === 'MALE' ? '남' : '여'
+                return <p>{sex}</p>
+            }
+            else if(item.id === 'age'){
+                let age;
+
+                switch(value){
+                    case 'MIDDLE': 
+                        age ='중학생'
+                        break
+                    case 'HIGH':
+                        age ='고등학생'
+                        break
+                }
+                return <p>{age}</p>
+            }
+            return <p>{value}</p>
         },
     }))
     
@@ -32,7 +61,7 @@ const CustomTable = ({header, data}:{header:HeaderType[], data: UsageData[]}) =>
 
     return(
         <div className='flex-1 border-1 border-gray-200 rounded-xl overflow-hidden mb-[50px]'>
-            <table className='w-full border-collapse'>
+            <table className='w-full border-collapse table-fixed'>
                 <thead>
                     {
                         table.getHeaderGroups().map((headerGroup) => (
