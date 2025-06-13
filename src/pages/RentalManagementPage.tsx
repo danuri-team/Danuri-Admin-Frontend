@@ -1,7 +1,110 @@
+import BannerButton from "../components/BannerButton";
+import CustomSelect from "../components/CustomSelect";
+import CustomTable from "../components/CustomTable";
+import MainHeader from "../components/MainHeader";
+import TableButton from "../components/TableButton";
+
+const tableHeader = [
+    {name:'물품', id:'name'}, 
+    {name:'유저', id: 'phone'}, 
+    {name:'사용 ID', id:'sex'},
+    {name:'대여 개수', id:'age'}, 
+    {name:'반납 개수', id:'created_at'},
+    {name:'상태 ', id:'created_at'}
+];
+
+//type = 'select' || 'date'
+const filterSelects = [
+    {id: 1, type: 'select' , options: ['처리여부']},
+    {id: 2, type: 'date' , options: ['대여일']},
+    {id: 3, type: 'date' , options: ['반납일']},
+]
+
+const mockData = [
+    {
+        "id": "07ebd352-9ae9-44b1-8b1f-7faf6ddf4a28",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "수정",
+        "sex": "FEMALE",
+        "age": "MIDDLE",
+        "phone": "010-1234-1234",
+        "created_at": "2025-06-11T18:19:33",
+        "updated_at": "2025-06-12T11:51:07",
+        "usage_count": 0
+    },
+    {
+        "id": "1e249904-7ed2-431e-982b-41621f719eb7",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "사용자 이름",
+        "sex": "MALE",
+        "age": "MIDDLE",
+        "phone": "010-1234-5222",
+        "created_at": "2025-06-10T16:47:48",
+        "updated_at": "2025-06-10T16:47:48",
+        "usage_count": 0
+    },
+    {
+        "id": "618b697f-061b-4876-b9af-4fb69664cd4c",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "박종환리얼",
+        "sex": "MALE",
+        "age": "HIGH",
+        "phone": "010-4017-2010",
+        "created_at": "2025-06-12T13:39:13",
+        "updated_at": "2025-06-12T13:39:13",
+        "usage_count": 1
+    },
+    {
+        "id": "8e6ab479-cd0b-41fc-9e80-ace482b96751",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "w",
+        "sex": "MALE",
+        "age": "MIDDLE",
+        "phone": "010-1234-5678",
+        "created_at": "2025-05-19T21:06:20",
+        "updated_at": "2025-05-19T21:06:19",
+        "usage_count": 8
+    },
+    {
+        "id": "fda22c19-06f5-49fc-9219-89343a5afff9",
+        "company_id": "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+        "company_name": "페더",
+        "name": "이지혁리얼",
+        "sex": "MALE",
+        "age": "HIGH",
+        "phone": "010-4952-8487",
+        "created_at": "2025-06-10T11:47:51",
+        "updated_at": "2025-06-10T11:47:51",
+        "usage_count": 0
+    }
+]
+
 const RentalManagementPage = () => {
     return(
-        <div>
-
+        <div className="w-full">
+            <MainHeader />
+            <BannerButton />
+            <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
+                <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
+                    <div className="flex items-center">
+                        <h1 className="text-xl font-bold">대여 관리</h1>
+                        {
+                            filterSelects.map((item) => (
+                                <CustomSelect key={item.id} options={item.options}/>
+                            ))
+                        }
+                    </div>
+                    <div className="flex gap-[10px]">
+                        <TableButton value="다운로드" />
+                        <TableButton value="추가" />
+                    </div>
+                </div>
+                <CustomTable header={tableHeader} data={mockData}/>
+            </div>
         </div>
     )
 }
