@@ -126,19 +126,28 @@ const mockData = [
     },
 ];
 
-const modalInputs = {
-    '추가': [{label: '물품', type: 'input'},{label: '총 수량', type: 'input'}],
+const inputOption: Record<string, any[]> = {
+    '추가': [{label: '물품', type: 'text'},{label: '총 수량', type: 'number'}],
 }
-
-
 
 const ItemManagementPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalInputs, setModalInputs]
+    const [modalInputs, setModalInputs] = useState<any[]|null>(null)
+    const [modalTitme, setModalTitle] = useState<string>('');
 
 
-    const onClickTableButton = () => {
+    const onClickTableButton = ({value}:{value:string}) => {
+        setIsModalOpen(true);
+        setModalTitle(value);
+        if(inputOption[value]){
+            setModalInputs(inputOption[value]);
+        }
+    }
 
+    const onCloseModal = () => {
+        setIsModalOpen(false);
+        setModalTitle('');
+        setModalInputs(null);
     }
 
     return(
@@ -156,15 +165,15 @@ const ItemManagementPage = () => {
                         }
                     </div>
                     <div className="flex gap-[10px]">
-                        <TableButton value="추가" onClick={onClickTableButton} />
-                        <TableButton value="검색" onClick={onClickTableButton} />
+                        <TableButton value="추가" onClick={()=>onClickTableButton({value: '추가'})} />
+                        <TableButton value="검색" onClick={()=>onClickTableButton({value: '검색'})} />
                     </div>
                 </div>
                 <CustomTable header={tableHeader} data={mockData}/>
             </div>
             {
                 isModalOpen && (
-                    <Modal isOpen={isModalOpen} title={} />
+                    <Modal isOpen={isModalOpen} title={modalTitme} inputs={modalInputs} onClose={onCloseModal} />
                 )
             }
         </div>
