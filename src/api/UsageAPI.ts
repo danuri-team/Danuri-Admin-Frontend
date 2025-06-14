@@ -16,7 +16,7 @@ export const postUsageSearch = async ({startDate, endDate, spaceId, userId}: Usa
             spaceId,
             userId
         });
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch(error){
         return {data: error, pass: false}
@@ -27,7 +27,7 @@ export const postUsageSearch = async ({startDate, endDate, spaceId, userId}: Usa
 export const getUsageDetail = async ({usageId}:{usageId:string}) => {
     try{
         const res = await PrivateAxios.get(`/admin/usage/${usageId}`);
-        return {data: res, pass: true};
+        return {data: res.data, pass: true};
     }
     catch(error){
         return {data: error, pass: false}
@@ -43,7 +43,7 @@ export const postUsageExcel = async ({startDate, endDate, spaceId, userId}:Usage
             spaceId,
             userId
         });
-        return {data:res, pass: true}
+        return {data:res.data, pass: true}
     }
     catch(error){
         return {data: error, pass: false};

@@ -10,7 +10,7 @@ export const postCreateUser = async ({company_id, name, sex, age, phone}:{compan
             age,
             phone
         });
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch(error){
         return {data:error, pass:false}
@@ -26,7 +26,7 @@ export const putUpdateUser = async ({userId, name, email, phone, role}:{userId:s
             phone,
             role
         })
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch(error){
         return {data: error, pass: false}
@@ -37,7 +37,7 @@ export const putUpdateUser = async ({userId, name, email, phone, role}:{userId:s
 export const deleteUser = async ({userId}:{userId:string}) => {
     try {
         const res = await PrivateAxios.delete(`/admin/users/${userId}`);
-        return {data:res, pass:true}
+        return {data:res.data, pass:true}
     }
     catch(error){
         return {data:error, pass: false}
@@ -48,7 +48,7 @@ export const deleteUser = async ({userId}:{userId:string}) => {
 export const getSearchUser = async ({userId}:{userId:string}) => {
     try{
         const res = await PrivateAxios.get(`/admin/users/${userId}`);
-        return {data:res, pass:true}
+        return {data:res.data, pass:true}
     }
     catch(error){
         return {data:error, pass:false}
@@ -59,7 +59,7 @@ export const getSearchUser = async ({userId}:{userId:string}) => {
 export const getSearchCompanyUser = async () => {
     try {
         const res = await PrivateAxios.get('/admin/users');
-        return {data:res, pass:true}
+        return {data:res.data, pass:true}
     }
     catch(error){
         return {data:error, pass: false}

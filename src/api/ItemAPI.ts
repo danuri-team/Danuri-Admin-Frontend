@@ -23,7 +23,7 @@ export const putUpdateItem = async ({itemId, name, totalQuantity, status}: {item
             total_quantity:totalQuantity,
             status
         })
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch(error){
         return {data: error, pass:false}
@@ -34,7 +34,7 @@ export const putUpdateItem = async ({itemId, name, totalQuantity, status}: {item
 export const deleteItem = async ({itemId}:{itemId:string}) => {
     try{
         const res = await PrivateAxios.delete(`/admin/items/${itemId}`);
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch(error){
         return {data: error, pass:false}
@@ -45,7 +45,7 @@ export const deleteItem = async ({itemId}:{itemId:string}) => {
 export const getSearchItem = async ({itemId}:{itemId:string}) => {
     try{
         const res = await PrivateAxios.get(`/admin/items/${itemId}`);
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch(error){
         return {data: error, pass:false}
@@ -56,7 +56,7 @@ export const getSearchItem = async ({itemId}:{itemId:string}) => {
 export const getSearchCompanyItem = async () => {
     try{
         const res = await PrivateAxios.get('/admin/items')
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch(error){
         return {data: error, pass:false}

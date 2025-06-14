@@ -35,7 +35,11 @@ export const login = createAsyncThunk<
     async (payload, {rejectWithValue}) => {
         try{
             const res = await postLogin(payload);
-            if(res.pass) return res.data as AuthResponse;
+            if(res.pass){ 
+                console.log(res.data)
+                const {access_token, refresh_token}:AuthResponse = res.data;
+                return {access_token,refresh_token};
+            }
             else return rejectWithValue(res.data as string);
         }
         catch(error){
@@ -81,16 +85,19 @@ const authSlice = createSlice({
                 state.refresh_token = null;
                 state.isLoading = true;
                 state.error = null;
+                console.log('pending');
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.access_token = action.payload.access_token;
                 state.refresh_token = action.payload.refresh_token;
                 state.isLoading = false;
-                console.log(state);
+                console.log(state.access_token);
             })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string
+                console.log(state.error);
+                console.log('error')
             })
 
             //토큰 갱신

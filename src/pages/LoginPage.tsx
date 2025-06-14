@@ -3,7 +3,9 @@ import { useReducer } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
-import { postLogin } from "../api/AuthAPI";
+import { login } from "../redux/reducers/authSlice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../redux/store";
 
 type LoginState = {
     email: string,
@@ -35,8 +37,9 @@ const loginReducer = (state:LoginState, action:LoginAction) => {
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
 
-    const [loginForm, dispatch] = useReducer(loginReducer, initialLoginForm);
+    const [loginForm, loginDispatch] = useReducer(loginReducer, initialLoginForm);
     
     const loginInputs = [
         {label:'이메일', key: 'email', value: loginForm.email},
@@ -46,15 +49,10 @@ const LoginPage = () => {
     const onclickLogin = async () => {
         console.log('실행');
         //POST
-        const res = await postLogin({email: loginForm.email, password: loginForm.password});
         //pass가 true인 경우 폼 리셋 후 경로 이동
-        if(res.pass){
-            dispatch({type:'RESET'});
-            navigate('/usage');
-        }
-        else {
-            console.log('로그인 실패', res.data);
-        }
+        loginDispatch({type:'RESET'});
+        dispatch(login({email: loginForm.email, password: loginForm.password}));
+        navigate('/usage');
     }
 
     return(
@@ -63,7 +61,7 @@ const LoginPage = () => {
                 <h1 className="text-2xl font-bold  mb-[50px]">로그인</h1>
                 {
                     loginInputs.map((item) => (
-                        <CustomInput label={item.label} key={item.key} value={item.value} onChange={(e)=>dispatch({type:'CHANGE', payload:{key:item.key, value:e.target.value}})} />
+                        <CustomInput label={item.label} key={item.key} value={item.value} onChange={(e)=>loginDispatch({type:'CHANGE', payload:{key:item.key, value:e.target.value}})} />
                     ))
                 }
                 <div className="justify-self-end text-xs text-danuri-400 cursor-pointer underline">

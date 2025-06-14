@@ -8,7 +8,7 @@ export const postLogin = async ({email, password}:{email: string, password:strin
             email,
             password
         });
-        return {data: res, pass: true};
+        return {data: res.data, pass: true};
     } 
     catch (error){
         return {data:error, pass: false}
@@ -25,7 +25,7 @@ export const postSignup = async ({company_id, email, password, phone}: {company_
             password,
             phone
         });
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch (error) {
         return {data: error, pass: false}
@@ -40,7 +40,7 @@ export const PostToken = async ({refreshToken}:{refreshToken:string}) => {
             refresh_token:refreshToken
         });
 
-        return {data: res, pass: true}
+        return {data: res.data, pass: true}
     }
     catch (error) {
         return {data: error, pass: false}
