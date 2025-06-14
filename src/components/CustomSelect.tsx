@@ -7,7 +7,7 @@ import "../style/DatePicker.css"
 import "react-datepicker/dist/react-datepicker.css";
 
 type CustomSelectType = {
-    type: string,
+    type: "select" | "date",
     options: string[]
 }
 
@@ -18,6 +18,12 @@ const CustomSelect = ({type, options}:CustomSelectType) => {
     const [selectedDate, setSelectedDate] = useState<Date|null>(null);
     const datePickerRef = useRef<any>(null);
 
+    const onBlurCloseDropdown = () => {
+        //다른 곳 클릭 했을 때 드롭다운 닫기
+        //드롭다운에서는 onClick이 아닌 onMouseDown을 사용해 blur보다 먼저 실행되도록 함
+        setIsDropdownOpen(false)
+    }
+
     return(
         <div className="text-sm ml-[50px]">
             {
@@ -25,14 +31,18 @@ const CustomSelect = ({type, options}:CustomSelectType) => {
                     <>
                     <button 
                         className="flex items-center gap-[5px] cursor-pointer text-danuri-text"
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}            
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        onBlur={onBlurCloseDropdown}            
                     >{selectedOption}<IoChevronDown size={20}/></button>
                     {
                         isDropdownOpen && (
                             <ul className="absolute border-1 border-gray-200 rounded-xl p-[10px] w-[300px] mt-[15px] bg-white">
                                 {
                                     options.map((item) => (
-                                        <li key={item} className={`${item === selectedOption ? 'bg-gray-100' : 'bg-white' } cursor-pointer p-[10px] rounded-lg`} onClick={()=>{setSelectedOption(item); setIsDropdownOpen(false)}}>{item}</li>
+                                        <li 
+                                            key={item} 
+                                            className={`${item === selectedOption ? 'bg-gray-100' : 'bg-white' } cursor-pointer p-[10px] rounded-lg`} 
+                                            onMouseDown={()=>{setSelectedOption(item); setIsDropdownOpen(false)}}>{item}</li>
                                     ))
                                 }
                             </ul>

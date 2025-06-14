@@ -4,6 +4,12 @@ import CustomSelect from "../components/CustomSelect";
 import BannerButton from "../components/BannerButton";
 import TableButton from "../components/TableButton";
 
+type filterSelectType = {
+    id: number, 
+    type: 'select' | 'date', 
+    options: string[]
+}
+
 const tableHeader = [
     {name:'이름', id:'name'}, 
     {name:'전화번호', id: 'phone'}, 
@@ -13,7 +19,7 @@ const tableHeader = [
 ];
 
 //type = 'select' || 'date'
-const filterSelects = [
+const filterSelects:filterSelectType[] = [
     {id: 1, type: 'date' , options: ['가입일']},
     {id: 2, type: 'select' , options: ['나이대']},
     {id: 3, type: 'select' , options: ['성별', '남', '여']},

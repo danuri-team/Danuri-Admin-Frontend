@@ -3,6 +3,14 @@ import TableButton from "../components/TableButton";
 import MainHeader from "../components/MainHeader";
 import BannerButton from "../components/BannerButton";
 import CustomSelect from "../components/CustomSelect";
+import { useState } from "react";
+import Modal from "../components/Modal";
+
+type filterSelectType = {
+    id: number, 
+    type: 'select' | 'date', 
+    options: string[]
+}
 
 const tableHeader = [
     {name:'물품', id:'name'},
@@ -12,7 +20,7 @@ const tableHeader = [
 ];
 
 //type = 'select' || 'date'
-const filterSelects = [
+const filterSelects:filterSelectType[] = [
     {id: 1, type: 'select' , options: ['재고순', '이름순', '이용 가능 여부 순']},
 ]
 
@@ -118,7 +126,21 @@ const mockData = [
     },
 ];
 
+const modalInputs = {
+    '추가': [{label: '물품', type: 'input'},{label: '총 수량', type: 'input'}],
+}
+
+
+
 const ItemManagementPage = () => {
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [modalInputs, setModalInputs]
+
+
+    const onClickTableButton = () => {
+
+    }
+
     return(
         <div className="w-full">
             <MainHeader />
@@ -134,12 +156,17 @@ const ItemManagementPage = () => {
                         }
                     </div>
                     <div className="flex gap-[10px]">
-                        <TableButton value="추가" />
-                        <TableButton value="검색" />
+                        <TableButton value="추가" onClick={onClickTableButton} />
+                        <TableButton value="검색" onClick={onClickTableButton} />
                     </div>
                 </div>
                 <CustomTable header={tableHeader} data={mockData}/>
             </div>
+            {
+                isModalOpen && (
+                    <Modal isOpen={isModalOpen} title={} />
+                )
+            }
         </div>
     )
 }
