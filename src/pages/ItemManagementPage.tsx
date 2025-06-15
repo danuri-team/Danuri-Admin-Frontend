@@ -5,6 +5,7 @@ import BannerButton from "../components/BannerButton";
 import CustomSelect from "../components/CustomSelect";
 import { useState } from "react";
 import Modal from "../components/Modal";
+import type { ModalInputTypesType } from "../components/ModalInput";
 
 type filterSelectType = {
     id: number, 
@@ -126,13 +127,13 @@ const mockData = [
     },
 ];
 
-const inputOption: Record<string, any[]> = {
+const inputOption: Record<string, {label:string, type: ModalInputTypesType}[]> = {
     '추가': [{label: '물품', type: 'text'},{label: '총 수량', type: 'number'}],
 }
 
 const ItemManagementPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [modalInputs, setModalInputs] = useState<any[]|null>(null)
+    const [modalInputs, setModalInputs] = useState<{label:string, type: ModalInputTypesType}[] | null>(null)
     const [modalTitme, setModalTitle] = useState<string>('');
 
 
