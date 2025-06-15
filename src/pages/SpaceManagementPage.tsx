@@ -1,6 +1,9 @@
+import { useState } from "react";
 import BannerButton from "../components/BannerButton";
 import CustomTable from "../components/CustomTable";
 import MainHeader from "../components/MainHeader";
+import Modal from "../components/Modal";
+import type { ModalInputTypesType } from "../components/ModalInput";
 import TableButton from "../components/TableButton";
 
 const tableHeader = [
@@ -47,7 +50,30 @@ const mockData = [
     }
 ]
 
+const inputOption: Record<string, {label:string, type: ModalInputTypesType}[]> = {
+    '추가': [{label: '공간명', type: 'text'},{label: '시작시간', type: 'time'},{label: '종료시간', type: 'time'}],
+}
+
 const SpaceManagementPage = () => {
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [modalInputs, setModalInputs] = useState<{label:string, type: ModalInputTypesType}[] | null>(null)
+    const [modalTitle, setModalTitle] = useState<string>('');
+
+
+    const onClickTableButton = ({value}:{value:string}) => {
+        setIsModalOpen(true);
+        setModalTitle(value);
+        if(inputOption[value]){
+            setModalInputs(inputOption[value]);
+        }
+    }
+
+    const onCloseModal = () => {
+        setIsModalOpen(false);
+        setModalTitle('');
+        setModalInputs(null);
+    }
+
     return(
         <div className="w-full">
             <MainHeader />
@@ -59,12 +85,17 @@ const SpaceManagementPage = () => {
                         
                     </div>
                     <div className="flex gap-[10px]">
-                        <TableButton value="추가" />
+                        <TableButton value="추가"  onClick={()=>onClickTableButton({value: '추가'})} />
                         <TableButton value="삭제" />
                     </div>
                 </div>
                 <CustomTable header={tableHeader} data={mockData}/>
             </div>
+            {
+                isModalOpen && (
+                    <Modal isOpen={isModalOpen} title={modalTitle} inputs={modalInputs} onClose={onCloseModal} />
+                )
+            }
         </div>
     )
 }

@@ -134,7 +134,7 @@ const inputOption: Record<string, {label:string, type: ModalInputTypesType}[]> =
 const ItemManagementPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [modalInputs, setModalInputs] = useState<{label:string, type: ModalInputTypesType}[] | null>(null)
-    const [modalTitme, setModalTitle] = useState<string>('');
+    const [modalTitle, setModalTitle] = useState<string>('');
 
 
     const onClickTableButton = ({value}:{value:string}) => {
@@ -174,7 +174,7 @@ const ItemManagementPage = () => {
             </div>
             {
                 isModalOpen && (
-                    <Modal isOpen={isModalOpen} title={modalTitme} inputs={modalInputs} onClose={onCloseModal} />
+                    <Modal isOpen={isModalOpen} title={modalTitle} inputs={modalInputs} onClose={onCloseModal} />
                 )
             }
         </div>

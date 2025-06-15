@@ -3,6 +3,9 @@ import MainHeader from "../components/MainHeader";
 import CustomSelect from "../components/CustomSelect";
 import BannerButton from "../components/BannerButton";
 import TableButton from "../components/TableButton";
+import type { ModalInputTypesType } from "../components/ModalInput";
+import { useState } from "react";
+import Modal from "../components/Modal";
 
 type filterSelectType = {
     id: number, 
@@ -88,7 +91,30 @@ const mockData = [
     }
 ]
 
+const inputOption: Record<string, {label:string, type: ModalInputTypesType}[]> = {
+    '추가': [{label: '이름', type: 'text'},{label: '전화번호', type: 'text'},{label: '성별', type: 'text'},{label: '나이', type: 'text'}],
+}
+
 const UserManagementPage = () => {
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [modalInputs, setModalInputs] = useState<{label:string, type: ModalInputTypesType}[] | null>(null)
+    const [modalTitle, setModalTitle] = useState<string>('');
+
+
+    const onClickTableButton = ({value}:{value:string}) => {
+        setIsModalOpen(true);
+        setModalTitle(value);
+        if(inputOption[value]){
+            setModalInputs(inputOption[value]);
+        }
+    }
+
+    const onCloseModal = () => {
+        setIsModalOpen(false);
+        setModalTitle('');
+        setModalInputs(null);
+    }
+
     return(
         <div className="w-full">
             <MainHeader />
@@ -105,13 +131,18 @@ const UserManagementPage = () => {
                     </div>
                     <div className="flex gap-[10px]">
                         <TableButton value="다운로드" />
-                        <TableButton value="추가" />
+                        <TableButton value="추가" onClick={()=>onClickTableButton({value: '추가'})} />
                         <TableButton value="검색" />
                         <TableButton value="삭제" />
                     </div>
                 </div>
                 <CustomTable header={tableHeader} data={mockData}/>
             </div>
+            {
+                isModalOpen && (
+                    <Modal isOpen={isModalOpen} title={modalTitle} inputs={modalInputs} onClose={onCloseModal} />
+                )
+            }
         </div>
     )
 }

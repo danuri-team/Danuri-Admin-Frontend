@@ -2,12 +2,12 @@ import { ko } from "date-fns/locale";
 import DatePicker from "react-datepicker"
 import { IoCloseCircleSharp } from "react-icons/io5";
 
-export type ModalInputTypesType = 'search' | 'date' | 'text' | 'number'
+export type ModalInputTypesType = 'search' | 'date' | 'time' | 'text' | 'number'
 
 type ModalInputType = 
     | {
         label: string,
-        type: 'date',
+        type: 'date' | 'time',
         value: Date | null,
         resetValue?: () => void,
         onChange: (date: Date | null) => void
@@ -27,24 +27,26 @@ const ModalInput = ({label, value, type, onChange, resetValue}: ModalInputType) 
             <p className="mb-[5px]">{label}</p>
             {
                 type === 'search' ? (
-                    <div className="">
-                        <input placeholder={`${label}을 검색해주세요`} type="text" value={value as string} onChange={onChange}/>
+                    <div className="flex items-center w-full border-1 border-gray-200 rounded-xl p-[10px] ">
+                        <input className="w-full outline-none" placeholder={`${label}을 검색해주세요`} type="text" value={value as string} onChange={onChange}/>
                         {
-                            value && <button onClick={resetValue}><IoCloseCircleSharp /></button>
+                            value && <button className="text-gray-300 cursor-pointer" onClick={resetValue}><IoCloseCircleSharp size={16} /></button>
                         }
                     </div>
-                ) :  type === 'date' ? (
+                ) :  type === 'date' || type === 'time' ? (
                     <DatePicker 
-                        className={`${value ? 'w-[80px]' : 'w-[60px]'} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
+                        className="w-full border-1 border-gray-200 rounded-xl p-[10px] outline-none"
                         calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
                         placeholderText={`${label}을 선택해주세요.`} 
                         selected={value as Date} 
                         locale={ko}
-                        onChange={onChange}
-                        dateFormat={'yyyy-MM-dd'}
+                        onChange={onChange as (date: Date | null) => void}
+                        dateFormat={`${type === 'date' ? 'yyyy-MM-dd HH:mm' : 'HH:mm'}`}
+                        showTimeSelect
+                        showTimeSelectOnly={type ==='date' ? false : true}
                     />
                 ) : (
-                    <input className="w-full border-1 border-gray-200 rounded-xl p-[10px]" placeholder={`${label}을 입력해주세요.`} type={type} value={value as string} onChange={onChange}/>
+                    <input className="w-full border-1 border-gray-200 rounded-xl p-[10px] outline-none" placeholder={`${label}을 입력해주세요.`} type={type} value={value as string} onChange={onChange as (e: React.ChangeEvent<HTMLInputElement>) => void}/>
                 )
             }
         </div>
