@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BannerButton from "../components/BannerButton";
-import CustomTable from "../components/CustomTable";
+import CustomTable, { type UsageData } from "../components/CustomTable";
 import MainHeader from "../components/MainHeader";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import TableButton from "../components/TableButton";
+import { getSearchCompanySpace } from "../api/SpaceAPI";
 
 const tableHeader = [
   { name: "공간명", id: "name" },
@@ -12,27 +13,6 @@ const tableHeader = [
   { name: "종료시간", id: "end_at" },
   { name: "사용횟수", id: "usage_count" },
   { name: "상태", id: "status" },
-];
-
-const mockData = [
-  {
-    id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "노래방",
-    start_at: [1, 0],
-    end_at: [23, 8, 13],
-    usage_count: 9,
-  },
-  {
-    id: "1296b67c-bf5d-4cc3-b9a2-5538232b2fcd",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "회의실 A",
-    start_at: [0, 0, 1],
-    end_at: [23, 59, 59],
-    usage_count: 0,
-  },
 ];
 
 const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
@@ -49,6 +29,20 @@ const SpaceManagementPage = () => {
     { label: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
+  const [tableData, setTableData] = useState<UsageData[]|null>(null);
+
+  useEffect(()=>{
+    const getTableData = async () => {
+      const res = await getSearchCompanySpace();
+      if(res.pass){
+        setTableData(res.data)
+      }
+      else {
+        console.log('데이터 불러오기 실패')
+      }
+    }
+    getTableData();
+  },[tableData])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
@@ -78,7 +72,7 @@ const SpaceManagementPage = () => {
             <TableButton value="삭제" />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={mockData} />
+        <CustomTable header={tableHeader} data={tableData} />
       </div>
       {isModalOpen && (
         <Modal
