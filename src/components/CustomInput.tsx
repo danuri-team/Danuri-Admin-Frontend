@@ -1,8 +1,6 @@
 import { FaCircleCheck } from "react-icons/fa6";
 import { FaCircleExclamation } from "react-icons/fa6";
 
-import { useEffect } from "react"
-
 type CustomInputType = {
     label: string,
     value: string,
