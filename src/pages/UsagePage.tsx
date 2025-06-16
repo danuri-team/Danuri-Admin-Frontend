@@ -38,7 +38,7 @@ type UsageAction =
   | {type: 'RESET'}
 
 const initialSelectForm: SelectState = {
-  order: '재고순',
+  order: '이용일순',
   useDate: null,
   age: '나이대',
   sex: '성별'
@@ -61,7 +61,7 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 'order', type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
+  { id: 'order', type: "select", options: ["이용일순", "상태순"] },
   { id: 'useDate', type: "date", options: ["이용일"] },
   { id: 'age', type: "select", options: ["나이대", '중학생', '고등학생'] },
   { id: 'sex', type: "select", options: ["성별", "남", "여"] },
@@ -106,7 +106,7 @@ const UsagePage = () => {
     { label: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
-  const [TableData, setTableData] = useState<UsageData[]|null>(null);
+  const [tableData, setTableData] = useState<UsageData[]|null>(null);
 
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
   const [usageForm, usageDispatch] = useReducer(usageReducer, initialUsageForm)
@@ -170,7 +170,7 @@ const UsagePage = () => {
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={TableData} />
+        <CustomTable header={tableHeader} data={tableData} />
       </div>
       {isModalOpen && (
         <Modal

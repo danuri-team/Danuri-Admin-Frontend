@@ -1,17 +1,31 @@
-import CustomTable from "../components/CustomTable";
+import CustomTable, { type UsageData } from "../components/CustomTable";
 import TableButton from "../components/TableButton";
 import MainHeader from "../components/MainHeader";
 import BannerButton from "../components/BannerButton";
 import CustomSelect from "../components/CustomSelect";
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
+import { getSearchCompanyItem } from "../api/ItemAPI";
 
 type filterSelectType = {
-  id: number;
+  id: keyof SelectState;
   type: "select" | "date";
   options: string[];
 };
+
+type SelectState = {
+  order: string
+} 
+
+type SelectAction = 
+  | {type:'CHANGE', payload: {key: string, value:string | Date | null}}
+  | {type: 'RESET'}
+
+const initialSelectForm: SelectState = {
+  order: '재고순'
+}
+
 
 const tableHeader = [
   { name: "물품", id: "name" },
@@ -22,109 +36,7 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 1, type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
-];
-
-const mockData = [
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "f4fb919b-3733-4591-8742-6606e5c0879a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "충전기",
-    total_quantity: 10,
-    available_quantity: 9,
-    status: "AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
+  { id: 'order', type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
 const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
@@ -134,12 +46,42 @@ const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]
   ],
 };
 
+const selectReducer = (state:SelectState, action:SelectAction) => {
+  switch(action.type){
+    case 'CHANGE':
+      return {
+        ...state,
+        [action.payload.key]:[action.payload.value]
+      }
+    case 'RESET':
+      return initialSelectForm;
+  }
+}
+
 const ItemManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
+  const [tableData, setTableData] = useState<UsageData[]|null>(null);
+
+  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
+
+  useEffect(()=>{
+    const getTableData = async () => {
+      const res = await getSearchCompanyItem();
+      if(res.pass){
+        setTableData(res.data)
+      }
+      else {
+        console.log('데이터 불러오기 실패')
+      }
+    }
+
+    getTableData();
+
+  },[tableData])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
@@ -164,7 +106,7 @@ const ItemManagementPage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">물품 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect key={item.id} type={item.type} options={item.options} />
+              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value}})}/>
             ))}
           </div>
           <div className="flex gap-[10px]">
@@ -172,7 +114,7 @@ const ItemManagementPage = () => {
             <TableButton value="검색" onClick={() => onClickTableButton({ value: "검색" })} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={mockData} />
+        <CustomTable header={tableHeader} data={tableData} />
       </div>
       {isModalOpen && (
         <Modal
