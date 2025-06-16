@@ -8,14 +8,11 @@ type UsageSearchType = {
 };
 
 //사용 기록 검색
-export const postUsageSearch = async ({ startDate, endDate, spaceId, userId }: UsageSearchType) => {
+export const postUsageSearch = async (usageForm: UsageSearchType) => {
+  console.log('검색 api');
   try {
-    const res = await PrivateAxios.post("/admin/usage/search", {
-      startDate,
-      endDate,
-      spaceId,
-      userId,
-    });
+    const res = await PrivateAxios.post("/admin/usage/search", usageForm);
+    console.log(res.data);
     return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };

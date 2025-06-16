@@ -7,15 +7,14 @@ import "../style/DatePicker.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 type CustomSelectType = {
-  type: "select" | "date";
-  options: string[];
+  type: "select" | "date",
+  options: string[],
+  value: string | Date | null,
+  onChange: (value:string|Date|null) => void
 };
 
-const CustomSelect = ({ type, options }: CustomSelectType) => {
+const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<string>(options[0]);
-
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const datePickerRef = useRef<DatePicker>(null);
 
   const onBlurCloseDropdown = () => {
@@ -33,7 +32,7 @@ const CustomSelect = ({ type, options }: CustomSelectType) => {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             onBlur={onBlurCloseDropdown}
           >
-            {selectedOption}
+            {value as string}
             <IoChevronDown size={20} />
           </button>
           {isDropdownOpen && (
@@ -41,9 +40,9 @@ const CustomSelect = ({ type, options }: CustomSelectType) => {
               {options.map((item) => (
                 <li
                   key={item}
-                  className={`${item === selectedOption ? "bg-gray-100" : "bg-white"} cursor-pointer p-[10px] rounded-lg`}
+                  className={`${item === value ? "bg-gray-100" : "bg-white"} cursor-pointer p-[10px] rounded-lg`}
                   onMouseDown={() => {
-                    setSelectedOption(item);
+                    onChange(item);
                     setIsDropdownOpen(false);
                   }}
                 >
@@ -57,13 +56,13 @@ const CustomSelect = ({ type, options }: CustomSelectType) => {
         <div className="flex items-center text-danuri-text cursor-pointer">
           <DatePicker
             ref={datePickerRef}
-            className={`${selectedDate ? "w-[80px]" : "w-[60px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
+            className={`${value ? "w-[80px]" : "w-[60px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
             calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
             placeholderText={options[0]}
-            selected={selectedDate}
+            selected={value as Date | null}
             locale={ko}
             onChange={(date) => {
-              if (date) setSelectedDate(date);
+              if (date) onChange(date);
             }}
             dateFormat={"yyyy-MM-dd"}
           />

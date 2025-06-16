@@ -1,17 +1,55 @@
-import CustomTable from "../components/CustomTable";
+import CustomTable, { type UsageData } from "../components/CustomTable";
 import MainHeader from "../components/MainHeader";
 import BannerButton from "../components/BannerButton";
 import CustomSelect from "../components/CustomSelect";
 import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
+import { postUsageSearch } from "../api/UsageAPI";
+import { formatDatetoISOString } from "../utils/dateFormat";
 
 type filterSelectType = {
-  id: number;
+  id: keyof SelectState;
   type: "select" | "date";
   options: string[];
 };
+
+type SelectState = {
+  order: string,
+  useDate: Date | null,
+  age: string,
+  sex: string
+}
+
+type UsageState = {
+  startDate: string,
+  endDate: string,
+  spaceId: string | null,
+  userId: string | null
+}
+
+type SelectAction = 
+  | {type:'CHANGE', payload: {key: string, value:string | Date | null}}
+  | {type: 'RESET'}
+
+type UsageAction = 
+  | {type:'CHANGE', payload: {key: string, value:string}}
+  | {type: 'RESET'}
+
+const initialSelectForm: SelectState = {
+  order: '재고순',
+  useDate: null,
+  age: '나이대',
+  sex: '성별'
+}
+
+const initialUsageForm:UsageState = {
+  startDate: '',
+  endDate: '',
+  spaceId: null,
+  userId: null
+}
 
 const tableHeader = [
   { name: "공간", id: "space_name" },
@@ -23,130 +61,10 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 1, type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
-  { id: 2, type: "date", options: ["이용일"] },
-  { id: 3, type: "select", options: ["나이대"] },
-  { id: 4, type: "select", options: ["성별", "남", "여"] },
-];
-
-const mockData = [
-  {
-    id: "0dc0b18e-2d5c-40d0-ad5c-fd722e72f864",
-    user_id: "8e6ab479-cd0b-41fc-9e80-ace482b96751",
-    user_name: "w",
-    user_phone: "010-1234-5678",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-06-07T15:14:23",
-    end_at: "2025-06-07T16:58:52",
-    rental_count: 0,
-  },
-  {
-    id: "4e73dabc-80fa-459e-82e4-b713e97b3afc",
-    user_id: "8e6ab479-cd0b-41fc-9e80-ace482b96751",
-    user_name: "w",
-    user_phone: "010-1234-5678",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-06-07T15:13:59",
-    end_at: "2025-06-07T15:10:59",
-    rental_count: 0,
-  },
-  {
-    id: "72afb510-c42c-435d-878b-f45df645792f",
-    user_id: "8e6ab479-cd0b-41fc-9e80-ace482b96751",
-    user_name: "w",
-    user_phone: "010-1234-5678",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-06-09T19:49:33",
-    end_at: "2025-06-09T20:19:33",
-    rental_count: 0,
-  },
-  {
-    id: "820c1e07-cb51-4b98-a477-e5569267a2f4",
-    user_id: "8e6ab479-cd0b-41fc-9e80-ace482b96751",
-    user_name: "w",
-    user_phone: "010-1234-5678",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-05-19T21:08:42",
-    end_at: "2025-06-07T15:02:25",
-    rental_count: 1,
-  },
-  {
-    id: "89b274c7-a3bc-4a14-a05c-a7abe3788e6d",
-    user_id: "8e6ab479-cd0b-41fc-9e80-ace482b96751",
-    user_name: "w",
-    user_phone: "010-1234-5678",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-06-07T15:15:45",
-    end_at: "2025-06-07T15:20:44",
-    rental_count: 2,
-  },
-  {
-    id: "925a28c5-f856-43bf-b8ff-9067a2417c56",
-    user_id: "8e6ab479-cd0b-41fc-9e80-ace482b96751",
-    user_name: "w",
-    user_phone: "010-1234-5678",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-06-10T21:17:23",
-    end_at: "2025-06-10T21:47:23",
-    rental_count: 0,
-  },
-  {
-    id: "bca0ea1d-47b7-4615-ad36-c9d8404c2516",
-    user_id: "8e6ab479-cd0b-41fc-9e80-ace482b96751",
-    user_name: "w",
-    user_phone: "010-1234-5678",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-06-07T16:57:10",
-    end_at: "2025-06-07T16:58:57",
-    rental_count: 0,
-  },
-  {
-    id: "c36da568-d385-413d-adf8-f90915ed6142",
-    user_id: "618b697f-061b-4876-b9af-4fb69664cd4c",
-    user_name: "박종환리얼",
-    user_phone: "010-4017-2010",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-06-12T15:04:36",
-    end_at: "2025-06-12T15:07:30",
-    rental_count: 0,
-  },
-  {
-    id: "e979ff23-c4a1-4fd6-ae42-4a015f7f920f",
-    user_id: "8e6ab479-cd0b-41fc-9e80-ace482b96751",
-    user_name: "w",
-    user_phone: "010-1234-5678",
-    space_id: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    space_name: "0e97af91-77ca-44a2-98c9-66a47ecf000a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    start_at: "2025-06-07T15:03:20",
-    end_at: "2025-06-07T15:10:20",
-    rental_count: 0,
-  },
+  { id: 'order', type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
+  { id: 'useDate', type: "date", options: ["이용일"] },
+  { id: 'age', type: "select", options: ["나이대", '중학생', '고등학생'] },
+  { id: 'sex', type: "select", options: ["성별", "남", "여"] },
 ];
 
 const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
@@ -158,12 +76,67 @@ const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]
   ],
 };
 
+const selectReducer = (state:SelectState, action:SelectAction) => {
+  switch(action.type){
+    case 'CHANGE':
+      return {
+        ...state,
+        [action.payload.key]:[action.payload.value]
+      }
+    case 'RESET':
+      return initialSelectForm;
+  }
+}
+
+const usageReducer = (state:UsageState, action:UsageAction) => {
+  switch(action.type){
+    case 'CHANGE':
+      return {
+        ...state,
+        [action.payload.key]:action.payload.value
+      }
+    case 'RESET':
+      return initialUsageForm;
+  }
+}
+
 const UsagePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
+  const [TableData, setTableData] = useState<UsageData[]|null>(null);
+
+  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
+  const [usageForm, usageDispatch] = useReducer(usageReducer, initialUsageForm)
+
+
+  useEffect(()=>{
+    console.log(usageForm);
+    if(selectForm.useDate){
+      const formatDate = formatDatetoISOString(selectForm.useDate);
+      console.log(formatDate);
+      usageDispatch({type:'CHANGE', payload:{key:'startDate', value: formatDate}})
+    }
+    
+  },[selectForm.useDate])
+
+  //테이블 값
+  useEffect(() => {
+    console.log(usageForm);
+    const getTableData = async () => {
+      const res = await postUsageSearch(usageForm);
+      if(res.pass){
+        setTableData(res.data);
+      }
+      else {
+        console.log('데이터 불러오기 실패')
+      }
+    }
+
+    getTableData();
+  }, [usageForm])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
@@ -188,7 +161,7 @@ const UsagePage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">이용 현황</h1>
             {filterSelects.map((item) => (
-              <CustomSelect key={item.id} type={item.type} options={item.options} />
+              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value}})} />
             ))}
           </div>
           <div className="flex gap-[10px]">
@@ -197,7 +170,7 @@ const UsagePage = () => {
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={mockData} />
+        <CustomTable header={tableHeader} data={TableData} />
       </div>
       {isModalOpen && (
         <Modal

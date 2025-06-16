@@ -18,7 +18,10 @@ type HeaderType = {
   id: string;
 };
 
-const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[] }) => {
+const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]|null }) => {
+
+  if(!data)return;
+  
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
     header: item.name,
@@ -99,6 +102,8 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+
+  
 
   return (
     <div className="flex-1 border-1 border-gray-200 rounded-xl overflow-hidden mb-[50px]">
