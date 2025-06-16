@@ -16,7 +16,7 @@ const CustomSelect = ({type, options}:CustomSelectType) => {
     const [selectedOption, setSelectedOption] = useState<string>(options[0]);
 
     const [selectedDate, setSelectedDate] = useState<Date|null>(null);
-    const datePickerRef = useRef<any>(null);
+    const datePickerRef = useRef<DatePicker>(null);
 
     const onBlurCloseDropdown = () => {
         //다른 곳 클릭 했을 때 드롭다운 닫기

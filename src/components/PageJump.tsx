@@ -8,7 +8,7 @@ const PageJump = ({table}:{table:Table<UsageData>}) => {
     useEffect(()=>{
         //pagination 에서 페이지 변경 됐을 때 감지
         setCurrentPage((table.getState().pagination.pageIndex+1).toString());
-    },[table.getState().pagination.pageIndex]);
+    },[table]);
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         const page = e.target.value;

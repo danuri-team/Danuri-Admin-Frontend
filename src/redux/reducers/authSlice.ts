@@ -43,6 +43,7 @@ export const login = createAsyncThunk<
             else return rejectWithValue(res.data as string);
         }
         catch(error){
+            console.log(error);
             return rejectWithValue('서버오류');
         }
     }
@@ -62,6 +63,7 @@ export const refreshAccessToken = createAsyncThunk<
             else return rejectWithValue(res.data as string);
         }
         catch(error){
+            console.log(error);
             return rejectWithValue('서버오류');
         }
     }
