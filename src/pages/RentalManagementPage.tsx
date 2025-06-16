@@ -1,11 +1,11 @@
+import { useState } from "react";
+import BannerButton from "../components/BannerButton";
+import CustomSelect from "../components/CustomSelect";
 import CustomTable from "../components/CustomTable";
 import MainHeader from "../components/MainHeader";
-import CustomSelect from "../components/CustomSelect";
-import BannerButton from "../components/BannerButton";
-import TableButton from "../components/TableButton";
-import type { ModalInputTypesType } from "../components/ModalInput";
-import { useState } from "react";
 import Modal from "../components/Modal";
+import type { ModalInputTypesType } from "../components/ModalInput";
+import TableButton from "../components/TableButton";
 
 type filterSelectType = {
   id: number;
@@ -14,18 +14,19 @@ type filterSelectType = {
 };
 
 const tableHeader = [
-  { name: "이름", id: "name" },
-  { name: "전화번호", id: "phone" },
-  { name: "성별", id: "sex" },
-  { name: "나이", id: "age" },
-  { name: "가입일", id: "created_at" },
+  { name: "물품", id: "name" },
+  { name: "유저", id: "phone" },
+  { name: "사용 ID", id: "sex" },
+  { name: "대여 개수", id: "age" },
+  { name: "반납 개수", id: "created_at" },
+  { name: "상태 ", id: "updated_at" },
 ];
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 1, type: "date", options: ["가입일"] },
-  { id: 2, type: "select", options: ["나이대"] },
-  { id: 3, type: "select", options: ["성별", "남", "여"] },
+  { id: 1, type: "select", options: ["처리여부"] },
+  { id: 2, type: "date", options: ["대여일"] },
+  { id: 3, type: "date", options: ["반납일"] },
 ];
 
 const mockData = [
@@ -93,14 +94,14 @@ const mockData = [
 
 const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "이름", type: "text" },
-    { label: "전화번호", type: "text" },
-    { label: "성별", type: "text" },
-    { label: "나이", type: "text" },
+    { label: "물품", type: "text" },
+    { label: "유저", type: "text" },
+    { label: "대여 개수", type: "number" },
+    { label: "반납 개수", type: "number" },
   ],
 };
 
-const UserManagementPage = () => {
+const RentalManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; type: ModalInputTypesType }[] | null
@@ -120,7 +121,6 @@ const UserManagementPage = () => {
     setModalTitle("");
     setModalInputs(null);
   };
-
   return (
     <div className="w-full">
       <MainHeader />
@@ -128,16 +128,14 @@ const UserManagementPage = () => {
       <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
         <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
           <div className="flex items-center">
-            <h1 className="text-xl font-bold">사용자 관리</h1>
+            <h1 className="text-xl font-bold">대여 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect type={item.type} key={item.id} options={item.options} />
+              <CustomSelect key={item.id} type={item.type} options={item.options} />
             ))}
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="다운로드" />
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="검색" />
-            <TableButton value="삭제" />
           </div>
         </div>
         <CustomTable header={tableHeader} data={mockData} />
@@ -154,4 +152,4 @@ const UserManagementPage = () => {
   );
 };
 
-export default UserManagementPage;
+export default RentalManagementPage;

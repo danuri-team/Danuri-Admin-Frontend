@@ -1,40 +1,189 @@
 import CustomTable from "../components/CustomTable";
-import ExcelButton from "../components/ExcelButton";
-import PagenationButton from "../components/PagenationButton";
-import SideNav from "../components/SideNav";
+import TableButton from "../components/TableButton";
+import MainHeader from "../components/MainHeader";
+import BannerButton from "../components/BannerButton";
+import CustomSelect from "../components/CustomSelect";
+import { useState } from "react";
+import Modal from "../components/Modal";
+import type { ModalInputTypesType } from "../components/ModalInput";
+
+type filterSelectType = {
+  id: number;
+  type: "select" | "date";
+  options: string[];
+};
 
 const tableHeader = [
-    {name:'처리여부', id:'process'}, 
-    {name:'물품', id:'item'},
-    {name:'시작시간', id:'startTime'}, 
-    {name:'종료시간', id: 'endTime'}, 
-    {name:'유저', id:'user'}
+  { name: "물품", id: "name" },
+  { name: "총 수량", id: "total_quantity" },
+  { name: "이용 가능 개수", id: "available_quantity" },
+  { name: "상태", id: "status" },
+];
+
+//type = 'select' || 'date'
+const filterSelects: filterSelectType[] = [
+  { id: 1, type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
 const mockData = [
-    {process: 'X', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-    {process: 'O', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-    {process: 'X', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-    {process: 'X', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-    {process: 'O', item: '충전기', startTime:'2025-12-31 00:00:00', endTime: '2026-01-01 00:00:00', user: '01011112222'},
-]
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "f4fb919b-3733-4591-8742-6606e5c0879a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "충전기",
+    total_quantity: 10,
+    available_quantity: 9,
+    status: "AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+  {
+    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
+    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
+    company_name: "페더",
+    name: "마이크",
+    total_quantity: 1,
+    available_quantity: 0,
+    status: "NOT_AVAILABLE",
+  },
+];
+
+const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
+  추가: [
+    { label: "물품", type: "text" },
+    { label: "총 수량", type: "number" },
+  ],
+};
 
 const ItemManagementPage = () => {
-    return(
-        <div className="flex w-screen">
-            <SideNav />
-            <div className="flex-1 m-[40px] mt-[60px] mb-[60px] flex flex-col">
-                <div className="mb-[30px] flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">물품 관리</h1>
-                    <ExcelButton />
-                </div>
-                <CustomTable header={tableHeader} data={mockData} />
-                <div className="mt-auto self-end">
-                    <PagenationButton />    
-                </div>
-            </div>
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalInputs, setModalInputs] = useState<
+    { label: string; type: ModalInputTypesType }[] | null
+  >(null);
+  const [modalTitle, setModalTitle] = useState<string>("");
+
+  const onClickTableButton = ({ value }: { value: string }) => {
+    setIsModalOpen(true);
+    setModalTitle(value);
+    if (inputOption[value]) {
+      setModalInputs(inputOption[value]);
+    }
+  };
+
+  const onCloseModal = () => {
+    setIsModalOpen(false);
+    setModalTitle("");
+    setModalInputs(null);
+  };
+
+  return (
+    <div className="w-full">
+      <MainHeader />
+      <BannerButton />
+      <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
+        <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
+          <div className="flex items-center">
+            <h1 className="text-xl font-bold">물품 관리</h1>
+            {filterSelects.map((item) => (
+              <CustomSelect key={item.id} type={item.type} options={item.options} />
+            ))}
+          </div>
+          <div className="flex gap-[10px]">
+            <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
+            <TableButton value="검색" onClick={() => onClickTableButton({ value: "검색" })} />
+          </div>
         </div>
-    )
-}
+        <CustomTable header={tableHeader} data={mockData} />
+      </div>
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          title={modalTitle}
+          inputs={modalInputs}
+          onClose={onCloseModal}
+        />
+      )}
+    </div>
+  );
+};
 
 export default ItemManagementPage;
