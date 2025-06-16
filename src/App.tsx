@@ -12,7 +12,7 @@ import RequireLogin from "./components/RequireLogin";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={'/auth/login'} replace/>} />
+      <Route path="/" element={<Navigate to={"/auth/login"} replace />} />
       <Route path="/auth/login" element={<LoginPage />} />
       <Route path="/auth/signup" element={<SignupPage />} />
 
