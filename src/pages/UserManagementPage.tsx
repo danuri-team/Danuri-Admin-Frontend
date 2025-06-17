@@ -41,7 +41,7 @@ const tableHeader = [
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
   { id: 'joinDate', type: "date", options: ["가입일"] },
-  { id: 'age', type: "select", options: ["나이대"] },
+  { id: 'age', type: "select", options: ["나이대",'중학생', '고등학생'] },
   { id: 'sex', type: "select", options: ["성별", "남", "여"] },
 ];
 

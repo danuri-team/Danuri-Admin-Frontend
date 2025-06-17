@@ -125,7 +125,7 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id} className="border-b-1 border-gray-200">
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-[10px] text-sm">
+                <td key={cell.id} className="p-[10px] text-sm text-wrap">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
