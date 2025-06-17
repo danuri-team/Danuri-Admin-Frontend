@@ -2,12 +2,14 @@ import { useEffect, useReducer } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput, { type ModalInputTypesType } from "./ModalInput";
 import CustomButton from "./CustomButton";
+import type { ModalSubmitFn } from "../pages/ItemManagementPage";
 
 type ModalType = {
   isOpen: boolean;
   title: string;
-  inputs: { label: string; type: ModalInputTypesType }[] | null;
+  inputs: { label: string; key: string, type: ModalInputTypesType }[] | null;
   onClose: () => void;
+  onSubmit: ModalSubmitFn
 };
 
 type modalAction =
@@ -32,7 +34,7 @@ const modalReducer = (state: modalState, action: modalAction) => {
         ...state,
         [action.payload.key]:
           action.payload.type === "date" || action.payload.type === "time"
-            ? new Date()
+            ? null
             : action.payload.type === "number"
               ? 0
               : "",
@@ -43,15 +45,15 @@ const modalReducer = (state: modalState, action: modalAction) => {
 };
 
 const getInitialModalForm = (
-  inputs: { label: string; type: ModalInputTypesType }[] | null
+  inputs: { label: string; key:string, type: ModalInputTypesType }[] | null
 ): modalState => {
   if (!inputs) return {};
 
   const initialState: modalState = {};
   inputs.forEach((input) => {
-    initialState[input.label] =
+    initialState[input.key] =
       input.type === "date" || input.type === "time"
-        ? new Date()
+        ? null
         : input.type === "number"
           ? 0
           : "";
@@ -59,7 +61,7 @@ const getInitialModalForm = (
   return initialState;
 };
 
-const Modal = ({ isOpen, title, onClose, inputs }: ModalType) => {
+const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const [modalForm, modalDispatch] = useReducer(modalReducer, getInitialModalForm(inputs));
 
   useEffect(() => {
@@ -70,7 +72,15 @@ const Modal = ({ isOpen, title, onClose, inputs }: ModalType) => {
     };
   }, [isOpen]);
 
-  const onClickSubmitModal = () => {};
+  const onClickSubmitModal = async () => {
+    const res = await onSubmit(modalForm);
+    if(res.pass){
+      onClose();
+    }
+    else {
+      console.log('실패');
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center">
@@ -91,13 +101,13 @@ const Modal = ({ isOpen, title, onClose, inputs }: ModalType) => {
                   label={item.label}
                   type={item.type}
                   onChange={(date) =>
-                    modalDispatch({ type: "CHANGE", payload: { key: item.label, value: date } })
+                    modalDispatch({ type: "CHANGE", payload: { key: item.key, value: date } })
                   }
-                  value={modalForm[item.label] as Date | null}
+                  value={modalForm[item.key] as Date | null}
                   resetValue={() =>
                     modalDispatch({
                       type: "RESET_ITEM",
-                      payload: { key: item.label, type: item.type },
+                      payload: { key: item.key, type: item.type },
                     })
                   }
                 />
@@ -109,21 +119,21 @@ const Modal = ({ isOpen, title, onClose, inputs }: ModalType) => {
                   onChange={(e) =>
                     modalDispatch({
                       type: "CHANGE",
-                      payload: { key: item.label, value: e.target.value },
+                      payload: { key: item.key, value: e.target.value },
                     })
                   }
-                  value={modalForm[item.label] as string | number}
+                  value={modalForm[item.key] as string | number}
                   resetValue={() =>
                     modalDispatch({
                       type: "RESET_ITEM",
-                      payload: { key: item.label, type: item.type },
+                      payload: { key: item.key, type: item.type },
                     })
                   }
                 />
               )
             )}
           </div>
-          <CustomButton value={title} onClick={() => onClickSubmitModal} />
+          <CustomButton value={title} onClick={() => onClickSubmitModal()} />
         </div>
       )}
     </div>

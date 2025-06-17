@@ -6,7 +6,7 @@ import CustomSelect from "../components/CustomSelect";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
-import { getSearchCompanyItem } from "../api/ItemAPI";
+import { getSearchCompanyItem, postCreateItem } from "../api/ItemAPI";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -21,6 +21,11 @@ type SelectState = {
 type SelectAction = 
   | {type:'CHANGE', payload: {key: string, value:string | Date | null}}
   | {type: 'RESET'}
+  
+export type modalState = Record<string, Date | string | number | null>;
+
+export type ModalSubmitFn = (form: modalState) => Promise<{data: unknown; pass: boolean;}>
+
 
 const initialSelectForm: SelectState = {
   order: '재고순'
@@ -39,12 +44,17 @@ const filterSelects: filterSelectType[] = [
   { id: 'order', type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
-const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "물품", type: "text" },
-    { label: "총 수량", type: "number" },
+    { label: "물품", key:'name', type: "text" },
+    { label: "총 수량",key:'totalQuantity', type: "number" },
+    { label: "상태",key:'status', type: "text" },
   ],
 };
+
+const modalSubmitFn: Record<string, ModalSubmitFn> = {
+  추가: (form:modalState) => postCreateItem({name: form.name as string ,totalQuantity: form.totalQuantity as string, status: form.status as string})
+}
 
 const selectReducer = (state:SelectState, action:SelectAction) => {
   switch(action.type){
@@ -61,7 +71,7 @@ const selectReducer = (state:SelectState, action:SelectAction) => {
 const ItemManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; type: ModalInputTypesType }[] | null
+    { label: string; key:string, type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[]|null>(null);
@@ -122,6 +132,7 @@ const ItemManagementPage = () => {
           title={modalTitle}
           inputs={modalInputs}
           onClose={onCloseModal}
+          onSubmit={modalSubmitFn[modalTitle]}
         />
       )}
     </div>

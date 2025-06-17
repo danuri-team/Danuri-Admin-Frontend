@@ -44,7 +44,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType
           className="w-full border-1 border-gray-200 rounded-xl p-[10px] outline-none"
           calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
           placeholderText={`${label}을 선택해주세요.`}
-          selected={value as Date}
+          selected={value as Date | null}
           locale={ko}
           onChange={onChange as (date: Date | null) => void}
           dateFormat={`${type === "date" ? "yyyy-MM-dd HH:mm" : "HH:mm"}`}

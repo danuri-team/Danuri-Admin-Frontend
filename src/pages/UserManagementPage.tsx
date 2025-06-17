@@ -6,7 +6,8 @@ import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
-import { getSearchCompanyUser } from "../api/UserAPI";
+import { getSearchCompanyUser, postCreateUser } from "../api/UserAPI";
+import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -45,12 +46,12 @@ const filterSelects: filterSelectType[] = [
   { id: 'sex', type: "select", options: ["성별", "남", "여"] },
 ];
 
-const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "이름", type: "text" },
-    { label: "전화번호", type: "text" },
-    { label: "성별", type: "text" },
-    { label: "나이", type: "text" },
+    { label: "이름", key:'name', type: "text" },
+    { label: "전화번호", key:'phone', type: "text" },
+    { label: "성별",key:'sex', type: "text" },
+    { label: "나이",key:'age', type: "text" },
   ],
 };
 
@@ -66,10 +67,16 @@ const selectReducer = (state:SelectState, action:SelectAction) => {
   }
 }
 
+
+//company id는 임의 값
+const modalSubmitFn: Record<string, ModalSubmitFn> = {
+  추가: (form:modalState) => postCreateUser({company_id: "52515fd2-43e5-440b-9cc5-8630bc75954e", name:form.name as string, sex: form.sex as string, age: form.age as string, phone: form.phone as string})
+}
+
 const UserManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; type: ModalInputTypesType }[] | null
+    { label: string; key:string, type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[]|null>(null);
@@ -131,6 +138,7 @@ const UserManagementPage = () => {
           title={modalTitle}
           inputs={modalInputs}
           onClose={onCloseModal}
+          onSubmit={modalSubmitFn[modalTitle]}
         />
       )}
     </div>

@@ -5,7 +5,9 @@ import MainHeader from "../components/MainHeader";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import TableButton from "../components/TableButton";
-import { getSearchCompanySpace } from "../api/SpaceAPI";
+import { getSearchCompanySpace, postCreateSpace } from "../api/SpaceAPI";
+import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
+import { formatDatetoTime } from "../utils/dateFormat";
 
 const tableHeader = [
   { name: "공간명", id: "name" },
@@ -15,18 +17,22 @@ const tableHeader = [
   { name: "상태", id: "status" },
 ];
 
-const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "공간명", type: "text" },
-    { label: "시작시간", type: "time" },
-    { label: "종료시간", type: "time" },
+    { label: "공간명", key: 'name', type: "text" },
+    { label: "시작시간", key: 'startTime', type: "time" },
+    { label: "종료시간", key: 'endTime', type: "time" },
   ],
 };
+
+const modalSubmitFn: Record<string, ModalSubmitFn> = {
+  추가: (form:modalState) => postCreateSpace({ name:form.name as string, startTime: formatDatetoTime(form.startTime as Date), endTime: formatDatetoTime(form.endTime as Date)})
+}
 
 const SpaceManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; type: ModalInputTypesType }[] | null
+    { label: string; key:string, type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[]|null>(null);
@@ -80,6 +86,7 @@ const SpaceManagementPage = () => {
           title={modalTitle}
           inputs={modalInputs}
           onClose={onCloseModal}
+          onSubmit={modalSubmitFn[modalTitle]}
         />
       )}
     </div>

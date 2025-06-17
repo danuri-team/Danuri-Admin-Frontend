@@ -10,8 +10,9 @@ export const postCreateSpace = async ({
   startTime: string;
   endTime: string;
 }) => {
+  console.log(startTime, endTime)
   try {
-    const res = await PrivateAxios.post("/admin/space", {
+    const res = await PrivateAxios.post("/admin/spaces", {
       name,
       start_at: startTime,
       end_at: endTime,
