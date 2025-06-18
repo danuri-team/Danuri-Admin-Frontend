@@ -6,7 +6,8 @@ import MainHeader from "../components/MainHeader";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import TableButton from "../components/TableButton";
-import { getSearchCompanyRental } from "../api/RentalAPI";
+import { getSearchCompanyRental, postCreateRental } from "../api/RentalAPI";
+import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -15,7 +16,8 @@ type filterSelectType = {
 };
 
 type SelectState = {
-  status: string,
+  order: string,
+  useDate: Date | null,
   age: string,
   sex: string
 }
@@ -25,11 +27,11 @@ type SelectAction =
   | {type: 'RESET'}
 
 const initialSelectForm: SelectState = {
-  status: '처리여부',
+  order: '이용일순',
+  useDate: null,
   age: '나이대',
   sex: '성별'
 }
-
 
 const tableHeader = [
   { name: "물품", id: "item_name" },
@@ -42,18 +44,18 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 'status', type: "select", options: ["처리여부"] },
+  { id: 'order', type: "select", options: ["이용일순"] },
+  { id: 'useDate', type: "date", options: ["이용일"] },
   { id: 'age', type: "select", options: ["나이대",'중학생', '고등학생'] },
   { id: 'sex', type: "select", options: ["성별", '남', '여'] },
 ];
 
 
-const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "물품", type: "text" },
-    { label: "공간사용", type: "text" },
-    { label: "대여 개수", type: "number" },
-    { label: "반납 개수", type: "number" },
+    { label: "물품", key: 'itemId', type: "text" },
+    { label: "공간사용", key: 'usageId', type: "text" },
+    { label: "대여 개수",  type: "number" },
   ],
 };
 
@@ -70,10 +72,14 @@ const selectReducer = (state:SelectState, action:SelectAction) => {
   }
 }
 
+const modalSubmitFn: Record<string, ModalSubmitFn> = {
+  추가: (form:modalState) => postCreateRental({itemId: form.itemId as string, quantity:form.quantity as number,  usageId:form.usageId as string})
+}
+
 const RentalManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; type: ModalInputTypesType }[] | null
+    { label: string; key:string, type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[]|null>(null);

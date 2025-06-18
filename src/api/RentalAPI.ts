@@ -4,17 +4,17 @@ import { PrivateAxios } from "./PrivateAxios";
 export const postCreateRental = async ({
   itemId,
   quantity,
-  userId,
+  usageId,
 }: {
-  itemId: number;
+  itemId: string;
   quantity: number;
-  userId: string;
+  usageId: string;
 }) => {
   try {
     const res = await PrivateAxios.post("/admin/rentals", {
       itemId,
       quantity,
-      userId
+      usageId
     });
     return { data: res, pass: true };
   } catch (error) {

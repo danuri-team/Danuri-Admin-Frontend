@@ -6,18 +6,19 @@ import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
-import { postUsageSearch } from "../api/UsageAPI";
+import { postCreateUsage, postUsageSearch } from "../api/UsageAPI";
 import { formatDatetoISOString } from "../utils/dateFormat";
+import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
 type filterSelectType = {
   id: keyof SelectState;
-  type: "select" | "date";
+  type: "select" | "date" | "rangeDate";
   options: string[];
 };
 
 type SelectState = {
   order: string,
-  useDate: Date | null,
+  useDate: {startDate: Date|null, endDate: Date|null},
   age: string,
   sex: string
 }
@@ -30,7 +31,8 @@ type UsageState = {
 }
 
 type SelectAction = 
-  | {type:'CHANGE', payload: {key: string, value:string | Date | null}}
+  | {type:'CHANGE', payload: {key: string, value: string}}
+  | {type:'CHANGE_RANGE', payload: {key: string, value: SelectState['useDate']}}
   | {type: 'RESET'}
 
 type UsageAction = 
@@ -39,13 +41,16 @@ type UsageAction =
 
 const initialSelectForm: SelectState = {
   order: '이용일순',
-  useDate: null,
+  useDate: {
+    startDate: null,
+    endDate: null,
+  },
   age: '나이대',
   sex: '성별'
 }
 
 const initialUsageForm:UsageState = {
-  startDate: '',
+  startDate: '2025-03-01T00:00:00',
   endDate: '',
   spaceId: null,
   userId: null
@@ -62,26 +67,35 @@ const tableHeader = [
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
   { id: 'order', type: "select", options: ["이용일순", "상태순"] },
-  { id: 'useDate', type: "date", options: ["이용일"] },
+  { id: 'useDate', type: "rangeDate", options: ["이용일"] },
   { id: 'age', type: "select", options: ["나이대", '중학생', '고등학생'] },
   { id: 'sex', type: "select", options: ["성별", "남", "여"] },
 ];
 
-const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "공간", type: "text" },
-    { label: "시작일", type: "date" },
-    { label: "종료일", type: "date" },
-    { label: "유저", type: "search" },
+    { label: "공간", key:'spaceId',  type: "text" },
+    { label: "시작일", key: 'startDate', type: "date" },
+    { label: "종료일", key: 'endDate', type: "date" },
+    { label: "유저", key:'userId', type: "search" },
   ],
 };
 
 const selectReducer = (state:SelectState, action:SelectAction) => {
   switch(action.type){
     case 'CHANGE':
+      console.log(state);
       return {
         ...state,
         [action.payload.key]:[action.payload.value]
+      }
+    case 'CHANGE_RANGE': 
+      return {
+        ...state,
+        useDate: {
+          startDate: action.payload.value.startDate,
+          endDate: action.payload.value.endDate
+        }
       }
     case 'RESET':
       return initialSelectForm;
@@ -100,10 +114,14 @@ const usageReducer = (state:UsageState, action:UsageAction) => {
   }
 }
 
+const modalSubmitFn: Record<string, ModalSubmitFn> = {
+  추가: (form:modalState) => postCreateUsage({userId: form.userId as string ,spaceId: form.spaceId as string, startDate: formatDatetoISOString(form.startDate as Date), endDate: formatDatetoISOString(form.endDate as Date)})
+}
+
 const UsagePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; type: ModalInputTypesType }[] | null
+    { label: string; key:string, type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[]|null>(null);
@@ -115,11 +133,15 @@ const UsagePage = () => {
   useEffect(()=>{
     console.log(usageForm);
     if(selectForm.useDate){
-      const formatDate = formatDatetoISOString(selectForm.useDate);
-      console.log(formatDate);
-      usageDispatch({type:'CHANGE', payload:{key:'startDate', value: formatDate}})
+      if(selectForm.useDate.startDate){
+        const formatStartDate = formatDatetoISOString(selectForm.useDate.startDate as Date);
+        usageDispatch({type:'CHANGE', payload:{key:'startDate', value: formatStartDate }})
+      }
+      if(selectForm.useDate.endDate){
+        const formatEndDate = formatDatetoISOString(selectForm.useDate.endDate as Date);
+        usageDispatch({type:'CHANGE', payload:{key:'endDate', value: formatEndDate }})
+      }
     }
-    
   },[selectForm.useDate])
 
   //테이블 값
@@ -131,10 +153,10 @@ const UsagePage = () => {
         setTableData(res.data);
       }
       else {
+        console.log(res.data);
         console.log('데이터 불러오기 실패')
       }
     }
-
     getTableData();
   }, [usageForm])
 
@@ -160,9 +182,10 @@ const UsagePage = () => {
         <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">이용 현황</h1>
-            {filterSelects.map((item) => (
-              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value}})} />
-            ))}
+            {filterSelects.map((item) => {
+              if(item.type === 'rangeDate')return <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE_RANGE', payload: {key:item.id, value: value as {startDate: Date | null, endDate: Date | null;}}})} />
+              else return <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value as string}})} />
+            })}
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="다운로드" />
@@ -178,6 +201,7 @@ const UsagePage = () => {
           title={modalTitle}
           inputs={modalInputs}
           onClose={onCloseModal}
+          onSubmit={modalSubmitFn[modalTitle]}
         />
       )}
     </div>
