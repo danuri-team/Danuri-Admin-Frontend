@@ -7,3 +7,7 @@
   --color-danuri-100: oklch(0.9846 0.0017 247.84);
   --color-danuri-text: oklch(0.5693 0 0);
 }
+
+*{
+  font-family: 'Pretendard', sans-serif;
+}
