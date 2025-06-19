@@ -41,7 +41,7 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
         );
         return <p>{time}</p>;
       } 
-      else if (item.name === '시작일' || item.name === '종료일'){
+      else if (item.name === '시작일' || item.name === '종료일' || item.name === '가입일'){
         if(!value)return <p></p>
         const date = format(new Date(value), 'yyyy-MM-dd HH:mm:ss')
         return <p>{date}</p>
