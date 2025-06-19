@@ -116,7 +116,7 @@ const ItemManagementPage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">물품 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value}})}/>
+              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value as string | Date | null}})}/>
             ))}
           </div>
           <div className="flex gap-[10px]">

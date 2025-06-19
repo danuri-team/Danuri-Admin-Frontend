@@ -72,6 +72,7 @@ const selectReducer = (state:SelectState, action:SelectAction) => {
   }
 }
 
+
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
   추가: (form:modalState) => postCreateRental({itemId: form.itemId as string, quantity:form.quantity as number,  usageId:form.usageId as string})
 }
@@ -124,7 +125,7 @@ const RentalManagementPage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">대여 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value}})} />
+              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value as string | Date | null}})} />
             ))}
           </div>
           <div className="flex gap-[10px]">
@@ -140,6 +141,7 @@ const RentalManagementPage = () => {
           title={modalTitle}
           inputs={modalInputs}
           onClose={onCloseModal}
+          onSubmit={modalSubmitFn[modalTitle]}
         />
       )}
     </div>

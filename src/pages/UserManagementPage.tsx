@@ -120,7 +120,7 @@ const UserManagementPage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">사용자 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect type={item.type} key={item.id} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value}})}/>
+              <CustomSelect type={item.type} key={item.id} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value as string | Date | null}})}/>
             ))}
           </div>
           <div className="flex gap-[10px]">

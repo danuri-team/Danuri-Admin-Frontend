@@ -78,12 +78,13 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   }, [isOpen]);
 
   const onClickSubmitModal = async () => {
+    console.log(modalForm);
     const res = await onSubmit(modalForm);
     if(res.pass){
       onClose();
     }
     else {
-      console.log('실패');
+      console.log(res.data);
     }
   };
 

@@ -106,6 +106,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType
           className="w-full border-1 border-gray-200 rounded-xl p-[10px] outline-none"
           placeholder={`${label}을 입력해주세요.`}
           type={type}
+          min={0}
           value={value as string | number}
           onChange={type==='text' || type==='number' ? (e)=> onChange(e.target.value) : undefined }
         />

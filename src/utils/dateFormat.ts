@@ -1,4 +1,4 @@
-import { format, set } from "date-fns" 
+import { format, isBefore, set } from "date-fns" 
 
 export const formatDatetoISOString = (date:Date) => {
     return format(set(date, {
@@ -10,4 +10,10 @@ export const formatDatetoISOString = (date:Date) => {
 
 export const formatDatetoTime = (date:Date) => {
     return format(date, 'HH:mm:ss').toString();
+}
+
+export const isFutureDate = (date:string) => {
+    const now = new Date();
+    console.log(new Date(date),isBefore(now, new Date(date)), typeof date);
+    return isBefore(now,new Date(date));
 }

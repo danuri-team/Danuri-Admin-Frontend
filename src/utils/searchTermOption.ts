@@ -1,5 +1,6 @@
 import { getSearchCompanyItem } from "../api/ItemAPI"
 import { postUsageSearch } from "../api/UsageAPI";
+import { isFutureDate } from "./dateFormat";
 
 //물품/공간 검색어 찾기
 export const getSearchTerm = async (label:string, value:string) => {
@@ -7,9 +8,10 @@ export const getSearchTerm = async (label:string, value:string) => {
     if(res.pass){
         const term = res.data.map((item:Record<string, string|number>)=>({
             name: label==='물품' ? item.name : item.space_name,
-            id:item.id
+            id:item.id,
+            endDate: label==='물품' ? null : item.end_at
         }))
-        .filter((item:{name:string, id:string})=> item.name.includes(value));
+        .filter((item:{name:string, id:string, endDate: string})=> item.name.includes(value) && (label !== '공간사용' || isFutureDate(item.endDate)));
         
         return term;
     }
