@@ -1,8 +1,8 @@
 import { ko } from "date-fns/locale";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { IoCloseCircleSharp } from "react-icons/io5";
-import { getSearchTerm } from "../utils/searchTermOption";
+import { getSearchTerm, type SearchLabel } from "../utils/searchTermOption";
 
 export type ModalInputTypesType = "search" | "date" | "time" | "text" | "number";
 
@@ -25,14 +25,13 @@ type ModalInputType =
 const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType) => {
   const [searchInput, setSearchInput] = useState<string>('');
   const [searchTerms, setSearchTerms] = useState<{name:string, id:string}[]>([]);
-
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocus, setIsFocus] = useState<boolean>(false);
 
   useEffect(()=>{
     if(type!=='search')return;
 
     const debouncedTimer = setTimeout(async ()=>{
-      const terms = await getSearchTerm(label, searchInput);
+      const terms = await getSearchTerm(label as SearchLabel, searchInput);
       setSearchTerms(terms);
     }, 200);
 
@@ -60,14 +59,15 @@ const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType
       <p className="mb-[5px]">{label}</p>
       {type === "search" ? (
         <div className="relative">
-          <div className={`${inputRef.current === document.activeElement ? 'border-blue-400' : 'border-gray-200'} flex items-center w-full border-1 rounded-xl p-[10px]`}>
+          <div className={`${isFocus ? 'border-blue-400' : 'border-gray-200'} flex items-center w-full border-1 rounded-xl p-[10px]`}>
             <input
-              ref={inputRef}
               className="w-full outline-none"
               placeholder={`${label}을 검색해주세요`}
               type="text"
               value={searchInput}
               onChange={(e)=>setSearchInput(e.target.value)}
+              onFocus={()=>setIsFocus(true)}
+              onBlur={()=>setIsFocus(false)}
             />
             {value && (
               <button className="text-gray-300 cursor-pointer" onClick={resetValue}>
@@ -77,7 +77,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType
           </div>
           {
             //검색어가 한 개도 없고, 입력박스에 포커싱이 있으면 검색어들 보이게
-            searchTerms[0] && inputRef.current && inputRef.current === document.activeElement && (
+            searchTerms[0] && isFocus && (
               <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[10px] bg-white mt-[10px] z-1">
                 {
                   

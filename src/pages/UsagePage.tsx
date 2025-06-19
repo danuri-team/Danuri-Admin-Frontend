@@ -74,16 +74,16 @@ const filterSelects: filterSelectType[] = [
 
 const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "공간", key:'spaceId',  type: "text" },
+    { label: "공간", key:'spaceId',  type: "search" },
     { label: "시작일", key: 'startDate', type: "date" },
     { label: "종료일", key: 'endDate', type: "date" },
     { label: "유저", key:'userId', type: "search" },
   ],
   다운로드: [
-    { label: "공간", key:'spaceId',  type: "text" },
+    { label: "공간", key:'spaceId',  type: "search" },
     { label: "시작일", key: 'startDate', type: "date" },
     { label: "종료일", key: 'endDate', type: "date" },
-    { label: "유저", key:'userId', type: "text" },
+    { label: "유저", key:'userId', type: "search" },
   ],
 };
 
