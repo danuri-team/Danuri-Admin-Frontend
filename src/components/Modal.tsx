@@ -14,7 +14,7 @@ type ModalType = {
 
 type modalAction =
   | { type: "CHANGE"; payload: { key: string; value: string | number } }
-  | { type: "CHANGE"; payload: { key: string; value: Date | null } }
+  | { type: "CHANGE_DATE"; payload: { key: string; value: Date | null } }
   | { type: "RESET_ITEM"; payload: { key: string; type: ModalInputTypesType } }
   | { type: "RESET"; payload: { initailModalForm: modalState } };
 
@@ -28,6 +28,11 @@ const modalReducer = (state: modalState, action: modalAction) => {
         ...state,
         [action.payload.key]: action.payload.value,
       };
+    case 'CHANGE_DATE': 
+      return {
+        ...state,
+        [action.payload.key]: action.payload.value
+      }
     case "RESET_ITEM":
       console.log(state);
       return {
@@ -101,7 +106,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                   label={item.label}
                   type={item.type}
                   onChange={(date) =>
-                    modalDispatch({ type: "CHANGE", payload: { key: item.key, value: date } })
+                    modalDispatch({ type: "CHANGE_DATE", payload: { key: item.key, value: date } })
                   }
                   value={modalForm[item.key] as Date | null}
                   resetValue={() =>
@@ -116,10 +121,10 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                   key={item.label}
                   label={item.label}
                   type={item.type}
-                  onChange={(e) =>
+                  onChange={(value) =>
                     modalDispatch({
                       type: "CHANGE",
-                      payload: { key: item.key, value: e.target.value },
+                      payload: { key: item.key, value: value },
                     })
                   }
                   value={modalForm[item.key] as string | number}

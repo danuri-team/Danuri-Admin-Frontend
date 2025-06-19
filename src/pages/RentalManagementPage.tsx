@@ -53,9 +53,9 @@ const filterSelects: filterSelectType[] = [
 
 const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "물품", key: 'itemId', type: "text" },
-    { label: "공간사용", key: 'usageId', type: "text" },
-    { label: "대여 개수",  type: "number" },
+    { label: "물품", key: 'itemId', type: 'search' },
+    { label: "공간사용", key: 'usageId', type: 'search' },
+    { label: "대여 개수", key:'quantity',  type: "number" },
   ],
 };
 
