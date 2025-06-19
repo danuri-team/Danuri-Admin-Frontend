@@ -6,7 +6,7 @@ import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
-import { postCreateUsage, postUsageSearch } from "../api/UsageAPI";
+import { postCreateUsage, postUsageExcel, postUsageSearch } from "../api/UsageAPI";
 import { formatDatetoISOString } from "../utils/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
@@ -115,7 +115,8 @@ const usageReducer = (state:UsageState, action:UsageAction) => {
 }
 
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form:modalState) => postCreateUsage({userId: form.userId as string ,spaceId: form.spaceId as string, startDate: formatDatetoISOString(form.startDate as Date), endDate: formatDatetoISOString(form.endDate as Date)})
+  추가: (form:modalState) => postCreateUsage({userId: form.userId as string ,spaceId: form.spaceId as string, startDate: formatDatetoISOString(form.startDate as Date), endDate: formatDatetoISOString(form.endDate as Date)}),
+  // 다운로드: (form:modalState) => postUsageExcel({userId: form.})
 }
 
 const UsagePage = () => {

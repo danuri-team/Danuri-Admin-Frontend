@@ -91,7 +91,7 @@ const ItemManagementPage = () => {
 
     getTableData();
 
-  },[tableData])
+  },[])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);

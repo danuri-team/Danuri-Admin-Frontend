@@ -109,7 +109,7 @@ const UserManagementPage = () => {
     }
 
     getTableData();
-  }, [tableData])
+  }, [])
 
   return (
     <div className="w-full">

@@ -99,7 +99,7 @@ const RentalManagementPage = () => {
     }
 
     getTableData();
-  }, [tableData])
+  }, [])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
