@@ -98,6 +98,7 @@ const UserManagementPage = () => {
   };
 
   useEffect(() => {
+    if(isModalOpen===true)return;
     const getTableData = async () => {
       const res = await getSearchCompanyUser();
       if(res.pass){
@@ -109,7 +110,7 @@ const UserManagementPage = () => {
     }
 
     getTableData();
-  }, [])
+  }, [isModalOpen])
 
   return (
     <div className="w-full">

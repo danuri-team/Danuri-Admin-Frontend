@@ -153,6 +153,7 @@ const UsagePage = () => {
 
   //테이블 값
   useEffect(() => {
+    if(isModalOpen===true)return;
     console.log(usageForm);
     const getTableData = async () => {
       const res = await postUsageSearch(usageForm);
@@ -165,7 +166,7 @@ const UsagePage = () => {
       }
     }
     getTableData();
-  }, [usageForm])
+  }, [usageForm, isModalOpen])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);

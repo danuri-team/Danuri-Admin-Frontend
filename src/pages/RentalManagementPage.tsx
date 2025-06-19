@@ -88,6 +88,7 @@ const RentalManagementPage = () => {
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
 
   useEffect(() => {
+    if(isModalOpen===true)return;
     const getTableData = async () => {
       const res = await getSearchCompanyRental();
       if(res.pass){
@@ -97,9 +98,8 @@ const RentalManagementPage = () => {
         console.log('데이터 불러오기 실패')
       }
     }
-
     getTableData();
-  }, [])
+  }, [isModalOpen])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);

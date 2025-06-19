@@ -38,6 +38,7 @@ const SpaceManagementPage = () => {
   const [tableData, setTableData] = useState<UsageData[]|null>(null);
 
   useEffect(()=>{
+    if(isModalOpen===true)return;
     const getTableData = async () => {
       const res = await getSearchCompanySpace();
       if(res.pass){
@@ -48,7 +49,7 @@ const SpaceManagementPage = () => {
       }
     }
     getTableData();
-  },[])
+  },[isModalOpen])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
