@@ -54,15 +54,30 @@ export const getUsageDetail = async ({ usageId }: { usageId: string }) => {
 
 //사용 기록 엑셀 내보내기
 export const postUsageExcel = async ({ startDate, endDate, spaceId, userId }: UsageSearchType) => {
+  console.log(startDate, endDate, spaceId, userId)
   try {
     const res = await PrivateAxios.post("/admin/usage/export", {
-      startDate,
-      endDate,
-      spaceId,
-      userId,
+      start_date: startDate,
+      end_date: endDate,
+      space_id: spaceId === '' ? null : spaceId,
+      user_id: userId === '' ? null : userId,
+    },{
+      responseType: 'blob'
     });
-    return { data: res.data, pass: true };
+
+    const blob = new Blob([res.data]);
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = decodeURIComponent('export.xlsx')
+    link.click();
+    window.URL.revokeObjectURL(url);
+    return {data: null, pass: true}
+
   } catch (error) {
-    return { data: error, pass: false };
+    console.log('다운로드 실패');
+    return {data: null, pass: false}
   }
 };

@@ -6,7 +6,7 @@ import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
-import { postCreateUsage, postUsageSearch } from "../api/UsageAPI";
+import { postCreateUsage, postUsageExcel, postUsageSearch } from "../api/UsageAPI";
 import { formatDatetoISOString } from "../utils/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
@@ -79,6 +79,12 @@ const inputOption: Record<string, { label: string; key:string, type: ModalInputT
     { label: "종료일", key: 'endDate', type: "date" },
     { label: "유저", key:'userId', type: "search" },
   ],
+  다운로드: [
+    { label: "공간", key:'spaceId',  type: "text" },
+    { label: "시작일", key: 'startDate', type: "date" },
+    { label: "종료일", key: 'endDate', type: "date" },
+    { label: "유저", key:'userId', type: "text" },
+  ],
 };
 
 const selectReducer = (state:SelectState, action:SelectAction) => {
@@ -116,7 +122,7 @@ const usageReducer = (state:UsageState, action:UsageAction) => {
 
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
   추가: (form:modalState) => postCreateUsage({userId: form.userId as string ,spaceId: form.spaceId as string, startDate: formatDatetoISOString(form.startDate as Date), endDate: formatDatetoISOString(form.endDate as Date)}),
-  // 다운로드: (form:modalState) => postUsageExcel({userId: form.})
+  다운로드: (form:modalState) => postUsageExcel({userId: form.userId as string ,spaceId: form.spaceId as string, startDate: formatDatetoISOString(form.startDate as Date), endDate: formatDatetoISOString(form.endDate as Date)})
 }
 
 const UsagePage = () => {
@@ -189,8 +195,8 @@ const UsagePage = () => {
             })}
           </div>
           <div className="flex gap-[10px]">
-            <TableButton value="다운로드" />
-            <TableButton value="대여관리" />
+            <TableButton value="다운로드" onClick={()=> onClickTableButton({value: '다운로드'})}/>
+            <TableButton value="대여관리"/>
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
           </div>
         </div>

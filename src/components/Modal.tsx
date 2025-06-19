@@ -61,7 +61,7 @@ const getInitialModalForm = (
         ? null
         : input.type === "number"
           ? 0
-          : "";
+          : '';
   });
   return initialState;
 };
