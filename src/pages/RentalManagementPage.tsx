@@ -129,7 +129,6 @@ const RentalManagementPage = () => {
             ))}
           </div>
           <div className="flex gap-[10px]">
-            <TableButton value="다운로드" />
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
           </div>
         </div>

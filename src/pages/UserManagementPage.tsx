@@ -124,7 +124,6 @@ const UserManagementPage = () => {
             ))}
           </div>
           <div className="flex gap-[10px]">
-            <TableButton value="다운로드" />
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
             <TableButton value="검색" />
             <TableButton value="삭제" />

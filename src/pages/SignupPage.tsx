@@ -4,7 +4,6 @@ import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
 import { postSignup } from "../api/AuthAPI";
-import { isValid } from "date-fns";
 import { isValidEmail, isValidPhone } from "../utils/infoValidation";
 import { replacePhone } from "../utils/infoFormat";
 
