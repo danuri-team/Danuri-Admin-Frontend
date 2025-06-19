@@ -5,6 +5,7 @@ import CustomInput from "../components/CustomInput";
 import MainHeader from "../components/MainHeader";
 import { isValidEmail } from "../utils/infoValidation";
 import CustomButton from "../components/CustomButton";
+import { replacePhone } from "../utils/infoFormat";
 
 type InfoAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
@@ -23,6 +24,12 @@ const initialInfoForm: InfoState = {
 const infoReducer = (state: InfoState, action: InfoAction) => {
   switch (action.type) {
     case "CHANGE":
+      if(action.payload.key === 'phone'){
+        return {
+          ...state,
+          [action.payload.key]: replacePhone(action.payload.value)
+        }
+      }
       return {
         ...state,
         [action.payload.key]: action.payload.value,
