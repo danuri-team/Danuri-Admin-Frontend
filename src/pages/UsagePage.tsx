@@ -6,7 +6,7 @@ import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
-import { postCreateUsage, postUsageExcel, postUsageSearch } from "../api/UsageAPI";
+import { postCreateUsage, postUsageSearch } from "../api/UsageAPI";
 import { formatDatetoISOString } from "../utils/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
