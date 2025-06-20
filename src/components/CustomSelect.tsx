@@ -14,7 +14,6 @@ type CustomSelectType = {
 };
 
 const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
-  if(type==='rangeDate')console.log('으악',value);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const datePickerRef = useRef<DatePicker>(null);
 
@@ -59,7 +58,7 @@ const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
             type === 'date' ? (
             <DatePicker
               ref={datePickerRef}
-              className={`${value ? "w-[80px]" : "w-[60px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
+              className={`${value ? "w-[80px]" : 'w-[37px]'} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
               calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
               placeholderText={options[0]}
               selected={value as Date | null}
@@ -72,7 +71,7 @@ const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
             <DatePicker
               selectsRange
               ref={datePickerRef}
-              className={`${value && typeof value ==='object' && 'startDate' in value && value.startDate ? "w-[170px]" : "w-[60px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
+              className={`${value && typeof value ==='object' && 'startDate' in value && value.startDate ? "w-[170px]" : 'w-[37px]' } outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
               placeholderText={options[0]}
               startDate={value && typeof value === 'object' && 'startDate' in value ? value.startDate as Date | null : null}
               endDate={value && typeof value === 'object' && 'endDate' in value ? value.endDate as Date | null : null}

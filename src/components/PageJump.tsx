@@ -2,6 +2,7 @@ import type { Table } from "@tanstack/react-table";
 import type { UsageData } from "./CustomTable";
 import { useEffect, useState } from "react";
 
+
 const PageJump = ({ table }: { table: Table<UsageData> }) => {
   const [currentPage, setCurrentPage] = useState<string>(
     (table.getState().pagination.pageIndex + 1).toString()
@@ -33,7 +34,7 @@ const PageJump = ({ table }: { table: Table<UsageData> }) => {
     <div className="text-sm flex items-center gap-[5px]">
       <span className="text-gray-500 text-xs">페이지 이동</span>
       <input
-        className="border-1 border-gray-200 rounded-md p-[3px] w-[40px]"
+        className="border-1 border-gray-200 rounded-md p-[3px] pl-[10px] w-[50px] "
         type="number"
         value={currentPage}
         min={1}
