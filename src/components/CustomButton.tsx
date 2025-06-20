@@ -6,7 +6,7 @@ type CustomButtonType = {
 const CustomButton = ({ value, onClick }: CustomButtonType) => {
   return (
     <button
-      className="rounded-xl p-[10px] w-full bg-danuri-500 text-white font-semibold cursor-pointer"
+      className="rounded-xl p-[10px] w-full bg-danuri-500 text-white font-semibold cursor-pointer hover:bg-danuri-600"
       onClick={onClick}
     >
       {value}
