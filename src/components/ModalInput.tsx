@@ -91,10 +91,12 @@ const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType
         </div>
       ) : type === "date" || type === "time" ? (
         <DatePicker
-          className="w-full border-1 border-gray-200 rounded-xl p-[10px] outline-none"
+          className={`${isFocus ? 'border-blue-400' : 'border-gray-200'} w-full border-1 rounded-xl p-[10px] outline-none`}
           calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
           placeholderText={`${label}을 선택해주세요.`}
           selected={value as Date | null}
+          onFocus={()=>setIsFocus(true)}
+          onBlur={()=>setIsFocus(false)}
           locale={ko}
           onChange={onChange as (date: Date | null) => void}
           dateFormat={`${type === "date" ? "yyyy-MM-dd HH:mm" : "HH:mm"}`}
@@ -103,10 +105,12 @@ const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType
         />
       ) : (
         <input
-          className="w-full border-1 border-gray-200 rounded-xl p-[10px] outline-none"
+          className={`${isFocus ? 'border-blue-400' : 'border-gray-200'} w-full border-1 rounded-xl p-[10px] outline-none`}
           placeholder={`${label}을 입력해주세요.`}
           type={type}
           min={0}
+          onFocus={()=>setIsFocus(true)}
+          onBlur={()=>setIsFocus(false)}
           value={value as string | number}
           onChange={type==='text' || type==='number' ? (e)=> onChange(e.target.value) : undefined }
         />
