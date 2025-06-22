@@ -8,7 +8,6 @@ const valueChange: Record<string, {text:string, color: string}> = {
   IN_USE: {text: "이용중", color: 'blue'},
 };
 
-//수정사항: Figma 디자인에 맞게 태그 색 수정
 const StatusTag = ({ value }: { value: string }) => {
   return (
     <div
