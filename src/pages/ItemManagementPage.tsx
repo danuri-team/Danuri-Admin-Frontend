@@ -52,6 +52,7 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
     { label: "물품 ID", key: "itemId", type: "text", hide: true },
     { label: "물품", key: "name", type: "text" },
     { label: "총 수량", key: "total_quantity", type: "number" },
+    { label: "이용 가능 개수", key: "available_quantity", type: "number" },
     { label: "상태", key: "status", type: "text" },
   ],
 };
@@ -69,6 +70,7 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
       itemId: form.itemId as string, 
       name: form.name as string, 
       totalQuantity: form.total_quantity as string,
+      availableQuantity: form.available_quantity as string,
       status: form.status as string,
     })
 };
