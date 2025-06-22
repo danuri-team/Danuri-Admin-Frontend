@@ -18,10 +18,7 @@ type HeaderType = {
   id: string;
 };
 
-const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]|null }) => {
-
-  if(!data)return;
-  
+const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[] | null }) => {
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
     header: item.name,
@@ -40,13 +37,11 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
           "HH:mm:ss"
         );
         return <p>{time}</p>;
-      } 
-      else if (item.name === '시작일' || item.name === '종료일' || item.name === '가입일'){
-        if(!value)return <p></p>
-        const date = format(new Date(value), 'yyyy-MM-dd HH:mm:ss')
-        return <p>{date}</p>
-      }      
-      else if (item.id === "status") {
+      } else if (item.name === "시작일" || item.name === "종료일" || item.name === "가입일") {
+        if (!value) return <p></p>;
+        const date = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+        return <p>{date}</p>;
+      } else if (item.id === "status") {
         //상태 값 있을 때
         if (value) return <StatusTag value={value} />;
 
@@ -103,13 +98,11 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
   }));
 
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-
-  
 
   return (
     <div className="flex-1 border-1 border-gray-200 rounded-xl overflow-hidden mb-[50px]">

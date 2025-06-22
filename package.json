@@ -7,7 +7,7 @@
     "prepare": "husky install",
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint --cache --max-warings=0",
+    "lint": "eslint --cache --max-warnings=0",
     "preview": "vite preview",
     "format": "prettier --write --cache ."
   },

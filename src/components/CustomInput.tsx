@@ -15,7 +15,7 @@ const CustomInput = ({ label, value, onChange, valid }: CustomInputType) => {
     <div className="mb-[30px]">
       <p className="text-danuri-text mb-[10px]">{label}</p>
       <div
-        className={`${value.length > 0 && valid === false ? "border-red-400" : isFocus ? 'border-blue-400' : 'border-gray-200'}  flex border  rounded-xl p-[13px] w-full min-w-xs`}
+        className={`${value.length > 0 && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[13px] w-full min-w-xs`}
       >
         <input
           className="outline-none w-full placeholder:text-gray-300"
@@ -23,8 +23,8 @@ const CustomInput = ({ label, value, onChange, valid }: CustomInputType) => {
           placeholder={`${label}를 입력해주세요`}
           value={value}
           onChange={onChange}
-          onFocus={()=>setIsFocus(true)}
-          onBlur={()=>setIsFocus(false)}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
         />
         {value.length > 0 && (valid === true || valid === false) && (
           <button

@@ -15,22 +15,20 @@ type filterSelectType = {
 };
 
 type SelectState = {
-  order: string
-} 
+  order: string;
+};
 
-type SelectAction = 
-  | {type:'CHANGE', payload: {key: string, value:string | Date | null}}
-  | {type: 'RESET'}
-  
+type SelectAction =
+  | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
+  | { type: "RESET" };
+
 export type modalState = Record<string, Date | string | number | null>;
 
-export type ModalSubmitFn = (form: modalState) => Promise<{data: unknown; pass: boolean;}>
-
+export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
 
 const initialSelectForm: SelectState = {
-  order: '재고순'
-}
-
+  order: "재고순",
+};
 
 const tableHeader = [
   { name: "물품", id: "name" },
@@ -41,56 +39,60 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 'order', type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
+  { id: "order", type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
-const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "물품", key:'name', type: "text" },
-    { label: "총 수량",key:'totalQuantity', type: "number" },
-    { label: "상태",key:'status', type: "text" },
+    { label: "물품", key: "name", type: "text" },
+    { label: "총 수량", key: "totalQuantity", type: "number" },
+    { label: "상태", key: "status", type: "text" },
   ],
 };
 
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form:modalState) => postCreateItem({name: form.name as string ,totalQuantity: form.totalQuantity as string, status: form.status as string})
-}
+  추가: (form: modalState) =>
+    postCreateItem({
+      name: form.name as string,
+      totalQuantity: form.totalQuantity as string,
+      status: form.status as string,
+    }),
+};
 
-const selectReducer = (state:SelectState, action:SelectAction) => {
-  switch(action.type){
-    case 'CHANGE':
+const selectReducer = (state: SelectState, action: SelectAction) => {
+  switch (action.type) {
+    case "CHANGE":
       return {
         ...state,
-        [action.payload.key]:[action.payload.value]
-      }
-    case 'RESET':
+        [action.payload.key]: [action.payload.value],
+      };
+    case "RESET":
       return initialSelectForm;
   }
-}
+};
 
 const ItemManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; key:string, type: ModalInputTypesType }[] | null
+    { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
-  const [tableData, setTableData] = useState<UsageData[]|null>(null);
+  const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
 
-  useEffect(()=>{
-    if(isModalOpen===true)return;
+  useEffect(() => {
+    if (isModalOpen === true) return;
     const getTableData = async () => {
       const res = await getSearchCompanyItem();
-      if(res.pass){
-        setTableData(res.data)
+      if (res.pass) {
+        setTableData(res.data);
+      } else {
+        console.log("데이터 불러오기 실패");
       }
-      else {
-        console.log('데이터 불러오기 실패')
-      }
-    }
+    };
     getTableData();
-  },[isModalOpen])
+  }, [isModalOpen]);
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
@@ -115,7 +117,18 @@ const ItemManagementPage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">물품 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value as string | Date | null}})}/>
+              <CustomSelect
+                key={item.id}
+                type={item.type}
+                options={item.options}
+                value={selectForm[item.id]}
+                onChange={(value) =>
+                  selectDispatch({
+                    type: "CHANGE",
+                    payload: { key: item.id, value: value as string | Date | null },
+                  })
+                }
+              />
             ))}
           </div>
           <div className="flex gap-[10px]">

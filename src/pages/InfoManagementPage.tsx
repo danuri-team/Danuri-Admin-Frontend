@@ -24,11 +24,11 @@ const initialInfoForm: InfoState = {
 const infoReducer = (state: InfoState, action: InfoAction) => {
   switch (action.type) {
     case "CHANGE":
-      if(action.payload.key === 'phone'){
+      if (action.payload.key === "phone") {
         return {
           ...state,
-          [action.payload.key]: replacePhone(action.payload.value)
-        }
+          [action.payload.key]: replacePhone(action.payload.value),
+        };
       }
       return {
         ...state,
@@ -39,6 +39,7 @@ const infoReducer = (state: InfoState, action: InfoAction) => {
   }
 };
 
+//수정사항: 로그아웃 추가, API 연결
 const InfoManagementPage = () => {
   const [infoForm, infoDispatch] = useReducer(infoReducer, initialInfoForm);
 

@@ -20,6 +20,7 @@ const buttonIcon: Record<ButtonLabel, JSX.Element> = {
   삭제: <HiOutlineTrash size={20} />,
 };
 
+//수정사항: 각 아이콘의 굵기와 크기가 일관되지 않음 -> 최대한 같은 라이브러리의? 아이콘으로 수정
 const TableButton = ({ value, onClick }: TableButtonType) => {
   return (
     <button

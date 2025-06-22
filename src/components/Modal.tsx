@@ -7,9 +7,9 @@ import type { ModalSubmitFn } from "../pages/ItemManagementPage";
 type ModalType = {
   isOpen: boolean;
   title: string;
-  inputs: { label: string; key: string, type: ModalInputTypesType }[] | null;
+  inputs: { label: string; key: string; type: ModalInputTypesType }[] | null;
   onClose: () => void;
-  onSubmit: ModalSubmitFn
+  onSubmit: ModalSubmitFn;
 };
 
 type modalAction =
@@ -28,11 +28,11 @@ const modalReducer = (state: modalState, action: modalAction) => {
         ...state,
         [action.payload.key]: action.payload.value,
       };
-    case 'CHANGE_DATE': 
+    case "CHANGE_DATE":
       return {
         ...state,
-        [action.payload.key]: action.payload.value
-      }
+        [action.payload.key]: action.payload.value,
+      };
     case "RESET_ITEM":
       console.log(state);
       return {
@@ -50,18 +50,14 @@ const modalReducer = (state: modalState, action: modalAction) => {
 };
 
 const getInitialModalForm = (
-  inputs: { label: string; key:string, type: ModalInputTypesType }[] | null
+  inputs: { label: string; key: string; type: ModalInputTypesType }[] | null
 ): modalState => {
   if (!inputs) return {};
 
   const initialState: modalState = {};
   inputs.forEach((input) => {
     initialState[input.key] =
-      input.type === "date" || input.type === "time"
-        ? null
-        : input.type === "number"
-          ? 0
-          : '';
+      input.type === "date" || input.type === "time" ? null : input.type === "number" ? 0 : "";
   });
   return initialState;
 };
@@ -80,10 +76,9 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const onClickSubmitModal = async () => {
     console.log(modalForm);
     const res = await onSubmit(modalForm);
-    if(res.pass){
+    if (res.pass) {
       onClose();
-    }
-    else {
+    } else {
       console.log(res.data);
     }
   };

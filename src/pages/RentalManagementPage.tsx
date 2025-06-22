@@ -16,22 +16,22 @@ type filterSelectType = {
 };
 
 type SelectState = {
-  order: string,
-  useDate: Date | null,
-  age: string,
-  sex: string
-}
+  order: string;
+  useDate: Date | null;
+  age: string;
+  sex: string;
+};
 
-type SelectAction = 
-  | {type:'CHANGE', payload: {key: string, value:string | Date | null}}
-  | {type: 'RESET'}
+type SelectAction =
+  | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
+  | { type: "RESET" };
 
 const initialSelectForm: SelectState = {
-  order: '이용일순',
+  order: "이용일순",
   useDate: null,
-  age: '나이대',
-  sex: '성별'
-}
+  age: "나이대",
+  sex: "성별",
+};
 
 const tableHeader = [
   { name: "물품", id: "item_name" },
@@ -44,62 +44,63 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 'order', type: "select", options: ["이용일순"] },
-  { id: 'useDate', type: "date", options: ["이용일"] },
-  { id: 'age', type: "select", options: ["나이대",'중학생', '고등학생'] },
-  { id: 'sex', type: "select", options: ["성별", '남', '여'] },
+  { id: "order", type: "select", options: ["이용일순"] },
+  { id: "useDate", type: "date", options: ["이용일"] },
+  { id: "age", type: "select", options: ["나이대", "중학생", "고등학생"] },
+  { id: "sex", type: "select", options: ["성별", "남", "여"] },
 ];
 
-
-const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "물품", key: 'itemId', type: 'search' },
-    { label: "공간사용", key: 'usageId', type: 'search' },
-    { label: "대여 개수", key:'quantity',  type: "number" },
+    { label: "물품", key: "itemId", type: "search" },
+    { label: "공간사용", key: "usageId", type: "search" },
+    { label: "대여 개수", key: "quantity", type: "number" },
   ],
 };
 
-
-const selectReducer = (state:SelectState, action:SelectAction) => {
-  switch(action.type){
-    case 'CHANGE':
+const selectReducer = (state: SelectState, action: SelectAction) => {
+  switch (action.type) {
+    case "CHANGE":
       return {
         ...state,
-        [action.payload.key]:[action.payload.value]
-      }
-    case 'RESET':
+        [action.payload.key]: [action.payload.value],
+      };
+    case "RESET":
       return initialSelectForm;
   }
-}
-
+};
 
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form:modalState) => postCreateRental({itemId: form.itemId as string, quantity:form.quantity as number,  usageId:form.usageId as string})
-}
+  추가: (form: modalState) =>
+    postCreateRental({
+      itemId: form.itemId as string,
+      quantity: form.quantity as number,
+      usageId: form.usageId as string,
+    }),
+};
 
 const RentalManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; key:string, type: ModalInputTypesType }[] | null
+    { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
-  const [tableData, setTableData] = useState<UsageData[]|null>(null);
+  const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
 
   useEffect(() => {
-    if(isModalOpen===true)return;
+    if (isModalOpen === true) return;
     const getTableData = async () => {
       const res = await getSearchCompanyRental();
-      if(res.pass){
+      if (res.pass) {
         setTableData(res.data);
+      } else {
+        console.log("데이터 불러오기 실패");
       }
-      else {
-        console.log('데이터 불러오기 실패')
-      }
-    }
+    };
     getTableData();
-  }, [isModalOpen])
+  }, [isModalOpen]);
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
@@ -115,7 +116,6 @@ const RentalManagementPage = () => {
     setModalInputs(null);
   };
 
-
   return (
     <div className="w-full">
       <MainHeader />
@@ -125,7 +125,18 @@ const RentalManagementPage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">대여 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect key={item.id} type={item.type} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value as string | Date | null}})} />
+              <CustomSelect
+                key={item.id}
+                type={item.type}
+                options={item.options}
+                value={selectForm[item.id]}
+                onChange={(value) =>
+                  selectDispatch({
+                    type: "CHANGE",
+                    payload: { key: item.id, value: value as string | Date | null },
+                  })
+                }
+              />
             ))}
           </div>
           <div className="flex gap-[10px]">

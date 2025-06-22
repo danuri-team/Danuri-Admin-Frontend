@@ -7,17 +7,15 @@ type UsageSearchType = {
   userId: string | null;
 };
 
-
-
 //사용 기록 추가
 export const postCreateUsage = async (usageForm: UsageSearchType) => {
-  console.log(usageForm)
+  console.log(usageForm);
   try {
     const res = await PrivateAxios.post("/admin/usage", {
       user_id: usageForm.userId,
       space_id: usageForm.spaceId,
       start_at: usageForm.startDate,
-      end_at: usageForm.endDate
+      end_at: usageForm.endDate,
     });
     console.log(res.data);
     return { data: res.data, pass: true };
@@ -28,13 +26,13 @@ export const postCreateUsage = async (usageForm: UsageSearchType) => {
 
 //사용 기록 검색
 export const postUsageSearch = async (usageForm: UsageSearchType) => {
-  console.log('검색 api');
+  console.log("검색 api");
   try {
     const res = await PrivateAxios.post("/admin/usage/search", {
-      user_id: usageForm.userId=== '' ? null : usageForm.userId,
-      space_id: usageForm.spaceId=== '' ? null : usageForm.spaceId,
+      user_id: usageForm.userId === "" ? null : usageForm.userId,
+      space_id: usageForm.spaceId === "" ? null : usageForm.spaceId,
       start_date: usageForm.startDate,
-      end_date: usageForm.endDate
+      end_date: usageForm.endDate,
     });
     console.log(res.data);
     return { data: res.data, pass: true };
@@ -55,30 +53,33 @@ export const getUsageDetail = async ({ usageId }: { usageId: string }) => {
 
 //사용 기록 엑셀 내보내기
 export const postUsageExcel = async ({ startDate, endDate, spaceId, userId }: UsageSearchType) => {
-  console.log(startDate, endDate, spaceId, userId)
+  console.log(startDate, endDate, spaceId, userId);
   try {
-    const res = await PrivateAxios.post("/admin/usage/export", {
-      start_date: startDate,
-      end_date: endDate,
-      space_id: spaceId === '' ? null : spaceId,
-      user_id: userId === '' ? null : userId,
-    },{
-      responseType: 'blob'
-    });
+    const res = await PrivateAxios.post(
+      "/admin/usage/export",
+      {
+        start_date: startDate,
+        end_date: endDate,
+        space_id: spaceId === "" ? null : spaceId,
+        user_id: userId === "" ? null : userId,
+      },
+      {
+        responseType: "blob",
+      }
+    );
 
     const blob = new Blob([res.data]);
 
     const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
 
     link.href = url;
-    link.download = decodeURIComponent('export.xlsx')
+    link.download = decodeURIComponent("export.xlsx");
     link.click();
     window.URL.revokeObjectURL(url);
-    return {data: null, pass: true}
-
+    return { data: null, pass: true };
   } catch (error) {
-    console.log('다운로드 실패');
-    return {data: null, pass: false}
+    console.log("다운로드 실패", error);
+    return { data: null, pass: false };
   }
 };

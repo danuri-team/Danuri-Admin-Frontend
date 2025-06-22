@@ -101,7 +101,7 @@ const authSlice = createSlice({
         state.access_token = action.payload.access_token;
         state.refresh_token = action.payload.refresh_token;
         state.isLoading = false;
-        console.log('토큰 갱신');
+        console.log("토큰 갱신");
       })
       .addCase(refreshAccessToken.rejected, (state, action) => {
         state.access_token = null;

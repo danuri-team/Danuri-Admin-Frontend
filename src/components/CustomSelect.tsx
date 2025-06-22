@@ -7,10 +7,12 @@ import "../style/DatePicker.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 type CustomSelectType = {
-  type: "select" | "date" | "rangeDate",
-  options: string[],
-  value: string | Date | null | {startDate: Date|null, endDate: Date|null},
-  onChange: (value:string|Date|null|{startDate: Date|null, endDate: Date|null}) => void
+  type: "select" | "date" | "rangeDate";
+  options: string[];
+  value: string | Date | null | { startDate: Date | null; endDate: Date | null };
+  onChange: (
+    value: string | Date | null | { startDate: Date | null; endDate: Date | null }
+  ) => void;
 };
 
 const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
@@ -54,11 +56,10 @@ const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
         </>
       ) : (
         <div className="flex items-center text-danuri-text cursor-pointer">
-          {
-            type === 'date' ? (
+          {type === "date" ? (
             <DatePicker
               ref={datePickerRef}
-              className={`${value ? "w-[80px]" : 'w-[37px]'} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
+              className={`${value ? "w-[80px]" : "w-[37px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
               calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
               placeholderText={options[0]}
               selected={value as Date | null}
@@ -67,24 +68,33 @@ const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
                 if (date) onChange(date);
               }}
               dateFormat={"yyyy-MM-dd"}
-            />) : (
+            />
+          ) : (
             <DatePicker
               selectsRange
               ref={datePickerRef}
-              className={`${value && typeof value ==='object' && 'startDate' in value && value.startDate ? "w-[170px]" : 'w-[37px]' } outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
+              className={`${value && typeof value === "object" && "startDate" in value && value.startDate ? "w-[170px]" : "w-[37px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
               placeholderText={options[0]}
-              startDate={value && typeof value === 'object' && 'startDate' in value ? value.startDate as Date | null : null}
-              endDate={value && typeof value === 'object' && 'endDate' in value ? value.endDate as Date | null : null}
+              startDate={
+                value && typeof value === "object" && "startDate" in value
+                  ? (value.startDate as Date | null)
+                  : null
+              }
+              endDate={
+                value && typeof value === "object" && "endDate" in value
+                  ? (value.endDate as Date | null)
+                  : null
+              }
               locale={ko}
               onChange={(update) => {
                 if (update) {
-                  const value = {startDate: update[0], endDate: update[1] }
+                  const value = { startDate: update[0], endDate: update[1] };
                   onChange(value);
-                }}}
+                }
+              }}
               dateFormat={"yyyy-MM-dd"}
             />
-            )
-          }
+          )}
           <button onClick={() => datePickerRef.current?.setOpen(true)}>
             <IoChevronDown size={20} />
           </button>

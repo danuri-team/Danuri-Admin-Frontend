@@ -17,39 +17,43 @@ const tableHeader = [
   { name: "상태", id: "status" },
 ];
 
-const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "공간명", key: 'name', type: "text" },
-    { label: "시작시간", key: 'startTime', type: "time" },
-    { label: "종료시간", key: 'endTime', type: "time" },
+    { label: "공간명", key: "name", type: "text" },
+    { label: "시작시간", key: "startTime", type: "time" },
+    { label: "종료시간", key: "endTime", type: "time" },
   ],
 };
 
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form:modalState) => postCreateSpace({ name:form.name as string, startTime: formatDatetoTime(form.startTime as Date), endTime: formatDatetoTime(form.endTime as Date)})
-}
+  추가: (form: modalState) =>
+    postCreateSpace({
+      name: form.name as string,
+      startTime: formatDatetoTime(form.startTime as Date),
+      endTime: formatDatetoTime(form.endTime as Date),
+    }),
+};
 
 const SpaceManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; key:string, type: ModalInputTypesType }[] | null
+    { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
-  const [tableData, setTableData] = useState<UsageData[]|null>(null);
+  const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
-  useEffect(()=>{
-    if(isModalOpen===true)return;
+  useEffect(() => {
+    if (isModalOpen === true) return;
     const getTableData = async () => {
       const res = await getSearchCompanySpace();
-      if(res.pass){
-        setTableData(res.data)
+      if (res.pass) {
+        setTableData(res.data);
+      } else {
+        console.log("데이터 불러오기 실패");
       }
-      else {
-        console.log('데이터 불러오기 실패')
-      }
-    }
+    };
     getTableData();
-  },[isModalOpen])
+  }, [isModalOpen]);
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);

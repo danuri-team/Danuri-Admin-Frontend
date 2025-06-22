@@ -16,20 +16,20 @@ type filterSelectType = {
 };
 
 type SelectState = {
-  joinDate: Date | null,
-  age: string,
-  sex: string
-}
+  joinDate: Date | null;
+  age: string;
+  sex: string;
+};
 
-type SelectAction = 
-  | {type:'CHANGE', payload: {key: string, value:string | Date | null}}
-  | {type: 'RESET'}
+type SelectAction =
+  | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
+  | { type: "RESET" };
 
 const initialSelectForm: SelectState = {
   joinDate: null,
-  age: '나이대',
-  sex: '성별'
-}
+  age: "나이대",
+  sex: "성별",
+};
 
 const tableHeader = [
   { name: "이름", id: "name" },
@@ -41,45 +41,51 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 'joinDate', type: "date", options: ["가입일"] },
-  { id: 'age', type: "select", options: ["나이대",'중학생', '고등학생'] },
-  { id: 'sex', type: "select", options: ["성별", "남", "여"] },
+  { id: "joinDate", type: "date", options: ["가입일"] },
+  { id: "age", type: "select", options: ["나이대", "중학생", "고등학생"] },
+  { id: "sex", type: "select", options: ["성별", "남", "여"] },
 ];
 
-const inputOption: Record<string, { label: string; key:string, type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
   추가: [
-    { label: "이름", key:'name', type: "text" },
-    { label: "전화번호", key:'phone', type: "text" },
-    { label: "성별",key:'sex', type: "text" },
-    { label: "나이",key:'age', type: "text" },
+    { label: "이름", key: "name", type: "text" },
+    { label: "전화번호", key: "phone", type: "text" },
+    { label: "성별", key: "sex", type: "text" },
+    { label: "나이", key: "age", type: "text" },
   ],
 };
 
-const selectReducer = (state:SelectState, action:SelectAction) => {
-  switch(action.type){
-    case 'CHANGE':
+const selectReducer = (state: SelectState, action: SelectAction) => {
+  switch (action.type) {
+    case "CHANGE":
       return {
         ...state,
-        [action.payload.key]:[action.payload.value]
-      }
-    case 'RESET':
+        [action.payload.key]: [action.payload.value],
+      };
+    case "RESET":
       return initialSelectForm;
   }
-}
-
+};
 
 //company id는 임의 값
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form:modalState) => postCreateUser({company_id: "52515fd2-43e5-440b-9cc5-8630bc75954e", name:form.name as string, sex: form.sex as string, age: form.age as string, phone: form.phone as string})
-}
+  추가: (form: modalState) =>
+    postCreateUser({
+      company_id: "52515fd2-43e5-440b-9cc5-8630bc75954e",
+      name: form.name as string,
+      sex: form.sex as string,
+      age: form.age as string,
+      phone: form.phone as string,
+    }),
+};
 
 const UserManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; key:string, type: ModalInputTypesType }[] | null
+    { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
-  const [tableData, setTableData] = useState<UsageData[]|null>(null);
+  const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
 
@@ -98,19 +104,18 @@ const UserManagementPage = () => {
   };
 
   useEffect(() => {
-    if(isModalOpen===true)return;
+    if (isModalOpen === true) return;
     const getTableData = async () => {
       const res = await getSearchCompanyUser();
-      if(res.pass){
+      if (res.pass) {
         setTableData(res.data);
+      } else {
+        console.log("데이터 불러오기 실패");
       }
-      else {
-        console.log('데이터 불러오기 실패')
-      }
-    }
+    };
 
     getTableData();
-  }, [isModalOpen])
+  }, [isModalOpen]);
 
   return (
     <div className="w-full">
@@ -121,7 +126,18 @@ const UserManagementPage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">사용자 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect type={item.type} key={item.id} options={item.options} value={selectForm[item.id]} onChange={(value)=>selectDispatch({type:'CHANGE', payload: {key:item.id, value: value as string | Date | null}})}/>
+              <CustomSelect
+                type={item.type}
+                key={item.id}
+                options={item.options}
+                value={selectForm[item.id]}
+                onChange={(value) =>
+                  selectDispatch({
+                    type: "CHANGE",
+                    payload: { key: item.id, value: value as string | Date | null },
+                  })
+                }
+              />
             ))}
           </div>
           <div className="flex gap-[10px]">
