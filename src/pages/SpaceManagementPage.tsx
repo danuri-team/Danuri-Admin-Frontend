@@ -5,7 +5,7 @@ import MainHeader from "../components/MainHeader";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import TableButton from "../components/TableButton";
-import { getSearchCompanySpace, postCreateSpace } from "../api/SpaceAPI";
+import { getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../api/SpaceAPI";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 import { formatDatetoTime } from "../utils/dateFormat";
 
@@ -17,8 +17,14 @@ const tableHeader = [
   { name: "상태", id: "status" },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType,  initial?: string | number | Date, hide?: boolean }[]> = {
   추가: [
+    { label: "공간명", key: "name", type: "text" },
+    { label: "시작시간", key: "startTime", type: "time" },
+    { label: "종료시간", key: "endTime", type: "time" },
+  ],
+  수정: [
+    { label: "공간 ID", key: "spaceId", type: "text", hide: true },
     { label: "공간명", key: "name", type: "text" },
     { label: "시작시간", key: "startTime", type: "time" },
     { label: "종료시간", key: "endTime", type: "time" },
@@ -31,6 +37,13 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
       name: form.name as string,
       startTime: formatDatetoTime(form.startTime as Date),
       endTime: formatDatetoTime(form.endTime as Date),
+    }),
+  수정: (form: modalState) =>
+    putUpdateSpace({
+      spaceId: form.spaceId as string,
+      name: form.name as string,
+      startTime: formatDatetoTime(form.start_at as Date),
+      endTime: formatDatetoTime(form.end_at as Date),
     }),
 };
 
@@ -63,6 +76,18 @@ const SpaceManagementPage = () => {
     }
   };
 
+  const onClickTableRow = (row:UsageData) => {
+    setModalTitle('수정');
+    const addInitialInputs = inputOption['수정'].map((item) => {
+      return {
+        ...item,
+        initial: item.key==='spaceId' ? row.id : row[item.key]
+      }
+    })
+    setModalInputs(addInitialInputs);
+    setIsModalOpen(true);
+  }
+
   const onCloseModal = () => {
     setIsModalOpen(false);
     setModalTitle("");
@@ -83,7 +108,7 @@ const SpaceManagementPage = () => {
             <TableButton value="삭제" />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} />
+        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow}/>
       </div>
       {isModalOpen && (
         <Modal

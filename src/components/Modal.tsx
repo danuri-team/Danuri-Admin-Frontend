@@ -7,7 +7,7 @@ import type { ModalSubmitFn } from "../pages/ItemManagementPage";
 type ModalType = {
   isOpen: boolean;
   title: string;
-  inputs: { label: string; key: string; type: ModalInputTypesType }[] | null;
+  inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[] | null;
   onClose: () => void;
   onSubmit: ModalSubmitFn;
 };
@@ -50,14 +50,19 @@ const modalReducer = (state: modalState, action: modalAction) => {
 };
 
 const getInitialModalForm = (
-  inputs: { label: string; key: string; type: ModalInputTypesType }[] | null
+  inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date  }[] | null
 ): modalState => {
   if (!inputs) return {};
 
   const initialState: modalState = {};
   inputs.forEach((input) => {
-    initialState[input.key] =
-      input.type === "date" || input.type === "time" ? null : input.type === "number" ? 0 : "";
+    if(!input.initial){
+      initialState[input.key] =
+        input.type === "date" || input.type === "time" ? null : input.type === "number" ? 0 : "";
+    }
+    else {
+      initialState[input.key] = input.initial;
+    }
   });
   return initialState;
 };
@@ -95,8 +100,10 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
             <h2 className="text-lg font-semibold">{title}</h2>
           </div>
           <div className="p-[10px] mb-[15px]">
-            {inputs?.map((item) =>
-              item.type === "date" || item.type === "time" ? (
+            {inputs?.map((item) =>{
+              if(item.hide)return;
+              
+              return item.type === "date" || item.type === "time" ? (
                 <ModalInput
                   key={item.label}
                   label={item.label}
@@ -132,7 +139,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                   }
                 />
               )
-            )}
+            })}
           </div>
           <CustomButton value={title} onClick={() => onClickSubmitModal()} />
         </div>

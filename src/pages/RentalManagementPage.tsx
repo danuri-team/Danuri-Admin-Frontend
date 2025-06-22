@@ -6,7 +6,7 @@ import MainHeader from "../components/MainHeader";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import TableButton from "../components/TableButton";
-import { getSearchCompanyRental, postCreateRental } from "../api/RentalAPI";
+import { getSearchCompanyRental, postCreateRental, putUpdateRental } from "../api/RentalAPI";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
 type filterSelectType = {
@@ -50,11 +50,17 @@ const filterSelects: filterSelectType[] = [
   { id: "sex", type: "select", options: ["성별", "남", "여"] },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
   추가: [
     { label: "물품", key: "itemId", type: "search" },
     { label: "공간사용", key: "usageId", type: "search" },
     { label: "대여 개수", key: "quantity", type: "number" },
+  ],
+  수정: [
+    { label: "대여 ID", key: "rentalId", type: "text", hide: true},
+    { label: "대여 개수", key: "quantity", type: "number" },
+    { label: "반납 개수", key: "returned_quantity", type: "number" },
+    { label: "상태", key: "status", type: "text" },
   ],
 };
 
@@ -76,6 +82,13 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
       itemId: form.itemId as string,
       quantity: form.quantity as number,
       usageId: form.usageId as string,
+    }),
+  수정: (form: modalState) =>
+    putUpdateRental({
+      rentalId: form.rental_id as string,
+      quantity: form.quantity as number,
+      returnedQuantity: form.returned_quantity as number,
+      status: form.status as string,
     }),
 };
 
@@ -110,6 +123,18 @@ const RentalManagementPage = () => {
     }
   };
 
+  const onClickTableRow = (row:UsageData) => {
+    setModalTitle('수정');
+    const addInitialInputs = inputOption['수정'].map((item) => {
+      return {
+        ...item,
+        initial: item.key==='rentalId' ? row.rental_id : row[item.key]
+      }
+    })
+    setModalInputs(addInitialInputs);
+    setIsModalOpen(true);
+  }
+
   const onCloseModal = () => {
     setIsModalOpen(false);
     setModalTitle("");
@@ -143,7 +168,7 @@ const RentalManagementPage = () => {
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} />
+        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} />
       </div>
       {isModalOpen && (
         <Modal

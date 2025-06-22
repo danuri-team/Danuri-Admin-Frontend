@@ -23,7 +23,7 @@ export const postCreateRental = async ({
 };
 
 //사내 대여 수정
-export const putUpdateRetal = async ({
+export const putUpdateRental = async ({
   rentalId,
   quantity,
   returnedQuantity,

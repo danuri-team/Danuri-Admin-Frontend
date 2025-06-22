@@ -34,6 +34,7 @@ export const putUpdateItem = async ({
   totalQuantity: string;
   status: string;
 }) => {
+  console.log(itemId, name, totalQuantity, status)
   try {
     const res = await PrivateAxios.put(`/admin/items/${itemId}`, {
       name,

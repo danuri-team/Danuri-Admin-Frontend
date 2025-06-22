@@ -18,7 +18,7 @@ type HeaderType = {
   id: string;
 };
 
-const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[] | null }) => {
+const CustomTable = ({ header, data, rowUpdate }: { header: HeaderType[]; data: UsageData[] | null, rowUpdate?: (row:UsageData) => void  | undefined }) => {
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
     header: item.name,
@@ -122,7 +122,11 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="border-b-1 border-gray-200">
+            <tr 
+              key={row.id} 
+              className={`${rowUpdate ? 'cursor-pointer hover:bg-danuri-100' : undefined} border-b-1 border-gray-200`}
+              onClick={()=>{if(rowUpdate)rowUpdate(row.original)}}
+              >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="p-[10px] text-sm text-wrap">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

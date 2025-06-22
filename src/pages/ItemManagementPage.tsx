@@ -6,7 +6,7 @@ import CustomSelect from "../components/CustomSelect";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
-import { getSearchCompanyItem, postCreateItem } from "../api/ItemAPI";
+import { getSearchCompanyItem, postCreateItem, putUpdateItem } from "../api/ItemAPI";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -24,7 +24,7 @@ type SelectAction =
 
 export type modalState = Record<string, Date | string | number | null>;
 
-export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
+export type ModalSubmitFn = (form: modalState, itemId?: string) => Promise<{ data: unknown; pass: boolean }>;
 
 const initialSelectForm: SelectState = {
   order: "재고순",
@@ -42,14 +42,21 @@ const filterSelects: filterSelectType[] = [
   { id: "order", type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
   추가: [
     { label: "물품", key: "name", type: "text" },
     { label: "총 수량", key: "totalQuantity", type: "number" },
     { label: "상태", key: "status", type: "text" },
   ],
+  수정: [
+    { label: "물품 ID", key: "itemId", type: "text", hide: true },
+    { label: "물품", key: "name", type: "text" },
+    { label: "총 수량", key: "total_quantity", type: "number" },
+    { label: "상태", key: "status", type: "text" },
+  ],
 };
 
+//모달 Submit 함수
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
   추가: (form: modalState) =>
     postCreateItem({
@@ -57,6 +64,13 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
       totalQuantity: form.totalQuantity as string,
       status: form.status as string,
     }),
+  수정: (form: modalState) => 
+    putUpdateItem({
+      itemId: form.itemId as string, 
+      name: form.name as string, 
+      totalQuantity: form.total_quantity as string,
+      status: form.status as string,
+    })
 };
 
 const selectReducer = (state: SelectState, action: SelectAction) => {
@@ -95,12 +109,24 @@ const ItemManagementPage = () => {
   }, [isModalOpen]);
 
   const onClickTableButton = ({ value }: { value: string }) => {
-    setIsModalOpen(true);
     setModalTitle(value);
     if (inputOption[value]) {
       setModalInputs(inputOption[value]);
     }
+    setIsModalOpen(true);
   };
+
+  const onClickTableRow = (row:UsageData) => {
+    setModalTitle('수정');
+    const addInitialInputs = inputOption['수정'].map((item) => {
+      return {
+        ...item,
+        initial: item.key==='itemId' ? row.id : row[item.key]
+      }
+    })
+    setModalInputs(addInitialInputs);
+    setIsModalOpen(true);
+  }
 
   const onCloseModal = () => {
     setIsModalOpen(false);
@@ -133,10 +159,10 @@ const ItemManagementPage = () => {
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="검색" onClick={() => onClickTableButton({ value: "검색" })} />
+            <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} />
+        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow}/>
       </div>
       {isModalOpen && (
         <Modal
