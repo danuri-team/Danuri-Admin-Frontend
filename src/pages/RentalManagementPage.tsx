@@ -17,9 +17,8 @@ type filterSelectType = {
 
 type SelectState = {
   order: string;
-  useDate: Date | null;
-  age: string;
-  sex: string;
+  rentalDate: Date | null;
+  returnDate: Date | null;
 };
 
 type SelectAction =
@@ -27,10 +26,9 @@ type SelectAction =
   | { type: "RESET" };
 
 const initialSelectForm: SelectState = {
-  order: "이용일순",
-  useDate: null,
-  age: "나이대",
-  sex: "성별",
+  order: "처리 여부",
+  rentalDate: null,
+  returnDate: null,
 };
 
 const tableHeader = [
@@ -44,10 +42,9 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: "order", type: "select", options: ["이용일순"] },
-  { id: "useDate", type: "date", options: ["이용일"] },
-  { id: "age", type: "select", options: ["나이대", "중학생", "고등학생"] },
-  { id: "sex", type: "select", options: ["성별", "남", "여"] },
+  { id: "order", type: "select", options: ["처리 여부"] },
+  { id: "rentalDate", type: "date", options: ["대여일"] },
+  { id: "returnDate", type: "date", options: ["반납일"] },
 ];
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
