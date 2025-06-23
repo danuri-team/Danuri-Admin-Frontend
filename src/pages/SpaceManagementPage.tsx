@@ -42,8 +42,8 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
     putUpdateSpace({
       spaceId: form.spaceId as string,
       name: form.name as string,
-      startTime: formatDatetoTime(form.start_at as Date),
-      endTime: formatDatetoTime(form.end_at as Date),
+      startTime: formatDatetoTime(form.startTime as Date),
+      endTime: formatDatetoTime(form.endTime as Date),
     }),
 };
 
