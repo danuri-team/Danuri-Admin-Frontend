@@ -4,16 +4,19 @@ import { PrivateAxios } from "./PrivateAxios";
 export const postCreateItem = async ({
   name,
   totalQuantity,
+  availableQuantity,
   status,
 }: {
   name: string;
   totalQuantity: string;
+  availableQuantity:string;
   status: string;
 }) => {
   try {
     const res = await PrivateAxios.post("/admin/items", {
       name,
       total_quantity: totalQuantity,
+      available_quantity:availableQuantity,
       status,
     });
     return { data: res, pass: true };

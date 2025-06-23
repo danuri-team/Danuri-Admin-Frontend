@@ -18,7 +18,16 @@ type HeaderType = {
   id: string;
 };
 
-const CustomTable = ({ header, data, rowUpdate }: { header: HeaderType[]; data: UsageData[] | null, rowUpdate?: (row:UsageData) => void  | undefined }) => {
+type CustomTable = {
+  header: HeaderType[]; 
+  data: UsageData[] | null, 
+  rowUpdate?: (row:UsageData) => void  | undefined 
+  isDeleteMode?: boolean,
+  changeSelectedRow?: ({id}:{id:string}) => void,
+  selectedRowId?: string
+}
+
+const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow, selectedRowId }:CustomTable) => {
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
     header: item.name,
@@ -110,6 +119,11 @@ const CustomTable = ({ header, data, rowUpdate }: { header: HeaderType[]; data: 
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="border-b-1 border-gray-200 bg-gray-100 text-left">
+              {
+                isDeleteMode && (
+                  <th className="p-[10px]"></th>
+                )
+              }
               {headerGroup.headers.map((header) => (
                 <th key={header.id} className="text-sm font-medium p-[10px]">
                   {header.isPlaceholder
@@ -127,6 +141,18 @@ const CustomTable = ({ header, data, rowUpdate }: { header: HeaderType[]; data: 
               className={`${rowUpdate ? 'cursor-pointer hover:bg-danuri-100' : undefined} border-b-1 border-gray-200`}
               onClick={()=>{if(rowUpdate)rowUpdate(row.original)}}
               >
+              {
+                isDeleteMode && (
+                  <td className="p-[10px]">
+                    <input 
+                      className="cursor-pointer appearance-none w-[15px] h-[15px] border-1 rounded-sm border-gray-300 checked:border-danuri-500 checked:bg-danuri-500" 
+                      type="radio" 
+                      checked={row.original.id===selectedRowId} 
+                      onClick={(e)=>e.stopPropagation()} 
+                      onChange={()=>changeSelectedRow?.({id:row.original.id as string})} />
+                  </td>
+                )
+              }
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="p-[10px] text-sm text-wrap">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

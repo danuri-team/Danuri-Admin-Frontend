@@ -5,7 +5,7 @@ import MainHeader from "../components/MainHeader";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import TableButton from "../components/TableButton";
-import { getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../api/SpaceAPI";
+import { deleteSpace, getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../api/SpaceAPI";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 import { formatDatetoTime } from "../utils/dateFormat";
 
@@ -55,6 +55,9 @@ const SpaceManagementPage = () => {
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
+  const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
+  const [selectedRowId, setSelectedRowId] = useState<string>('');
+
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
@@ -66,15 +69,36 @@ const SpaceManagementPage = () => {
       }
     };
     getTableData();
-  }, [isModalOpen]);
+  }, [isModalOpen, isDeleteMode]);
+
+  const changeSelectedRow = ({id}:{id:string}) => {
+    setSelectedRowId(id);
+  }
 
   const onClickTableButton = ({ value }: { value: string }) => {
+    if(value==='삭제'){
+      onClickDeleteButton();
+      return;
+    }
     setIsModalOpen(true);
     setModalTitle(value);
     if (inputOption[value]) {
       setModalInputs(inputOption[value]);
     }
   };
+
+  const onClickDeleteButton = async () => {
+    if(!isDeleteMode){
+      setIsDeleteMode(true);
+    }
+    else {
+      if(!selectedRowId)console.log('선택없음');
+      const res = await deleteSpace({spaceId: selectedRowId});
+      if(res.pass){
+        setIsDeleteMode(false);
+      }
+    }
+  }
 
   const onClickTableRow = (row:UsageData) => {
     setModalTitle('수정');
@@ -105,10 +129,10 @@ const SpaceManagementPage = () => {
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="삭제" />
+            <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow}/>
+        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow}isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
       </div>
       {isModalOpen && (
         <Modal

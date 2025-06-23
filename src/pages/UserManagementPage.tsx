@@ -6,7 +6,7 @@ import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
-import { getSearchCompanyUser, postCreateUser, putUpdateUser } from "../api/UserAPI";
+import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from "../api/UserAPI";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
 type filterSelectType = {
@@ -102,15 +102,39 @@ const UserManagementPage = () => {
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
+  const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
+  const [selectedRowId, setSelectedRowId] = useState<string>('');
+
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
 
+  const changeSelectedRow = ({id}:{id:string}) => {
+    setSelectedRowId(id);
+  }
+
   const onClickTableButton = ({ value }: { value: string }) => {
+    if(value==='삭제'){
+      onClickDeleteButton();
+      return;
+    }
     setIsModalOpen(true);
     setModalTitle(value);
     if (inputOption[value]) {
       setModalInputs(inputOption[value]);
     }
   };
+
+  const onClickDeleteButton = async () => {
+    if(!isDeleteMode){
+      setIsDeleteMode(true);
+    }
+    else {
+      if(!selectedRowId)console.log('선택없음');
+      const res = await deleteUser({userId: selectedRowId});
+      if(res.pass){
+        setIsDeleteMode(false);
+      }
+    }
+  }
 
   const onClickTableRow = (row:UsageData) => {
     setModalTitle('수정');
@@ -142,7 +166,7 @@ const UserManagementPage = () => {
     };
 
     getTableData();
-  }, [isModalOpen]);
+  }, [isModalOpen, isDeleteMode]);
 
   return (
     <div className="w-full">
@@ -170,10 +194,10 @@ const UserManagementPage = () => {
           <div className="flex gap-[10px]">
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
             <TableButton value="검색" />
-            <TableButton value="삭제" />
+            <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })}/>
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} />
+        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId} />
       </div>
       {isModalOpen && (
         <Modal
