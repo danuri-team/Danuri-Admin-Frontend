@@ -9,6 +9,7 @@ import Modal from "../components/Modal";
 import { postCreateUsage, postUsageExcel, postUsageSearch } from "../api/UsageAPI";
 import { formatDatetoISOString } from "../utils/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
+import { useNavigate } from "react-router-dom";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -136,6 +137,8 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
 };
 
 const UsagePage = () => {
+  const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
@@ -238,7 +241,7 @@ const UsagePage = () => {
               value="다운로드"
               onClick={() => onClickTableButton({ value: "다운로드" })}
             />
-            <TableButton value="대여관리" />
+            <TableButton value="대여관리" onClick={()=>navigate('/rental') }/>
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
           </div>
         </div>
