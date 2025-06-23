@@ -6,7 +6,7 @@ import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
-import { getSearchCompanyUser, postCreateUser } from "../api/UserAPI";
+import { getSearchCompanyUser, postCreateUser, putUpdateUser } from "../api/UserAPI";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 
 type filterSelectType = {
@@ -46,8 +46,15 @@ const filterSelects: filterSelectType[] = [
   { id: "sex", type: "select", options: ["성별", "남", "여"] },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
   추가: [
+    { label: "이름", key: "name", type: "text" },
+    { label: "전화번호", key: "phone", type: "text" },
+    { label: "성별", key: "sex", type: "text" },
+    { label: "나이", key: "age", type: "text" },
+  ],
+  수정: [
+    { label: "사용자 ID", key: "id", type: "text", hide:true },
     { label: "이름", key: "name", type: "text" },
     { label: "전화번호", key: "phone", type: "text" },
     { label: "성별", key: "sex", type: "text" },
@@ -77,6 +84,14 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
       age: form.age as string,
       phone: form.phone as string,
     }),
+  수정: (form: modalState) =>
+    putUpdateUser({
+      userId: form.id as string,
+      name: form.name as string,
+      sex: form.sex as string,
+      age: form.age as string,
+      phone: form.phone as string,
+    }),
 };
 
 const UserManagementPage = () => {
@@ -96,6 +111,18 @@ const UserManagementPage = () => {
       setModalInputs(inputOption[value]);
     }
   };
+
+  const onClickTableRow = (row:UsageData) => {
+    setModalTitle('수정');
+    const addInitialInputs = inputOption['수정'].map((item) => {
+      return {
+        ...item,
+        initial: item.key==='itemId' ? row.id : row[item.key]
+      }
+    })
+    setModalInputs(addInitialInputs);
+    setIsModalOpen(true);
+  }
 
   const onCloseModal = () => {
     setIsModalOpen(false);
@@ -146,7 +173,7 @@ const UserManagementPage = () => {
             <TableButton value="삭제" />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} />
+        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} />
       </div>
       {isModalOpen && (
         <Modal
