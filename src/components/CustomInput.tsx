@@ -7,9 +7,10 @@ type CustomInputType = {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   valid?: boolean;
+  disabled?:boolean
 };
 
-const CustomInput = ({ label, value, onChange, valid }: CustomInputType) => {
+const CustomInput = ({ label, value, onChange, valid, disabled }: CustomInputType) => {
   const [isFocus, setIsFocus] = useState<boolean>(false);
   return (
     <div className="mb-[30px]">
@@ -18,6 +19,7 @@ const CustomInput = ({ label, value, onChange, valid }: CustomInputType) => {
         className={`${value.length > 0 && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[13px] w-full min-w-xs`}
       >
         <input
+          disabled={disabled}
           className="outline-none w-full placeholder:text-gray-300"
           type={label === "비밀번호" ? "password" : "text"}
           placeholder={`${label}를 입력해주세요`}
