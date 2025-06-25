@@ -51,7 +51,7 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
     { label: "대여 ID", key: "rentalId", type: "text", hide: true},
     { label: "대여 개수", key: "quantity", type: "number" },
     { label: "반납 개수", key: "returned_quantity", type: "number" },
-    { label: "상태", key: "status", type: "text" },
+    { label: "상태", key: "status", type: "option" },
   ],
 };
 

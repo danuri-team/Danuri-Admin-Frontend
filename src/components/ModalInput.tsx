@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { IoCloseCircleSharp } from "react-icons/io5";
 import { getSearchTerm, type SearchLabel } from "../utils/searchTermOption";
+import { useLocation } from "react-router-dom";
+import { changeEnumtoText, selectStatusOption } from "../utils/StatusSelectOption";
 
-export type ModalInputTypesType = "search" | "date" | "time" | "text" | "number";
+export type ModalInputTypesType = "search" | "date" | "time" | "text" | "number" | "option";
 
 type ModalInputType =
   | {
@@ -16,16 +18,20 @@ type ModalInputType =
     }
   | {
       label: string;
-      type: "search" | "text" | "number";
+      type: "search" | "text" | "number" | "option";
       value: string | number;
       resetValue?: () => void;
       onChange: (value: string | number) => void;
     };
 
 const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType) => {
+  const location = useLocation();
+
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerms, setSearchTerms] = useState<{ name: string; id: string }[]>([]);
   const [isFocus, setIsFocus] = useState<boolean>(false);
+
+  const options = selectStatusOption(location.pathname as string, label);
 
   useEffect(() => {
     if (type !== "search") return;
@@ -93,6 +99,31 @@ const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType
             )
           }
         </div>
+      ) : type==='option' ? (
+        <div className="relative">
+          <button 
+            className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[10px]`}
+            onClick={()=>setIsFocus(true)}
+            onBlur={()=>setIsFocus(false)}
+            >{changeEnumtoText(value as string)}</button>
+          {
+            isFocus && options && (
+            <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[10px] bg-white mt-[10px] z-1">
+            {
+              options.map((option)=>(
+                <li
+                    className={`cursor-pointer hover:bg-gray-100 p-[3px] rounded-sm`}
+                    onMouseDown={()=>onChange(option.value)}
+                    key={option.value}
+                  >
+                    {option.name}
+                  </li>
+              ))
+            }
+            </ul>
+            )}
+        </div>
+
       ) : type === "date" || type === "time" ? (
         <DatePicker
           className={`${isFocus ? "border-blue-400" : "border-gray-200"} w-full border-1 rounded-xl p-[10px] outline-none`}

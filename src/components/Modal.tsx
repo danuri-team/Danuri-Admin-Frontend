@@ -23,7 +23,12 @@ type modalState = Record<string, Date | string | number | null>;
 const modalReducer = (state: modalState, action: modalAction) => {
   switch (action.type) {
     case "CHANGE":
-      console.log(state);
+      if(action.payload.key==='available_quantity' && (state.total_quantity as number) < (action.payload.value as number)){
+        return {...state};
+      }
+      if(action.payload.key==='returned_quantity' && (state.quantity as number) < (action.payload.value as number)){
+        return {...state};
+      }
       return {
         ...state,
         [action.payload.key]: action.payload.value,

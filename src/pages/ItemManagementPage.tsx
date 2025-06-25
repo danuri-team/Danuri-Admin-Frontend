@@ -53,7 +53,7 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
     { label: "물품", key: "name", type: "text" },
     { label: "총 수량", key: "total_quantity", type: "number" },
     { label: "이용 가능 개수", key: "available_quantity", type: "number" },
-    { label: "상태", key: "status", type: "text" },
+    { label: "상태", key: "status", type: "option" },
   ],
 };
 
