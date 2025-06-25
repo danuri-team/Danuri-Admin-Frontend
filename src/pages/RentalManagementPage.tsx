@@ -43,8 +43,6 @@ const tableHeader = [
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
   { id: "order", type: "select", options: ["처리 여부"] },
-  { id: "rentalDate", type: "date", options: ["대여일"] },
-  { id: "returnDate", type: "date", options: ["반납일"] },
 ];
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {

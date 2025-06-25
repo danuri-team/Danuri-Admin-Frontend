@@ -10,6 +10,7 @@ import { postCreateUsage, postUsageExcel, postUsageSearch } from "../api/UsageAP
 import { formatDatetoISOString } from "../utils/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
 import { useNavigate } from "react-router-dom";
+import { isAfter, isBefore } from "date-fns";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -67,8 +68,6 @@ const tableHeader = [
 const filterSelects: filterSelectType[] = [
   { id: "order", type: "select", options: ["이용일순", "상태순"] },
   { id: "useDate", type: "rangeDate", options: ["이용일"] },
-  { id: "age", type: "select", options: ["나이대", "중학생", "고등학생"] },
-  { id: "sex", type: "select", options: ["성별", "남", "여"] },
 ];
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
@@ -92,7 +91,7 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
       console.log(state);
       return {
         ...state,
-        [action.payload.key]: [action.payload.value],
+        [action.payload.key]: action.payload.value,
       };
     case "CHANGE_RANGE":
       return {
@@ -177,6 +176,24 @@ const UsagePage = () => {
     };
     getTableData();
   }, [usageForm, isModalOpen]);
+
+  useEffect(()=>{
+    if(!tableData)return
+    const sortTableData = [...tableData].sort((a,b) => {
+      if(selectForm.order==='이용일순'){
+        if(isBefore(new Date(a.start_at as string), new Date(b.start_at as string)))return -1;
+        else return 1;
+      }
+      else {
+        const aStatus = isBefore(new Date(a.start_at as string), new Date()) && isAfter(new Date(a.end_at as string), new Date());
+        const bStatus = isBefore(new Date(b.start_at as string), new Date()) && isAfter(new Date(b.end_at as string), new Date());
+        if(aStatus&&!bStatus)return -1;
+        else if(!aStatus&&bStatus)return 1;
+        else return 0;
+      }
+    })
+    setTableData(sortTableData)
+  },[selectForm])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);

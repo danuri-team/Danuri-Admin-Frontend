@@ -82,7 +82,7 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
     case "CHANGE":
       return {
         ...state,
-        [action.payload.key]: [action.payload.value],
+        [action.payload.key]: action.payload.value,
       };
     case "RESET":
       return initialSelectForm;
