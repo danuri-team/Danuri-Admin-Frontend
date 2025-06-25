@@ -7,7 +7,7 @@ import type { ModalInputTypesType } from "../components/ModalInput";
 import TableButton from "../components/TableButton";
 import { deleteSpace, getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../api/SpaceAPI";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
-import { formatDatetoTime } from "../utils/dateFormat";
+import { formatDatetoTime, formatTimetoDate } from "../utils/dateFormat";
 
 const tableHeader = [
   { name: "공간명", id: "name" },
@@ -105,7 +105,7 @@ const SpaceManagementPage = () => {
     const addInitialInputs = inputOption['수정'].map((item) => {
       return {
         ...item,
-        initial: item.key==='spaceId' ? row.id : row[item.key]
+        initial: item.key==='spaceId' ? row.id : item.key==='startTime' ? formatTimetoDate(row.start_at as number[]) : item.key==='endTime' ? formatTimetoDate(row.end_at as number[]) : row[item.key],
       }
     })
     setModalInputs(addInitialInputs);

@@ -7,8 +7,8 @@ export const formatDatetoTime = (date: Date) => {
   return format(date, "HH:mm:ss").toString();
 };
 
-export const formatTimetoDate = (time: string) => {
-  return set(new Date(), {hours: Number(time.substring(0,1)), minutes:Number(time.substring(3,4)), seconds:Number(time.substring(6,7))})
+export const formatTimetoDate = (time: number[]) => {
+  return set(new Date(), {hours:time[0], minutes:time[1], seconds:time[2]})
 }
 
 export const isFutureDate = (date: string) => {
