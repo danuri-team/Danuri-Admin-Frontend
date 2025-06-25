@@ -8,8 +8,8 @@ type ModalType = {
   isOpen: boolean;
   title: string;
   inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[] | null;
-  onClose: () => void;
-  onSubmit: ModalSubmitFn;
+  onClose: () => void; 
+  onSubmit: ModalSubmitFn | ((form:modalState) => void);
 };
 
 type modalAction =
@@ -85,7 +85,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
 
   const onClickSubmitModal = async () => {
     console.log(modalForm);
-    const res = await onSubmit(modalForm);
+    const res = await onSubmit(modalForm) as { data: unknown; pass: boolean; }
     if (res.pass) {
       onClose();
     } else {
@@ -146,7 +146,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
               )
             })}
           </div>
-          <CustomButton value={title} onClick={() => onClickSubmitModal()} />
+          <CustomButton value={title} onClick={title==='검색' ? ()=> {onSubmit(modalForm); onClose()} : (() => onClickSubmitModal()) as ()=>void} />
         </div>
       )}
     </div>

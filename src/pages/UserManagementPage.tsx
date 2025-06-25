@@ -61,6 +61,12 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
     { label: "성별", key: "sex", type: "option" },
     { label: "나이", key: "age", type: "option" },
   ],
+  검색: [
+    { label: "이름", key: "name", type: "text" },
+    { label: "전화번호", key: "phone", type: "text" },
+    { label: "성별", key: "sex", type: "option" },
+    { label: "나이", key: "age", type: "option" },
+  ],
 };
 
 const selectReducer = (state: SelectState, action: SelectAction) => {
@@ -110,7 +116,8 @@ const UserManagementPage = () => {
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
   
   useEffect(() => {
-    if (isModalOpen === true) return;
+    if (isModalOpen === true || modalTitle==='검색') return;
+    setModalTitle("");
     const getTableData = async () => {
       const res = await getSearchCompanyUser();
       if (res.pass) {
@@ -139,6 +146,19 @@ const UserManagementPage = () => {
 
   const changeSelectedRow = ({id}:{id:string}) => {
     setSelectedRowId(id);
+  }
+
+  const searchTableData = (form:modalState) => {
+    if(!tableData)return;
+    const searchData = tableData.filter((item)=>{
+      const searchName = !form.name || form.name === item.name;
+      const searchPhone = !form.phone || form.phone === item.phone;
+      const searchSex = !form.sex || form.sex === item.sex;
+      const searchAge = !form.age || form.age === item.age;
+
+      return searchName && searchPhone && searchSex && searchAge;
+    })
+    setFilterData(searchData);
   }
 
   const onClickTableButton = ({ value }: { value: string }) => {
@@ -180,7 +200,6 @@ const UserManagementPage = () => {
 
   const onCloseModal = () => {
     setIsModalOpen(false);
-    setModalTitle("");
     setModalInputs(null);
   };
 
@@ -210,7 +229,7 @@ const UserManagementPage = () => {
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="검색" />
+            <TableButton value="검색" onClick={() => onClickTableButton({ value: "검색" })}/>
             <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode}/>
           </div>
         </div>
@@ -222,7 +241,7 @@ const UserManagementPage = () => {
           title={modalTitle}
           inputs={modalInputs}
           onClose={onCloseModal}
-          onSubmit={modalSubmitFn[modalTitle]}
+          onSubmit={modalTitle!=='검색' ? modalSubmitFn[modalTitle] : (form:modalState)=>searchTableData(form)}
         />
       )}
     </div>

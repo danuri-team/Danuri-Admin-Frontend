@@ -24,7 +24,7 @@ type SelectAction =
 
 export type modalState = Record<string, Date | string | number | null>;
 
-export type ModalSubmitFn = (form: modalState,) => Promise<{ data: unknown; pass: boolean }>;
+export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
 
 const initialSelectForm: SelectState = {
   order: "재고순",
