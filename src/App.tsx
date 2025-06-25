@@ -8,13 +8,16 @@ import SignupPage from "./pages/SignupPage";
 import SpaceManagementPage from "./pages/SpaceManagementPage";
 import RentalManagementPage from "./pages/RentalManagementPage";
 import RequireLogin from "./components/RequireLogin";
+import GuestGuard from "./components/GuestGuard";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to={"/auth/login"} replace />} />
-      <Route path="/auth/login" element={<LoginPage />} />
-      <Route path="/auth/signup" element={<SignupPage />} />
+      <Route element={<GuestGuard />}>
+        <Route path="/auth/login" element={<LoginPage />} />
+        <Route path="/auth/signup" element={<SignupPage />} />
+      </Route>
 
       <Route element={<RequireLogin />}>
         <Route path="/usage" element={<UsagePage />} />
