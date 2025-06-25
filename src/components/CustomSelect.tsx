@@ -60,7 +60,7 @@ const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
           {type === "date" ? (
             <DatePicker
               ref={datePickerRef}
-              className={`${value ? "w-[80px]" : "w-[37px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
+              className={`${value ? "w-[80px]" : "w-[37px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out cursor-pointer`}
               calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
               placeholderText={options[0]}
               selected={value as Date | null}
@@ -74,7 +74,7 @@ const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
             <DatePicker
               selectsRange
               ref={datePickerRef}
-              className={`${value && typeof value === "object" && "startDate" in value && value.startDate ? "w-[170px]" : "w-[37px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out`}
+              className={`${value && typeof value === "object" && "startDate" in value && value.startDate ? "w-[170px]" : "w-[37px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out cursor-pointer caret-transparent`}
               placeholderText={options[0]}
               startDate={
                 value && typeof value === "object" && "startDate" in value

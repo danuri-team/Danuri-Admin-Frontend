@@ -11,4 +11,5 @@
 
 * {
   font-family: "Pretendard", sans-serif;
+  user-select: none;
 }
