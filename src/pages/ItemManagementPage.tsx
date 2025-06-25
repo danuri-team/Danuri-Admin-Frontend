@@ -46,7 +46,6 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
   추가: [
     { label: "물품", key: "name", type: "text" },
     { label: "총 수량", key: "totalQuantity", type: "number" },
-    { label: "이용 가능 개수", key: "available_quantity", type: "number" },
     { label: "상태", key: "status", type: "text" },
   ],
   수정: [
@@ -64,7 +63,7 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
     postCreateItem({
       name: form.name as string,
       totalQuantity: form.totalQuantity as string,
-      availableQuantity: form.available_quantity as string,
+      availableQuantity: '',
       status: form.status as string,
     }),
   수정: (form: modalState) => 
@@ -114,6 +113,24 @@ const ItemManagementPage = () => {
     };
     getTableData();
   }, [isModalOpen, isDeleteMode]);
+
+  useEffect(()=>{
+    if(!tableData)return
+    const sortTableData = [...tableData].sort((a,b) => {
+      if(selectForm.order==='재고순'){
+        return (a.available_quantity as number) - (b.available_quantity as number);
+      }
+      else if(selectForm.order==='이름순'){
+        return (a.name as string).localeCompare(b.name as string);
+      }
+      else {
+        if(a.status==='AVAILABLE'&&b.status!=='AVAILABLE')return -1;
+        else if(a.status!=='AVAILABLE'&&b.status==='AVAILABLE')return 1;
+        else return 0;
+      }
+    })
+    setTableData(sortTableData)
+  },[selectForm])
 
   const changeSelectedRow = ({id}:{id:string}) => {
     setSelectedRowId(id);
