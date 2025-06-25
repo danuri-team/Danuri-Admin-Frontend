@@ -16,7 +16,6 @@ type CustomSelectType = {
 };
 
 const CustomSelect = ({ type, options, value, onChange }: CustomSelectType) => {
-  console.log(value);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const datePickerRef = useRef<DatePicker>(null);
 

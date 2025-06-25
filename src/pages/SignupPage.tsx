@@ -26,7 +26,6 @@ const initialSignupForm: SignupState = {
 const signupReducer = (state: SignupState, action: SignupAction) => {
   switch (action.type) {
     case "CHANGE":
-      console.log(state);
       if (action.payload.key === "phone") {
         return {
           ...state,
@@ -54,8 +53,6 @@ const SignupPage = () => {
   ];
 
   const onclickSignup = async () => {
-    console.log("실행");
-
     if (isValidEmail(signupForm.email) || isValidPhone(signupForm.phone)) return;
     if (Object.values(signupForm).includes("")) return;
 

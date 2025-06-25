@@ -34,7 +34,6 @@ export const login = createAsyncThunk<
   try {
     const res = await postLogin(payload);
     if (res.pass) {
-      console.log(res.data);
       const { access_token, refresh_token }: AuthResponse = res.data;
       return { access_token, refresh_token };
     } else return rejectWithValue(res.data as string);
@@ -83,12 +82,10 @@ const authSlice = createSlice({
         state.access_token = action.payload.access_token;
         state.refresh_token = action.payload.refresh_token;
         state.isLoading = false;
-        console.log(state.access_token);
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        console.log(state.error);
         console.log("error");
       })
 

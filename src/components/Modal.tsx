@@ -39,7 +39,6 @@ const modalReducer = (state: modalState, action: modalAction) => {
         [action.payload.key]: action.payload.value,
       };
     case "RESET_ITEM":
-      console.log(state);
       return {
         ...state,
         [action.payload.key]:
@@ -84,12 +83,9 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   }, [isOpen]);
 
   const onClickSubmitModal = async () => {
-    console.log(modalForm);
     const res = await onSubmit(modalForm) as { data: unknown; pass: boolean; }
     if (res.pass) {
       onClose();
-    } else {
-      console.log(res.data);
     }
   };
 

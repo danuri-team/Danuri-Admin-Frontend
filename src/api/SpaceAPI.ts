@@ -10,7 +10,6 @@ export const postCreateSpace = async ({
   startTime: string;
   endTime: string;
 }) => {
-  console.log(startTime, endTime);
   try {
     const res = await PrivateAxios.post("/admin/spaces", {
       name,
@@ -35,7 +34,6 @@ export const putUpdateSpace = async ({
   startTime: string;
   endTime: string;
 }) => {
-  console.log(startTime, endTime)
   try {
     const res = await PrivateAxios.put(`/admin/spaces/${spaceId}`, {
       name,

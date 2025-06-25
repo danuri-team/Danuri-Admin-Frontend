@@ -88,7 +88,6 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
 const selectReducer = (state: SelectState, action: SelectAction) => {
   switch (action.type) {
     case "CHANGE":
-      console.log(state);
       return {
         ...state,
         [action.payload.key]: action.payload.value,
@@ -164,13 +163,11 @@ const UsagePage = () => {
   //테이블 값
   useEffect(() => {
     if (isModalOpen === true) return;
-    console.log(usageForm);
     const getTableData = async () => {
       const res = await postUsageSearch(usageForm);
       if (res.pass) {
         setTableData(res.data);
       } else {
-        console.log(res.data);
         console.log("데이터 불러오기 실패");
       }
     };

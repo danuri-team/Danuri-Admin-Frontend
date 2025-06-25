@@ -122,8 +122,6 @@ const UserManagementPage = () => {
       const res = await getSearchCompanyUser();
       if (res.pass) {
         setTableData(res.data);
-      } else {
-        console.log("데이터 불러오기 실패");
       }
     };
 
@@ -133,7 +131,6 @@ const UserManagementPage = () => {
   useEffect(()=>{
     if(!tableData)return
     const filterTableData = tableData.filter((item) => {
-      console.log(selectForm.sex, item.sex)
       const matchJoinDate = !selectForm.joinDate 
         || (item.created_at as string).substring(0,10)===formatDatetoISOString(selectForm.joinDate as Date).substring(0,10)
       const matchAge = selectForm.age==='나이대' || (selectForm.age==='고등학생' && item.age==='HIGH') || (selectForm.age==='중학생' && item.age==='MIDDLE');
