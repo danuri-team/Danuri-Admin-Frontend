@@ -8,6 +8,7 @@ import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
 import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from "../api/UserAPI";
 import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
+import { formatDatetoISOString } from "../utils/dateFormat";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -101,11 +102,40 @@ const UserManagementPage = () => {
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
-
+  const [filterData, setFilterData] = useState<UsageData[] | null>(null);
+  
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
   const [selectedRowId, setSelectedRowId] = useState<string>('');
-
+  
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
+  
+  useEffect(() => {
+    if (isModalOpen === true) return;
+    const getTableData = async () => {
+      const res = await getSearchCompanyUser();
+      if (res.pass) {
+        setTableData(res.data);
+      } else {
+        console.log("데이터 불러오기 실패");
+      }
+    };
+
+    getTableData();
+  }, [isModalOpen, isDeleteMode]);
+
+  useEffect(()=>{
+    if(!tableData)return
+    const filterTableData = tableData.filter((item) => {
+      console.log(selectForm.sex, item.sex)
+      const matchJoinDate = !selectForm.joinDate 
+        || (item.created_at as string).substring(0,10)===formatDatetoISOString(selectForm.joinDate as Date).substring(0,10)
+      const matchAge = selectForm.age==='나이대' || (selectForm.age==='고등학생' && item.age==='HIGH') || (selectForm.age==='중학생' && item.age==='MIDDLE');
+      const matchSex = selectForm.sex=='성별' || (selectForm.sex==='남' && item.sex==='MALE') || (selectForm.sex==='여' && item.sex==='FEMALE');
+      
+      return matchJoinDate && matchAge && matchSex
+    })
+    setFilterData(filterTableData)
+  },[selectForm, tableData])
 
   const changeSelectedRow = ({id}:{id:string}) => {
     setSelectedRowId(id);
@@ -154,19 +184,6 @@ const UserManagementPage = () => {
     setModalInputs(null);
   };
 
-  useEffect(() => {
-    if (isModalOpen === true) return;
-    const getTableData = async () => {
-      const res = await getSearchCompanyUser();
-      if (res.pass) {
-        setTableData(res.data);
-      } else {
-        console.log("데이터 불러오기 실패");
-      }
-    };
-
-    getTableData();
-  }, [isModalOpen, isDeleteMode]);
 
   return (
     <div className="w-full">
@@ -197,7 +214,7 @@ const UserManagementPage = () => {
             <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })}/>
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId} />
+        <CustomTable header={tableHeader} data={filterData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId} />
       </div>
       {isModalOpen && (
         <Modal
