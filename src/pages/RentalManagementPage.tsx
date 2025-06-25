@@ -17,8 +17,6 @@ type filterSelectType = {
 
 type SelectState = {
   order: string;
-  rentalDate: Date | null;
-  returnDate: Date | null;
 };
 
 type SelectAction =
@@ -27,8 +25,6 @@ type SelectAction =
 
 const initialSelectForm: SelectState = {
   order: "처리 여부",
-  rentalDate: null,
-  returnDate: null,
 };
 
 const tableHeader = [
@@ -42,7 +38,7 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: "order", type: "select", options: ["처리 여부"] },
+  { id: "order", type: "select", options: ["처리 여부", "미확인", '반납됨', '이용중'] },
 ];
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
@@ -64,7 +60,7 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
     case "CHANGE":
       return {
         ...state,
-        [action.payload.key]: [action.payload.value],
+        [action.payload.key]: action.payload.value,
       };
     case "RESET":
       return initialSelectForm;
@@ -94,6 +90,7 @@ const RentalManagementPage = () => {
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
+  const [filterData, setFilterData] = useState<UsageData[] | null>(null);
 
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
 
@@ -109,6 +106,17 @@ const RentalManagementPage = () => {
     };
     getTableData();
   }, [isModalOpen]);
+
+  useEffect(()=>{
+    if(!tableData)return
+    const filterTableData = tableData.filter((item) => {
+      return selectForm.order==='처리 여부' 
+        || (selectForm.order==='미확인' && item.status==='NOT_CONFIRMED')
+        || (selectForm.order==='반납됨' && item.status==='RETURNED')
+        || (selectForm.order==='이용중' && item.status==='IN_USE')
+    })
+    setFilterData(filterTableData)
+  },[selectForm, tableData])
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
@@ -163,7 +171,7 @@ const RentalManagementPage = () => {
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} />
+        <CustomTable header={tableHeader} data={filterData} rowUpdate={onClickTableRow} />
       </div>
       {isModalOpen && (
         <Modal

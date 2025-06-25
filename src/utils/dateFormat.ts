@@ -13,6 +13,5 @@ export const formatTimetoDate = (time: string) => {
 
 export const isFutureDate = (date: string) => {
   const now = new Date();
-  console.log(new Date(date), isBefore(now, new Date(date)), typeof date);
   return isBefore(now, new Date(date));
 };

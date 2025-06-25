@@ -17,6 +17,7 @@ export type SearchLabel = keyof typeof searchFn;
 
 export const getSearchTerm = async (label: SearchLabel, value: string) => {
   const res = await searchFn[label]();
+  console.log(res.data);
   if (res.pass) {
     const term = res.data
       .map((item: Record<string, string | number>) => ({
