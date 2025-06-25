@@ -204,7 +204,7 @@ const ItemManagementPage = () => {
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} />
+            <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode} />
           </div>
         </div>
         <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>

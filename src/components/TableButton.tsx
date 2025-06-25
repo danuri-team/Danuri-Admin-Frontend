@@ -8,6 +8,7 @@ import type { JSX } from "react";
 type TableButtonType = {
   value: string;
   onClick?: () => void;
+  isDeleteMode?: boolean
 };
 
 type ButtonLabel = "다운로드" | "추가" | "삭제" | "검색" | "대여관리";
@@ -20,10 +21,10 @@ const buttonIcon: Record<ButtonLabel, JSX.Element> = {
   삭제: <CiTrash size={20} />,
 };
 
-const TableButton = ({ value, onClick }: TableButtonType) => {
+const TableButton = ({ value, onClick, isDeleteMode }: TableButtonType) => {
   return (
     <button
-      className="flex items-center text-danuri-text bg-gray-100 p-[10px] pr-[15px] pl-[15px] text-sm rounded-xl cursor-pointer"
+      className={`${isDeleteMode ? 'hover:bg-red-100 hover:text-red-400' : undefined} flex items-center text-danuri-text bg-gray-100 p-[10px] pr-[15px] pl-[15px] text-sm rounded-xl cursor-pointer`}
       onClick={onClick}
     >
       {buttonIcon[value as ButtonLabel]}

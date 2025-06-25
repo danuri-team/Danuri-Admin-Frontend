@@ -10,6 +10,7 @@ import PageJump from "./PageJump";
 import PaginationButton from "./PaginationButton";
 import PageSizeSelector from "./PageSizeSelector";
 import { format, isAfter, isBefore, set } from "date-fns";
+import { IoIosCheckmark } from "react-icons/io";
 
 export type UsageData = Record<string, string | number | number[]>;
 
@@ -144,12 +145,19 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
               {
                 isDeleteMode && (
                   <td className="p-[10px]">
-                    <input 
-                      className="cursor-pointer appearance-none w-[15px] h-[15px] border-1 rounded-sm border-gray-300 checked:border-danuri-500 checked:bg-danuri-500" 
-                      type="radio" 
-                      checked={row.original.id===selectedRowId} 
-                      onClick={(e)=>e.stopPropagation()} 
-                      onChange={()=>changeSelectedRow?.({id:row.original.id as string})} />
+                    <label className="relative">
+                      <input 
+                        className="cursor-pointer appearance-none w-[15px] h-[15px] border-1 rounded-sm border-gray-300 checked:border-danuri-500 checked:bg-danuri-500" 
+                        type="radio" 
+                        checked={row.original.id===selectedRowId} 
+                        onClick={(e)=>e.stopPropagation()} 
+                        onChange={()=>changeSelectedRow?.({id:row.original.id as string})} />
+                        {
+                          row.original.id===selectedRowId && (
+                            <IoIosCheckmark className="absolute inset-0" color="white"/>
+                          )
+                        }
+                    </label>
                   </td>
                 )
               }
