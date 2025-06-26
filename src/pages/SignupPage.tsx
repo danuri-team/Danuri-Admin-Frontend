@@ -53,7 +53,7 @@ const SignupPage = () => {
   ];
 
   const onclickSignup = async () => {
-    if (isValidEmail(signupForm.email) || isValidPhone(signupForm.phone)) return;
+    if (!isValidEmail(signupForm.email) || !isValidPhone(signupForm.phone)) return;
     if (Object.values(signupForm).includes("")) return;
 
     const res = await postSignup({
@@ -95,7 +95,7 @@ const SignupPage = () => {
         <div className="justify-self-end text-xs text-danuri-400 cursor-pointer underline">
           <Link to={"/auth/login"}>로그인</Link>
         </div>
-        <CustomButton value="회원가입" onClick={() => onclickSignup} />
+        <CustomButton value="회원가입" onClick={() => onclickSignup()} />
       </div>
     </div>
   );
