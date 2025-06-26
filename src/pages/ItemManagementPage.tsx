@@ -130,10 +130,6 @@ const ItemManagementPage = () => {
     getTableData();
   }, [isModalOpen, isDeleteMode]);
 
-  useEffect(()=>{
-    setTableData(sortTableData)
-  },[sortTableData])
-
   const changeSelectedRow = ({id}:{id:string}) => {
     setSelectedRowId(id);
   }
@@ -209,7 +205,7 @@ const ItemManagementPage = () => {
             <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
+        <CustomTable header={tableHeader} data={sortTableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
       </div>
       {isModalOpen && (
         <Modal

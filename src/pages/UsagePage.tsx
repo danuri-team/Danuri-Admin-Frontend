@@ -190,10 +190,6 @@ const UsagePage = () => {
     getTableData();
   }, [usageForm, isModalOpen]);
 
-  useEffect(()=>{
-    setTableData(sortTableData)
-  },[selectForm])
-
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
     setModalTitle(value);
@@ -261,7 +257,7 @@ const UsagePage = () => {
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} />
+        <CustomTable header={tableHeader} data={sortTableData} />
       </div>
       {isModalOpen && (
         <Modal
