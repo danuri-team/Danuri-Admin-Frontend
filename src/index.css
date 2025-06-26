@@ -9,7 +9,7 @@
   --color-danuri-text: oklch(0.5693 0 0);
 }
 
-* {
+*:not(input):not(textarea):not([contenteditable]) {
   font-family: "Pretendard", sans-serif;
   user-select: none;
 }

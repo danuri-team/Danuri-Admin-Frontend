@@ -16,7 +16,7 @@ export const postCreateSpace = async ({
       start_at: startTime,
       end_at: endTime,
     });
-    return { data: res, pass: true };
+    return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };
   }

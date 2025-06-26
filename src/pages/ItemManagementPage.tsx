@@ -3,7 +3,7 @@ import TableButton from "../components/TableButton";
 import MainHeader from "../components/MainHeader";
 import BannerButton from "../components/BannerButton";
 import CustomSelect from "../components/CustomSelect";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
 import { deleteItem, getSearchCompanyItem, postCreateItem, putUpdateItem } from "../api/ItemAPI";
@@ -101,6 +101,22 @@ const ItemManagementPage = () => {
 
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
 
+  const sortTableData = useMemo(()=>{
+    if(!tableData)return null
+    return [...tableData].sort((a,b) => {
+    if(selectForm.order==='재고순'){
+      return (a.available_quantity as number) - (b.available_quantity as number);
+    }
+    else if(selectForm.order==='이름순'){
+      return (a.name as string).localeCompare(b.name as string);
+    }
+    else {
+      if(a.status==='AVAILABLE'&&b.status!=='AVAILABLE')return -1;
+      else if(a.status!=='AVAILABLE'&&b.status==='AVAILABLE')return 1;
+      else return 0;
+    }
+  })},[tableData, selectForm.order])
+
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
@@ -115,22 +131,8 @@ const ItemManagementPage = () => {
   }, [isModalOpen, isDeleteMode]);
 
   useEffect(()=>{
-    if(!tableData)return
-    const sortTableData = [...tableData].sort((a,b) => {
-      if(selectForm.order==='재고순'){
-        return (a.available_quantity as number) - (b.available_quantity as number);
-      }
-      else if(selectForm.order==='이름순'){
-        return (a.name as string).localeCompare(b.name as string);
-      }
-      else {
-        if(a.status==='AVAILABLE'&&b.status!=='AVAILABLE')return -1;
-        else if(a.status!=='AVAILABLE'&&b.status==='AVAILABLE')return 1;
-        else return 0;
-      }
-    })
     setTableData(sortTableData)
-  },[selectForm])
+  },[sortTableData])
 
   const changeSelectedRow = ({id}:{id:string}) => {
     setSelectedRowId(id);

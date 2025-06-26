@@ -4,7 +4,7 @@ import BannerButton from "../components/BannerButton";
 import CustomSelect from "../components/CustomSelect";
 import TableButton from "../components/TableButton";
 import type { ModalInputTypesType } from "../components/ModalInput";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import Modal from "../components/Modal";
 import { postCreateUsage, postUsageExcel, postUsageSearch } from "../api/UsageAPI";
 import { formatDatetoISOString } from "../utils/dateFormat";
@@ -147,6 +147,22 @@ const UsagePage = () => {
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
   const [usageForm, usageDispatch] = useReducer(usageReducer, initialUsageForm);
 
+  const sortTableData = useMemo(()=>{
+    if(!tableData)return null
+    return [...tableData].sort((a,b) => {
+    if(selectForm.order==='이용일순'){
+      if(isBefore(new Date(a.start_at as string), new Date(b.start_at as string)))return -1;
+      else return 1;
+    }
+    else {
+      const aStatus = isBefore(new Date(a.start_at as string), new Date()) && isAfter(new Date(a.end_at as string), new Date());
+      const bStatus = isBefore(new Date(b.start_at as string), new Date()) && isAfter(new Date(b.end_at as string), new Date());
+      if(aStatus&&!bStatus)return -1;
+      else if(!aStatus&&bStatus)return 1;
+      else return 0;
+    }
+  })},[tableData, selectForm.order])
+
   useEffect(() => {
     if (selectForm.useDate) {
       if (selectForm.useDate.startDate) {
@@ -175,20 +191,6 @@ const UsagePage = () => {
   }, [usageForm, isModalOpen]);
 
   useEffect(()=>{
-    if(!tableData)return
-    const sortTableData = [...tableData].sort((a,b) => {
-      if(selectForm.order==='이용일순'){
-        if(isBefore(new Date(a.start_at as string), new Date(b.start_at as string)))return -1;
-        else return 1;
-      }
-      else {
-        const aStatus = isBefore(new Date(a.start_at as string), new Date()) && isAfter(new Date(a.end_at as string), new Date());
-        const bStatus = isBefore(new Date(b.start_at as string), new Date()) && isAfter(new Date(b.end_at as string), new Date());
-        if(aStatus&&!bStatus)return -1;
-        else if(!aStatus&&bStatus)return 1;
-        else return 0;
-      }
-    })
     setTableData(sortTableData)
   },[selectForm])
 

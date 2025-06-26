@@ -6,7 +6,7 @@ import { CiTrash } from "react-icons/ci";
 import type { JSX } from "react";
 
 type TableButtonType = {
-  value: string;
+  value: ButtonLabel;
   onClick?: () => void;
   isDeleteMode?: boolean
 };
@@ -27,7 +27,7 @@ const TableButton = ({ value, onClick, isDeleteMode }: TableButtonType) => {
       className={`${isDeleteMode ? 'hover:bg-red-100 hover:text-red-400' : undefined} flex items-center text-danuri-text bg-gray-100 p-[10px] pr-[15px] pl-[15px] text-sm rounded-xl cursor-pointer`}
       onClick={onClick}
     >
-      {buttonIcon[value as ButtonLabel]}
+      {buttonIcon[value]}
       <span className="ml-[8px]">{value}</span>
     </button>
   );

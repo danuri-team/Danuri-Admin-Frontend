@@ -13,10 +13,10 @@ export const postCreateRental = async ({
   try {
     const res = await PrivateAxios.post("/admin/rentals", {
       item_id: itemId,
-      quantity: Number(quantity),
+      quantity: quantity,
       usage_id: usageId,
     });
-    return { data: res, pass: true };
+    return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };
   }

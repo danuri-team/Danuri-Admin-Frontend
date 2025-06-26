@@ -19,7 +19,7 @@ export const postCreateItem = async ({
       available_quantity:availableQuantity,
       status,
     });
-    return { data: res, pass: true };
+    return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };
   }
@@ -40,6 +40,9 @@ export const putUpdateItem = async ({
   status: string;
 }) => {
   try {
+    if (Number(availableQuantity) > Number(totalQuantity)) {
+      return { data: '사용 가능한 수량이 총 수량을 초과할 수 없습니다.', pass: false };
+    }
     const res = await PrivateAxios.put(`/admin/items/${itemId}`, {
       name,
       total_quantity: totalQuantity,
