@@ -4,6 +4,8 @@ import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
 import { postSignup } from "../api/AuthAPI";
+import { isValidEmail, isValidPhone } from "../utils/infoValidation";
+import { replacePhone } from "../utils/infoFormat";
 
 type SignupState = {
   company_id: string;
@@ -24,7 +26,12 @@ const initialSignupForm: SignupState = {
 const signupReducer = (state: SignupState, action: SignupAction) => {
   switch (action.type) {
     case "CHANGE":
-      console.log(state);
+      if (action.payload.key === "phone") {
+        return {
+          ...state,
+          [action.payload.key]: replacePhone(action.payload.value),
+        };
+      }
       return {
         ...state,
         [action.payload.key]: action.payload.value,
@@ -46,7 +53,8 @@ const SignupPage = () => {
   ];
 
   const onclickSignup = async () => {
-    console.log("실행");
+    if (isValidEmail(signupForm.email) || isValidPhone(signupForm.phone)) return;
+    if (Object.values(signupForm).includes("")) return;
 
     const res = await postSignup({
       company_id: signupForm.company_id,
@@ -72,6 +80,13 @@ const SignupPage = () => {
             label={item.label}
             key={item.key}
             value={item.value}
+            valid={
+              item.key === "email"
+                ? isValidEmail(signupForm.email)
+                : item.key === "phone"
+                  ? isValidPhone(signupForm.phone)
+                  : undefined
+            }
             onChange={(e) =>
               dispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
             }

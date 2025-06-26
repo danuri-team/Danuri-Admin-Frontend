@@ -12,8 +12,9 @@ const PageSizeSelector = ({ table }: { table: Table<UsageData> }) => {
     <div className="text-sm">
       <div className="flex items-center gap-[5px]">
         <button
-          className="flex items-center gap-[5px] border-1 border-gray-200 rounded-md p-[3px] w-[40px] cursor-pointer"
+          className="flex items-center gap-[5px] border-1 border-gray-200 rounded-md p-[3px] w-[50px] cursor-pointer justify-between pl-[10px]"
           onClick={() => setIsOpenPageSize(!isopenPageSize)}
+          onBlur={() => setIsOpenPageSize(false)}
         >
           {table.getState().pagination.pageSize}
           <IoCaretDownOutline size={10} />
@@ -21,9 +22,13 @@ const PageSizeSelector = ({ table }: { table: Table<UsageData> }) => {
         <span className="text-gray-500 text-xs">씩 보기</span>
       </div>
       {isopenPageSize && (
-        <ul className="absolute">
+        <ul className="absolute mt-[5px] bg-white w-[50px] border-gray-200 border-1 rounded-md p-[3px]">
           {pageSizeOptions.map((option) => (
-            <li key={option.value} onClick={() => table.setPageSize(option.value)}>
+            <li
+              className="cursor-pointer hover:bg-gray-200 rounded-sm p-[2px]"
+              key={option.value}
+              onMouseDown={() => table.setPageSize(option.value)}
+            >
               {option.value}
             </li>
           ))}

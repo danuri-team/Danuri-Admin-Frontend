@@ -22,7 +22,6 @@ const initialLoginForm: LoginState = {
 const loginReducer = (state: LoginState, action: LoginAction) => {
   switch (action.type) {
     case "CHANGE":
-      console.log(state);
       return {
         ...state,
         [action.payload.key]: action.payload.value,

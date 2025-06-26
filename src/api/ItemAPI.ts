@@ -4,16 +4,19 @@ import { PrivateAxios } from "./PrivateAxios";
 export const postCreateItem = async ({
   name,
   totalQuantity,
+  availableQuantity,
   status,
 }: {
   name: string;
   totalQuantity: string;
+  availableQuantity:string;
   status: string;
 }) => {
   try {
     const res = await PrivateAxios.post("/admin/items", {
       name,
       total_quantity: totalQuantity,
+      available_quantity:availableQuantity,
       status,
     });
     return { data: res, pass: true };
@@ -27,17 +30,20 @@ export const putUpdateItem = async ({
   itemId,
   name,
   totalQuantity,
+  availableQuantity,
   status,
 }: {
   itemId: string;
   name: string;
   totalQuantity: string;
+  availableQuantity: string,
   status: string;
 }) => {
   try {
     const res = await PrivateAxios.put(`/admin/items/${itemId}`, {
       name,
       total_quantity: totalQuantity,
+      available_quantity: availableQuantity,
       status,
     });
     return { data: res.data, pass: true };

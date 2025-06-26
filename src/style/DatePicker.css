@@ -7,6 +7,8 @@
   border: 1px solid oklch(87.2% 0.01 258.338) !important;
   border-radius: 0.7rem !important;
   padding: 8px;
+  width: fit-content !important;
+  display: flex !important;
 }
 
 .react-datepicker__navigation {
@@ -79,6 +81,10 @@ h2.react-datepicker__current-month {
 
 .react-datepicker__time-container {
   width: 10rem !important;
+}
+
+.react-datepicker-time__header {
+  margin-bottom: 20px !important;
 }
 
 .react-datepicker__time-list,

@@ -10,6 +10,7 @@ import PageJump from "./PageJump";
 import PaginationButton from "./PaginationButton";
 import PageSizeSelector from "./PageSizeSelector";
 import { format, isAfter, isBefore, set } from "date-fns";
+import { IoIosCheckmark } from "react-icons/io";
 
 export type UsageData = Record<string, string | number | number[]>;
 
@@ -18,7 +19,16 @@ type HeaderType = {
   id: string;
 };
 
-const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[] }) => {
+type CustomTable = {
+  header: HeaderType[]; 
+  data: UsageData[] | null, 
+  rowUpdate?: (row:UsageData) => void  | undefined 
+  isDeleteMode?: boolean,
+  changeSelectedRow?: ({id}:{id:string}) => void,
+  selectedRowId?: string
+}
+
+const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow, selectedRowId }:CustomTable) => {
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
     header: item.name,
@@ -37,6 +47,10 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
           "HH:mm:ss"
         );
         return <p>{time}</p>;
+      } else if (item.name === "시작일" || item.name === "종료일" || item.name === "가입일") {
+        if (!value) return <p></p>;
+        const date = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+        return <p>{date}</p>;
       } else if (item.id === "status") {
         //상태 값 있을 때
         if (value) return <StatusTag value={value} />;
@@ -94,7 +108,7 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
   }));
 
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -106,6 +120,11 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="border-b-1 border-gray-200 bg-gray-100 text-left">
+              {
+                isDeleteMode && (
+                  <th className="p-[10px]"></th>
+                )
+              }
               {headerGroup.headers.map((header) => (
                 <th key={header.id} className="text-sm font-medium p-[10px]">
                   {header.isPlaceholder
@@ -118,9 +137,32 @@ const CustomTable = ({ header, data }: { header: HeaderType[]; data: UsageData[]
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="border-b-1 border-gray-200">
+            <tr 
+              key={row.id} 
+              className={`${rowUpdate ? 'cursor-pointer hover:bg-danuri-100' : undefined} border-b-1 border-gray-200`}
+              onClick={()=>{if(rowUpdate)rowUpdate(row.original)}}
+              >
+              {
+                isDeleteMode && (
+                  <td className="p-[10px]">
+                    <label className="relative">
+                      <input 
+                        className="cursor-pointer appearance-none w-[15px] h-[15px] border-1 rounded-sm border-gray-300 checked:border-danuri-500 checked:bg-danuri-500" 
+                        type="radio" 
+                        checked={row.original.id===selectedRowId} 
+                        onClick={(e)=>e.stopPropagation()} 
+                        onChange={()=>changeSelectedRow?.({id:row.original.id as string})} />
+                        {
+                          row.original.id===selectedRowId && (
+                            <IoIosCheckmark className="absolute inset-0" color="white"/>
+                          )
+                        }
+                    </label>
+                  </td>
+                )
+              }
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-[10px] text-sm">
+                <td key={cell.id} className="p-[10px] text-sm text-wrap">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

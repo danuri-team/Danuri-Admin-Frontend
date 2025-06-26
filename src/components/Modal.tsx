@@ -2,17 +2,19 @@ import { useEffect, useReducer } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput, { type ModalInputTypesType } from "./ModalInput";
 import CustomButton from "./CustomButton";
+import type { ModalSubmitFn } from "../pages/ItemManagementPage";
 
 type ModalType = {
   isOpen: boolean;
   title: string;
-  inputs: { label: string; type: ModalInputTypesType }[] | null;
-  onClose: () => void;
+  inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[] | null;
+  onClose: () => void; 
+  onSubmit: ModalSubmitFn | ((form:modalState) => void);
 };
 
 type modalAction =
   | { type: "CHANGE"; payload: { key: string; value: string | number } }
-  | { type: "CHANGE"; payload: { key: string; value: Date | null } }
+  | { type: "CHANGE_DATE"; payload: { key: string; value: Date | null } }
   | { type: "RESET_ITEM"; payload: { key: string; type: ModalInputTypesType } }
   | { type: "RESET"; payload: { initailModalForm: modalState } };
 
@@ -21,18 +23,27 @@ type modalState = Record<string, Date | string | number | null>;
 const modalReducer = (state: modalState, action: modalAction) => {
   switch (action.type) {
     case "CHANGE":
-      console.log(state);
+      if(action.payload.key==='available_quantity' && (state.total_quantity as number) < (action.payload.value as number)){
+        return {...state};
+      }
+      if(action.payload.key==='returned_quantity' && (state.quantity as number) < (action.payload.value as number)){
+        return {...state};
+      }
+      return {
+        ...state,
+        [action.payload.key]: action.payload.value,
+      };
+    case "CHANGE_DATE":
       return {
         ...state,
         [action.payload.key]: action.payload.value,
       };
     case "RESET_ITEM":
-      console.log(state);
       return {
         ...state,
         [action.payload.key]:
           action.payload.type === "date" || action.payload.type === "time"
-            ? new Date()
+            ? null
             : action.payload.type === "number"
               ? 0
               : "",
@@ -43,23 +54,24 @@ const modalReducer = (state: modalState, action: modalAction) => {
 };
 
 const getInitialModalForm = (
-  inputs: { label: string; type: ModalInputTypesType }[] | null
+  inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date  }[] | null
 ): modalState => {
   if (!inputs) return {};
 
   const initialState: modalState = {};
   inputs.forEach((input) => {
-    initialState[input.label] =
-      input.type === "date" || input.type === "time"
-        ? new Date()
-        : input.type === "number"
-          ? 0
-          : "";
+    if(!input.initial){
+      initialState[input.key] =
+        input.type === "date" || input.type === "time" ? null : input.type === "number" ? 0 : "";
+    }
+    else {
+      initialState[input.key] = input.initial;
+    }
   });
   return initialState;
 };
 
-const Modal = ({ isOpen, title, onClose, inputs }: ModalType) => {
+const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const [modalForm, modalDispatch] = useReducer(modalReducer, getInitialModalForm(inputs));
 
   useEffect(() => {
@@ -70,7 +82,12 @@ const Modal = ({ isOpen, title, onClose, inputs }: ModalType) => {
     };
   }, [isOpen]);
 
-  const onClickSubmitModal = () => {};
+  const onClickSubmitModal = async () => {
+    const res = await onSubmit(modalForm) as { data: unknown; pass: boolean; }
+    if (res.pass) {
+      onClose();
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center">
@@ -84,20 +101,22 @@ const Modal = ({ isOpen, title, onClose, inputs }: ModalType) => {
             <h2 className="text-lg font-semibold">{title}</h2>
           </div>
           <div className="p-[10px] mb-[15px]">
-            {inputs?.map((item) =>
-              item.type === "date" || item.type === "time" ? (
+            {inputs?.map((item) =>{
+              if(item.hide)return;
+              
+              return item.type === "date" || item.type === "time" ? (
                 <ModalInput
                   key={item.label}
                   label={item.label}
                   type={item.type}
                   onChange={(date) =>
-                    modalDispatch({ type: "CHANGE", payload: { key: item.label, value: date } })
+                    modalDispatch({ type: "CHANGE_DATE", payload: { key: item.key, value: date } })
                   }
-                  value={modalForm[item.label] as Date | null}
+                  value={modalForm[item.key] as Date | null}
                   resetValue={() =>
                     modalDispatch({
                       type: "RESET_ITEM",
-                      payload: { key: item.label, type: item.type },
+                      payload: { key: item.key, type: item.type },
                     })
                   }
                 />
@@ -106,24 +125,24 @@ const Modal = ({ isOpen, title, onClose, inputs }: ModalType) => {
                   key={item.label}
                   label={item.label}
                   type={item.type}
-                  onChange={(e) =>
+                  onChange={(value) =>
                     modalDispatch({
                       type: "CHANGE",
-                      payload: { key: item.label, value: e.target.value },
+                      payload: { key: item.key, value: value },
                     })
                   }
-                  value={modalForm[item.label] as string | number}
+                  value={modalForm[item.key] as string | number}
                   resetValue={() =>
                     modalDispatch({
                       type: "RESET_ITEM",
-                      payload: { key: item.label, type: item.type },
+                      payload: { key: item.key, type: item.type },
                     })
                   }
                 />
               )
-            )}
+            })}
           </div>
-          <CustomButton value={title} onClick={() => onClickSubmitModal} />
+          <CustomButton value={title} onClick={title==='검색' ? ()=> {onSubmit(modalForm); onClose()} : (() => onClickSubmitModal()) as ()=>void} />
         </div>
       )}
     </div>

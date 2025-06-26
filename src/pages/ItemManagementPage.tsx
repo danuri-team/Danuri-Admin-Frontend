@@ -1,16 +1,33 @@
-import CustomTable from "../components/CustomTable";
+import CustomTable, { type UsageData } from "../components/CustomTable";
 import TableButton from "../components/TableButton";
 import MainHeader from "../components/MainHeader";
 import BannerButton from "../components/BannerButton";
 import CustomSelect from "../components/CustomSelect";
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Modal from "../components/Modal";
 import type { ModalInputTypesType } from "../components/ModalInput";
+import { deleteItem, getSearchCompanyItem, postCreateItem, putUpdateItem } from "../api/ItemAPI";
 
 type filterSelectType = {
-  id: number;
+  id: keyof SelectState;
   type: "select" | "date";
   options: string[];
+};
+
+type SelectState = {
+  order: string;
+};
+
+type SelectAction =
+  | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
+  | { type: "RESET" };
+
+export type modalState = Record<string, Date | string | number | null>;
+
+export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
+
+const initialSelectForm: SelectState = {
+  order: "재고순",
 };
 
 const tableHeader = [
@@ -22,132 +39,139 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: 1, type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
+  { id: "order", type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
-const mockData = [
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "f4fb919b-3733-4591-8742-6606e5c0879a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "충전기",
-    total_quantity: 10,
-    available_quantity: 9,
-    status: "AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-  {
-    id: "bd04022d-56ab-4483-9a1b-552dd9373d6a",
-    company_id: "7419d2c7-8bee-48c5-8a73-d8861e40582c",
-    company_name: "페더",
-    name: "마이크",
-    total_quantity: 1,
-    available_quantity: 0,
-    status: "NOT_AVAILABLE",
-  },
-];
-
-const inputOption: Record<string, { label: string; type: ModalInputTypesType }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
   추가: [
-    { label: "물품", type: "text" },
-    { label: "총 수량", type: "number" },
+    { label: "물품", key: "name", type: "text" },
+    { label: "총 수량", key: "totalQuantity", type: "number" },
+    { label: "상태", key: "status", type: "text" },
   ],
+  수정: [
+    { label: "물품 ID", key: "itemId", type: "text", hide: true },
+    { label: "물품", key: "name", type: "text" },
+    { label: "총 수량", key: "total_quantity", type: "number" },
+    { label: "이용 가능 개수", key: "available_quantity", type: "number" },
+    { label: "상태", key: "status", type: "option" },
+  ],
+};
+
+//모달 Submit 함수
+const modalSubmitFn: Record<string, ModalSubmitFn> = {
+  추가: (form: modalState) =>
+    postCreateItem({
+      name: form.name as string,
+      totalQuantity: form.totalQuantity as string,
+      availableQuantity: '',
+      status: form.status as string,
+    }),
+  수정: (form: modalState) => 
+    putUpdateItem({
+      itemId: form.itemId as string, 
+      name: form.name as string, 
+      totalQuantity: form.total_quantity as string,
+      availableQuantity: form.available_quantity as string,
+      status: form.status as string,
+    }),
+};
+
+const selectReducer = (state: SelectState, action: SelectAction) => {
+  switch (action.type) {
+    case "CHANGE":
+      return {
+        ...state,
+        [action.payload.key]: action.payload.value,
+      };
+    case "RESET":
+      return initialSelectForm;
+  }
 };
 
 const ItemManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
-    { label: string; type: ModalInputTypesType }[] | null
+    { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
   const [modalTitle, setModalTitle] = useState<string>("");
+  const [tableData, setTableData] = useState<UsageData[] | null>(null);
+
+  const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
+  const [selectedRowId, setSelectedRowId] = useState<string>('');
+
+  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
+
+  useEffect(() => {
+    if (isModalOpen === true) return;
+    const getTableData = async () => {
+      const res = await getSearchCompanyItem();
+      if (res.pass) {
+        setTableData(res.data);
+      } else {
+        console.log("데이터 불러오기 실패");
+      }
+    };
+    getTableData();
+  }, [isModalOpen, isDeleteMode]);
+
+  useEffect(()=>{
+    if(!tableData)return
+    const sortTableData = [...tableData].sort((a,b) => {
+      if(selectForm.order==='재고순'){
+        return (a.available_quantity as number) - (b.available_quantity as number);
+      }
+      else if(selectForm.order==='이름순'){
+        return (a.name as string).localeCompare(b.name as string);
+      }
+      else {
+        if(a.status==='AVAILABLE'&&b.status!=='AVAILABLE')return -1;
+        else if(a.status!=='AVAILABLE'&&b.status==='AVAILABLE')return 1;
+        else return 0;
+      }
+    })
+    setTableData(sortTableData)
+  },[selectForm])
+
+  const changeSelectedRow = ({id}:{id:string}) => {
+    setSelectedRowId(id);
+  }
 
   const onClickTableButton = ({ value }: { value: string }) => {
-    setIsModalOpen(true);
+    if(value==='삭제'){
+      onClickDeleteButton();
+      return;
+    }
     setModalTitle(value);
     if (inputOption[value]) {
       setModalInputs(inputOption[value]);
     }
+    setIsModalOpen(true);
   };
+
+  const onClickDeleteButton = async () => {
+    if(!isDeleteMode){
+      setIsDeleteMode(true);
+    }
+    else {
+      if(!selectedRowId)console.log('선택없음');
+      const res = await deleteItem({itemId: selectedRowId});
+      if(res.pass){
+        setIsDeleteMode(false);
+      }
+    }
+  }
+
+  const onClickTableRow = (row:UsageData) => {
+    setModalTitle('수정');
+    const addInitialInputs = inputOption['수정'].map((item) => {
+      return {
+        ...item,
+        initial: item.key==='itemId' ? row.id : row[item.key]
+      }
+    })
+    setModalInputs(addInitialInputs);
+    setIsModalOpen(true);
+  }
 
   const onCloseModal = () => {
     setIsModalOpen(false);
@@ -164,15 +188,26 @@ const ItemManagementPage = () => {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">물품 관리</h1>
             {filterSelects.map((item) => (
-              <CustomSelect key={item.id} type={item.type} options={item.options} />
+              <CustomSelect
+                key={item.id}
+                type={item.type}
+                options={item.options}
+                value={selectForm[item.id]}
+                onChange={(value) =>
+                  selectDispatch({
+                    type: "CHANGE",
+                    payload: { key: item.id, value: value as string | Date | null },
+                  })
+                }
+              />
             ))}
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="검색" onClick={() => onClickTableButton({ value: "검색" })} />
+            <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={mockData} />
+        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
       </div>
       {isModalOpen && (
         <Modal
@@ -180,6 +215,7 @@ const ItemManagementPage = () => {
           title={modalTitle}
           inputs={modalInputs}
           onClose={onCloseModal}
+          onSubmit={modalSubmitFn[modalTitle]}
         />
       )}
     </div>

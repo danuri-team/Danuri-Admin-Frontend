@@ -32,22 +32,22 @@ export const postCreateUser = async ({
 export const putUpdateUser = async ({
   userId,
   name,
-  email,
+  sex,
+  age,
   phone,
-  role,
 }: {
   userId: string;
   name: string;
-  email: string;
+  sex: string;
+  age: string;
   phone: string;
-  role: string;
 }) => {
   try {
     const res = await PrivateAxios.put(`/admin/users/${userId}`, {
       name,
-      email,
+      sex,
+      age,
       phone,
-      role,
     });
     return { data: res.data, pass: true };
   } catch (error) {
