@@ -3,6 +3,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import ModalInput, { type ModalInputTypesType } from "./ModalInput";
 import CustomButton from "./CustomButton";
 import type { ModalSubmitFn } from "../pages/ItemManagementPage";
+import { getMyInfo } from "../api/InfoAPI";
 
 type ModalType = {
   isOpen: boolean;
@@ -62,7 +63,7 @@ const getInitialModalForm = (
   inputs.forEach((input) => {
     if(!input.initial){
       initialState[input.key] =
-        input.type === "date" || input.type === "time" ? null : input.type === "number" ? 0 : "";
+          input.type === "date" || input.type === "time" ? null : input.type === "number" ? 0 : "";
     }
     else {
       initialState[input.key] = input.initial;
@@ -71,16 +72,27 @@ const getInitialModalForm = (
   return initialState;
 };
 
+
 const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const [modalForm, modalDispatch] = useReducer(modalReducer, getInitialModalForm(inputs));
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
+    if (isOpen){
+      document.body.style.overflow = "hidden";
+    }
 
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [isOpen]);
+
+  const getMyCompanyId = async () => {
+    const res = await getMyInfo();
+    if(res.pass){
+      modalDispatch({type:'CHANGE', payload:{key:'company_id', value: res.data.company_id}});
+    }
+  }
+  
 
   const onClickSubmitModal = async () => {
     const res = await onSubmit(modalForm) as { data: unknown; pass: boolean; }
@@ -102,6 +114,10 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
           </div>
           <div className="p-[10px] mb-[15px]">
             {inputs?.map((item) =>{
+              if(item.key==='company_id'){
+                getMyCompanyId();
+              }
+              
               if(item.hide)return;
               
               return item.type === "date" || item.type === "time" ? (

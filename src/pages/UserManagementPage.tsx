@@ -49,6 +49,7 @@ const filterSelects: filterSelectType[] = [
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
   추가: [
+    { label: "회사 ID", key: "company_id", type: "text", hide:true },
     { label: "이름", key: "name", type: "text" },
     { label: "전화번호", key: "phone", type: "text" },
     { label: "성별", key: "sex", type: "text" },
@@ -81,11 +82,12 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
   }
 };
 
+
 //company id는 임의 값
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
   추가: (form: modalState) =>
     postCreateUser({
-      company_id: "52515fd2-43e5-440b-9cc5-8630bc75954e",
+      company_id: form.company_id as string,
       name: form.name as string,
       sex: form.sex as string,
       age: form.age as string,
@@ -116,7 +118,7 @@ const UserManagementPage = () => {
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
   
   useEffect(() => {
-    if (isModalOpen === true || modalTitle==='검색') return;
+    if (isModalOpen === true || modalTitle === '검색') return;
     setModalTitle("");
     const getTableData = async () => {
       const res = await getSearchCompanyUser();
@@ -133,8 +135,8 @@ const UserManagementPage = () => {
     const filterTableData = tableData.filter((item) => {
       const matchJoinDate = !selectForm.joinDate 
         || (item.created_at as string).substring(0,10)===formatDatetoISOString(selectForm.joinDate as Date).substring(0,10)
-      const matchAge = selectForm.age==='나이대' || (selectForm.age==='고등학생' && item.age==='HIGH') || (selectForm.age==='중학생' && item.age==='MIDDLE');
-      const matchSex = selectForm.sex=='성별' || (selectForm.sex==='남' && item.sex==='MALE') || (selectForm.sex==='여' && item.sex==='FEMALE');
+      const matchAge = selectForm.age === '나이대' || (selectForm.age === '고등학생' && item.age === 'HIGH') || (selectForm.age === '중학생' && item.age === 'MIDDLE');
+      const matchSex = selectForm.sex === '성별' || (selectForm.sex === '남' && item.sex === 'MALE') || (selectForm.sex === '여' && item.sex === 'FEMALE');
       
       return matchJoinDate && matchAge && matchSex
     })
@@ -175,7 +177,10 @@ const UserManagementPage = () => {
       setIsDeleteMode(true);
     }
     else {
-      if(!selectedRowId)console.log('선택없음');
+      if(!selectedRowId){
+        alert('삭제할 사용자를 선택해주세요.');
+        return;
+      }
       const res = await deleteUser({userId: selectedRowId});
       if(res.pass){
         setIsDeleteMode(false);

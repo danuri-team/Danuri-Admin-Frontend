@@ -50,5 +50,7 @@ export const changeEnumtoText = (status:string) => {
             return '고등학생';
         case 'MIDDLE':
             return '중학생';
+        default: 
+            return '알 수 없음';
     }
 }
