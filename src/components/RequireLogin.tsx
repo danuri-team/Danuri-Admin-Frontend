@@ -8,7 +8,7 @@ const RequireLogin = () => {
   const isLoading = authState.isLoading;
 
   if (isLoading) {
-    return;
+    return <div className="flex justify-center items-center min-h-screen">로딩 중...</div>;
   }
 
   return accessToken ? <Outlet /> : <Navigate to={"auth/login"} replace />;
