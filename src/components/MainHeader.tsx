@@ -24,6 +24,7 @@ const MainHeader = () => {
         <Link
           className="flex bg-gray-200 border-1 border-gray-300 rounded-full w-[25px] h-[25px] items-center justify-center"
           to={"/info"}
+          aria-label="사용자 정보"
         >
           <BsPersonFill size={20} color="white" />
         </Link>
