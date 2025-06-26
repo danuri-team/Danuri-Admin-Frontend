@@ -9,6 +9,7 @@ import SpaceManagementPage from "./pages/SpaceManagementPage";
 import RentalManagementPage from "./pages/RentalManagementPage";
 import RequireLogin from "./components/RequireLogin";
 import GuestGuard from "./components/GuestGuard";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
         <Route path="/rental" element={<RentalManagementPage />} />
         <Route path="/space" element={<SpaceManagementPage />} />
       </Route>
+
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
