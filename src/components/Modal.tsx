@@ -1,9 +1,11 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput, { type ModalInputTypesType } from "./ModalInput";
 import CustomButton from "./CustomButton";
 import type { ModalSubmitFn } from "../pages/ItemManagementPage";
 import { getMyInfo } from "../api/InfoAPI";
+import { useLocation } from "react-router-dom";
+import { selectTermAvailableCount } from "../utils/searchTermOption";
 
 type ModalType = {
   isOpen: boolean;
@@ -74,17 +76,29 @@ const getInitialModalForm = (
 
 
 const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
+  const location = useLocation();
   const [modalForm, modalDispatch] = useReducer(modalReducer, getInitialModalForm(inputs));
+  const [availableCount, setAvailableCount] = useState<number>(0);
 
   useEffect(() => {
     if (isOpen){
       document.body.style.overflow = "hidden";
     }
-
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [isOpen]);
+
+  useEffect(()=>{
+    if(location.pathname !== '/rental')return;
+    if((title==='추가' && !modalForm.itemId) || (title==='수정' && !modalForm.rentalId))return;
+    const getCount = async () => {
+      const count = await selectTermAvailableCount(title==='추가' ? modalForm.itemId as string : modalForm.rentalId as string);
+      if(!isNaN(Number(count)))setAvailableCount(Number(count));
+      else setAvailableCount(0);
+    } 
+    getCount();
+  },[modalForm.itemId, modalForm.rentalId]);
 
   const getMyCompanyId = async () => {
     const res = await getMyInfo();
@@ -141,6 +155,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                   key={item.label}
                   label={item.label}
                   type={item.type}
+                  availableCount={availableCount}
                   onChange={(value) =>
                     modalDispatch({
                       type: "CHANGE",

@@ -15,6 +15,7 @@ type ModalInputType =
       value: Date | null;
       resetValue?: () => void;
       onChange: (date: Date | null) => void;
+      availableCount?:number;
     }
   | {
       label: string;
@@ -22,14 +23,18 @@ type ModalInputType =
       value: string | number;
       resetValue?: () => void;
       onChange: (value: string | number) => void;
+      availableCount?:number;
     };
 
-const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType) => {
+const ModalInput = ({ label, value, type, onChange, resetValue, availableCount }: ModalInputType) => {
   const location = useLocation();
+
+  console.log(availableCount);
 
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerms, setSearchTerms] = useState<{ name: string; id: string }[]>([]);
   const [isFocus, setIsFocus] = useState<boolean>(false);
+  
 
   const options = selectStatusOption(location.pathname as string, label);
 
@@ -144,6 +149,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue }: ModalInputType
           placeholder={`${label}을 입력해주세요.`}
           type={type}
           min={0}
+          {...(type === "number" && availableCount && { max: availableCount })}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           value={value as string | number}

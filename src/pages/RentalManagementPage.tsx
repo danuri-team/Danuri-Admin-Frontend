@@ -76,7 +76,7 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
     }),
   수정: (form: modalState) =>
     putUpdateRental({
-      rentalId: form.rental_id as string,
+      rentalId: form.rentalId as string,
       quantity: form.quantity as number,
       returnedQuantity: form.returned_quantity as number,
       status: form.status as string,
