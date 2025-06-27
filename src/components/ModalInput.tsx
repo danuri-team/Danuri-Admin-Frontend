@@ -149,7 +149,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount }
           placeholder={`${label}을 입력해주세요.`}
           type={type}
           min={0}
-          max={availableCount || undefined}
+          {...(type === "number" && availableCount && { max: availableCount })}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           value={value as string | number}

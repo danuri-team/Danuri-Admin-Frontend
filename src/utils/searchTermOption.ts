@@ -39,7 +39,10 @@ export const selectTermAvailableCount = async (itemId:string) => {
   const res = await getSearchCompanyItem();
   if(res.pass){
     const selectItem = res.data.find((item: Record<string, string|number>) => item.id === itemId)
-    return Number(selectItem.available_quantity);
+    if(selectItem && selectItem.available_quantity !== undefined) {
+      return Number(selectItem.available_quantity);
+    }
+    return 0;
   }
   else {
     return 0
