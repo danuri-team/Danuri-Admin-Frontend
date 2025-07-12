@@ -44,6 +44,10 @@ const LoginPage = () => {
   ];
 
   const onclickLogin = async () => {
+    if (Object.values(loginForm).includes("")){
+      toast.error('모든 항목을 입력해주세요.');
+      return;
+    }
     try{
       await dispatch(login({ email: loginForm.email, password: loginForm.password })).unwrap();
       
@@ -75,7 +79,7 @@ const LoginPage = () => {
           <CustomButton value="로그인" onClick={onclickLogin} />
         </div>
         <div className="w-[200px] flex items-center justify-between justify-self-center mt-[30px]">
-          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/ahth/password"}>비밀번호 찾기</Link>
+          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/password"}>비밀번호 찾기</Link>
           <div className="w-[1px] h-[20px] border-l-1 border-gray-300"></div>
           <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/signup"}>회원가입</Link>
         </div>
