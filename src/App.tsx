@@ -10,27 +10,41 @@ import RentalManagementPage from "./pages/RentalManagementPage";
 import RequireLogin from "./components/RequireLogin";
 import GuestGuard from "./components/GuestGuard";
 import NotFoundPage from "./pages/NotFoundPage";
+import { ToastContainer } from 'react-toastify'
+import FindPassword from "./pages/FindPassword";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to={"/auth/login"} replace />} />
-      <Route element={<GuestGuard />}>
-        <Route path="/auth/login" element={<LoginPage />} />
-        <Route path="/auth/signup" element={<SignupPage />} />
-      </Route>
+    <>
+      <Routes>
+        <Route path="/" element={<Navigate to={"/auth/login"} replace />} />
+        <Route element={<GuestGuard />}>
+          <Route path="/auth/login" element={<LoginPage />} />
+          <Route path="/auth/signup" element={<SignupPage />} />
+          <Route path="/auth/password" element={<FindPassword />} />
+        </Route>
 
-      <Route element={<RequireLogin />}>
-        <Route path="/usage" element={<UsagePage />} />
-        <Route path="/info" element={<InfoManagementPage />} />
-        <Route path="/item" element={<ItemManagementPage />} />
-        <Route path="/user" element={<UserManagementPage />} />
-        <Route path="/rental" element={<RentalManagementPage />} />
-        <Route path="/space" element={<SpaceManagementPage />} />
-      </Route>
+        <Route element={<RequireLogin />}>
+          <Route path="/usage" element={<UsagePage />} />
+          <Route path="/info" element={<InfoManagementPage />} />
+          <Route path="/item" element={<ItemManagementPage />} />
+          <Route path="/user" element={<UserManagementPage />} />
+          <Route path="/rental" element={<RentalManagementPage />} />
+          <Route path="/space" element={<SpaceManagementPage />} />
+        </Route>
 
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+      <ToastContainer
+        autoClose={1500}
+        position="top-right"
+        theme="dark"
+        hideProgressBar
+        toastStyle={{backgroundColor: 'rgb(0, 0, 0, 0.6)', borderRadius: '10px', fontSize: '15px', minHeight: '50px'}}
+        closeButton={false}
+      />
+    </>
+
   );
 }
 

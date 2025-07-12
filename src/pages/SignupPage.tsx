@@ -73,8 +73,8 @@ const SignupPage = () => {
 
   return (
     <div className="w-full h-screen flex">
-      <div className="m-auto">
-        <h1 className="text-2xl font-bold  mb-[50px]">회원가입</h1>
+      <div className="m-auto w-[50%] min-w-xs max-w-md">
+        <h1 className="text-3xl font-bold  mb-[50px]">회원가입</h1>
         {loginInputs.map((item) => (
           <CustomInput
             label={item.label}

@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../redux/reducers/authSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../redux/store";
+import { toast } from 'react-toastify';
 
 type LoginState = {
   email: string;
@@ -43,18 +44,23 @@ const LoginPage = () => {
   ];
 
   const onclickLogin = async () => {
-    console.log("실행");
-    //POST
-    //pass가 true인 경우 폼 리셋 후 경로 이동
-    loginDispatch({ type: "RESET" });
-    dispatch(login({ email: loginForm.email, password: loginForm.password }));
-    navigate("/usage");
+    try{
+      await dispatch(login({ email: loginForm.email, password: loginForm.password })).unwrap();
+      
+      toast.success('로그인되었습니다.')
+      loginDispatch({ type: "RESET" });
+
+      navigate("/usage");
+    }
+    catch {
+      toast.error('로그인에 실패했습니다.')
+    }
   };
 
   return (
     <div className="w-full h-screen flex">
-      <div className="m-auto">
-        <h1 className="text-2xl font-bold  mb-[50px]">로그인</h1>
+      <div className="m-auto w-[50%] min-w-xs max-w-md">
+        <h1 className="justify-self-center text-3xl font-bold mb-[50px]">다누리</h1>
         {loginInputs.map((item) => (
           <CustomInput
             label={item.label}
@@ -65,10 +71,14 @@ const LoginPage = () => {
             }
           />
         ))}
-        <div className="justify-self-end text-xs text-danuri-400 cursor-pointer underline">
-          <Link to={"/auth/signup"}>회원가입</Link>
+        <div className="mt-[60px]">
+          <CustomButton value="로그인" onClick={onclickLogin} />
         </div>
-        <CustomButton value="로그인" onClick={onclickLogin} />
+        <div className="w-[200px] flex items-center justify-between justify-self-center mt-[30px]">
+          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/ahth/password"}>비밀번호 찾기</Link>
+          <div className="w-[1px] h-[20px] border-l-1 border-gray-300"></div>
+          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/signup"}>회원가입</Link>
+        </div>
       </div>
     </div>
   );

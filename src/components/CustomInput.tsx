@@ -13,10 +13,10 @@ type CustomInputType = {
 const CustomInput = ({ label, value, onChange, valid, disabled }: CustomInputType) => {
   const [isFocus, setIsFocus] = useState<boolean>(false);
   return (
-    <div className="mb-[30px]">
-      <p className="text-danuri-text mb-[10px]">{label}</p>
+    <div className="mb-[20px]">
+      <p className="text-danuri-text mb-[7px] font-semibold text-sm">{label}</p>
       <div
-        className={`${value.length > 0 && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[13px] w-full min-w-xs`}
+        className={`${value.length > 0 && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[10px] w-full min-w-xs`}
       >
         <input
           disabled={disabled}
