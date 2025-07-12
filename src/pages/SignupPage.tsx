@@ -4,23 +4,23 @@ import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
 import { postSignup } from "../api/AuthAPI";
-import { isValidEmail, isValidPhone } from "../utils/infoValidation";
+import { isValidEmail } from "../utils/infoValidation";
 import { replacePhone } from "../utils/infoFormat";
+import { GoChevronLeft } from "react-icons/go";
+import { toast } from "react-toastify";
 
 type SignupState = {
-  company_id: string;
   email: string;
   password: string;
-  phone: string;
+  rePassword: string;
 };
 
 type SignupAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
 const initialSignupForm: SignupState = {
-  company_id: "",
   email: "",
   password: "",
-  phone: "",
+  rePassword: "",
 };
 
 const signupReducer = (state: SignupState, action: SignupAction) => {
@@ -46,35 +46,41 @@ const SignupPage = () => {
   const [signupForm, dispatch] = useReducer(signupReducer, initialSignupForm);
 
   const loginInputs = [
-    { label: "회사ID", key: "company_id", value: signupForm.company_id },
     { label: "이메일", key: "email", value: signupForm.email },
     { label: "비밀번호", key: "password", value: signupForm.password },
-    { label: "전화번호", key: "phone", value: signupForm.phone },
+    { label: "비밀번호 확인", key: "rePassword", value: signupForm.rePassword },
   ];
 
   const onclickSignup = async () => {
-    if (!isValidEmail(signupForm.email) || !isValidPhone(signupForm.phone)) return;
-    if (Object.values(signupForm).includes("")) return;
+    if (Object.values(signupForm).includes("")){
+      toast.error('모든 항목을 입력해주세요.');
+      return;
+    } 
+    if (!isValidEmail(signupForm.email)){
+      toast.error('이메일이 형식에 맞지않습니다.');
+      return;
+    }
 
     const res = await postSignup({
-      company_id: signupForm.company_id,
       email: signupForm.email,
       password: signupForm.password,
-      phone: signupForm.phone,
+      rePassword: signupForm.rePassword,
     });
 
     if (res.pass) {
+      toast.success('회원가입되었습니다.');
       dispatch({ type: "RESET" });
       navigate("/auth/login");
     } else {
-      console.log("회원가입 실패", res.data);
+        toast.error('회원가입에 실패했습니다.');
     }
   };
 
   return (
     <div className="w-full h-screen flex">
       <div className="m-auto w-[50%] min-w-xs max-w-md">
-        <h1 className="text-3xl font-bold  mb-[50px]">회원가입</h1>
+        <Link to={'/auth/login'}><GoChevronLeft size={30} /></Link>
+        <h1 className="justify-self-center text-3xl font-bold mb-[50px]">회원가입</h1>
         {loginInputs.map((item) => (
           <CustomInput
             label={item.label}
@@ -83,19 +89,16 @@ const SignupPage = () => {
             valid={
               item.key === "email"
                 ? isValidEmail(signupForm.email)
-                : item.key === "phone"
-                  ? isValidPhone(signupForm.phone)
-                  : undefined
+                : undefined
             }
             onChange={(e) =>
               dispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
             }
           />
         ))}
-        <div className="justify-self-end text-xs text-danuri-400 cursor-pointer underline">
-          <Link to={"/auth/login"}>로그인</Link>
+        <div className="mt-[60px]">
+          <CustomButton value="완료" onClick={() => onclickSignup()} />
         </div>
-        <CustomButton value="회원가입" onClick={() => onclickSignup()} />
       </div>
     </div>
   );
