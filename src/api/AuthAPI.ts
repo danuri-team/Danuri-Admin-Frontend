@@ -16,10 +16,12 @@ export const postLogin = async ({ email, password }: { email: string; password: 
 
 //관리자 인증 회원가입
 export const postSignup = async ({
+  companyId,
   email,
   password,
   rePassword,
 }: {
+  companyId:string;
   email: string;
   password: string;
   rePassword: string;
@@ -27,6 +29,7 @@ export const postSignup = async ({
   try {
     //토큰 X
     const res = await PublicAxios.post("/auth/admin/sign-up", {
+      companyId,
       email,
       password,
       rePassword,

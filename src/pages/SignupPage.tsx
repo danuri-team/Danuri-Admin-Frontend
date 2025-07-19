@@ -10,6 +10,7 @@ import { GoChevronLeft } from "react-icons/go";
 import { toast } from "react-toastify";
 
 type SignupState = {
+  companyId: string,
   email: string;
   password: string;
   rePassword: string;
@@ -18,6 +19,7 @@ type SignupState = {
 type SignupAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
 const initialSignupForm: SignupState = {
+  companyId: "",
   email: "",
   password: "",
   rePassword: "",
@@ -46,6 +48,7 @@ const SignupPage = () => {
   const [signupForm, dispatch] = useReducer(signupReducer, initialSignupForm);
 
   const loginInputs = [
+    { label: "회사", key: "companyId", value: signupForm.companyId },
     { label: "이메일", key: "email", value: signupForm.email },
     { label: "비밀번호", key: "password", value: signupForm.password },
     { label: "비밀번호 확인", key: "rePassword", value: signupForm.rePassword },
@@ -62,6 +65,7 @@ const SignupPage = () => {
     }
 
     const res = await postSignup({
+      companyId: signupForm.companyId,
       email: signupForm.email,
       password: signupForm.password,
       rePassword: signupForm.rePassword,
