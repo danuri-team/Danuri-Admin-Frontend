@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import CustomButton from "./CustomButton";
-import CustomInput from "./CustomInput";
+import CustomButton from "../CustomButton";
+import CustomInput from "../CustomInput";
 import { toast } from "react-toastify";
 
 type VerifyCode = {

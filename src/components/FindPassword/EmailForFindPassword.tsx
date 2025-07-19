@@ -1,6 +1,6 @@
-import { isValidEmail } from "../utils/infoValidation";
-import CustomButton from "./CustomButton";
-import CustomInput from "./CustomInput";
+import { isValidEmail } from "../../utils/infoValidation";
+import CustomButton from "../CustomButton";
+import CustomInput from "../CustomInput";
 
 type EmailForFind = {
     value: string;
