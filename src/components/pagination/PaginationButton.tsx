@@ -1,7 +1,7 @@
 import type { Table } from "@tanstack/react-table";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
-import type { UsageData } from "./CustomTable";
+import type { UsageData } from "../CustomTable";
 
 const PaginationButton = ({ table }: { table: Table<UsageData> }) => {
   return (

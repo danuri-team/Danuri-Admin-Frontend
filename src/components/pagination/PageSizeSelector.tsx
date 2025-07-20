@@ -1,6 +1,6 @@
 import type { Table } from "@tanstack/react-table";
 import { useState } from "react";
-import type { UsageData } from "./CustomTable";
+import type { UsageData } from "../CustomTable";
 import { IoCaretDownOutline } from "react-icons/io5";
 
 const pageSizeOptions = [{ value: 10 }, { value: 50 }, { value: 100 }];

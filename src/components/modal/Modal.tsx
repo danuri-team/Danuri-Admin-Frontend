@@ -1,11 +1,11 @@
 import { useEffect, useReducer, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput, { type ModalInputTypesType } from "./ModalInput";
-import CustomButton from "./CustomButton";
-import type { ModalSubmitFn } from "../pages/ItemManagementPage";
-import { getMyInfo } from "../api/InfoAPI";
+import CustomButton from "../CustomButton";
+import type { ModalSubmitFn } from "../../pages/ItemManagementPage";
+import { getMyInfo } from "../../api/InfoAPI";
 import { useLocation } from "react-router-dom";
-import { selectTermAvailableCount } from "../utils/searchTermOption";
+import { selectTermAvailableCount } from "../../utils/searchTermOption";
 
 type ModalType = {
   isOpen: boolean;

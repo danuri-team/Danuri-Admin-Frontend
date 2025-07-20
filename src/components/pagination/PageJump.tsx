@@ -1,5 +1,5 @@
 import type { Table } from "@tanstack/react-table";
-import type { UsageData } from "./CustomTable";
+import type { UsageData } from "../CustomTable";
 import { useEffect, useState } from "react";
 
 const PageJump = ({ table }: { table: Table<UsageData> }) => {

@@ -6,9 +6,9 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import StatusTag from "./StatusTag";
-import PageJump from "./PageJump";
-import PaginationButton from "./PaginationButton";
-import PageSizeSelector from "./PageSizeSelector";
+import PageJump from "./pagination/PageJump";
+import PaginationButton from "./pagination/PaginationButton";
+import PageSizeSelector from "./pagination/PageSizeSelector";
 import { format, isAfter, isBefore, set } from "date-fns";
 import { IoIosCheckmark } from "react-icons/io";
 
