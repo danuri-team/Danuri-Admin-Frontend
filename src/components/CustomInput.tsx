@@ -3,6 +3,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { FaCircleExclamation } from "react-icons/fa6";
 
 type CustomInputType = {
+  isMust?: boolean;
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -10,11 +11,11 @@ type CustomInputType = {
   disabled?:boolean
 };
 
-const CustomInput = ({ label, value, onChange, valid, disabled }: CustomInputType) => {
+const CustomInput = ({ isMust, label, value, onChange, valid, disabled }: CustomInputType) => {
   const [isFocus, setIsFocus] = useState<boolean>(false);
   return (
     <div className="mb-[20px]">
-      <p className="text-danuri-text mb-[7px] font-semibold text-sm">{label}</p>
+      <p className="text-danuri-text mb-[7px] font-semibold text-sm">{label}{isMust && <span className="text-red-400"> *</span>}</p>
       <div
         className={`${value.length > 0 && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[10px] w-full min-w-xs`}
       >

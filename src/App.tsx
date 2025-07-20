@@ -7,8 +7,10 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import SpaceManagementPage from "./pages/SpaceManagementPage";
 import RentalManagementPage from "./pages/RentalManagementPage";
-import RequireLogin from "./components/RequireLogin";
-import GuestGuard from "./components/GuestGuard";
+import CampaignManagementPage from "./pages/CampaignManagementPage";
+import NotiTalkManagementPage from "./pages/NotiTalkManagementPage";
+import RequireLogin from "./components/guard/RequireLogin";
+import GuestGuard from "./components/guard/GuestGuard";
 import NotFoundPage from "./pages/NotFoundPage";
 import { ToastContainer } from 'react-toastify'
 import FindPassword from "./pages/FindPassword";
@@ -18,6 +20,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Navigate to={"/auth/login"} replace />} />
+
         <Route element={<GuestGuard />}>
           <Route path="/auth/login" element={<LoginPage />} />
           <Route path="/auth/signup" element={<SignupPage />} />
@@ -31,6 +34,8 @@ function App() {
           <Route path="/user" element={<UserManagementPage />} />
           <Route path="/rental" element={<RentalManagementPage />} />
           <Route path="/space" element={<SpaceManagementPage />} />
+          <Route path="/campaign" element={<CampaignManagementPage />} />
+          <Route path="/talk" element={<NotiTalkManagementPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
