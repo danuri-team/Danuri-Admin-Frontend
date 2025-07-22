@@ -116,7 +116,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center">
+    <div className="fixed inset-0 flex justify-center items-center z-5">
       <div className="absolute inset-0 h-screen bg-black opacity-[70%]"></div>
       {isOpen && (
         <div className="relative w-sm bg-white bg-opacity-[100%] rounded-xl p-[20px] pt-[20px]">
