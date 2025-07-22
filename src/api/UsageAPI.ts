@@ -63,7 +63,7 @@ export const postUsageExcel = async ({ startDate, endDate, spaceId, userId }: Us
       }
     );
 
-    const blob = new Blob([res.data]);
+    const blob = res.data;
 
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");

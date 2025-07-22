@@ -19,21 +19,25 @@ const CampaignManagementPage = () => {
                     <div className="ml-[130px] mt-[30px]">
                         <CustomInput 
                             isMust
+                            type=""
                             label="캠페인 이름"
                             value=""
                             onChange={()=>console.log('sdf')}/>
                         <CustomInput 
                             isMust
+                            type=""
                             label="캠페인 대상"
                             value=""
                             onChange={()=>console.log('sdf')}/>
                         <CustomInput 
                             isMust
                             label="시작 시간"
-                            value=""
-                            onChange={()=>console.log('sdf')}/>
+                            type="time"
+                            value={null}
+                            onChange={(date: Date|null)=>console.log(date)}/>
                         <CustomInput 
                             isMust
+                            type=""
                             label="캠페인 내용"
                             value=""
                             onChange={()=>console.log('sdf')}/>
