@@ -98,7 +98,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
       else setAvailableCount(0);
     } 
     getCount();
-  },[modalForm.itemId, modalForm.rentalId]);
+  },[modalForm.itemId, modalForm.rentalId, title, location]);
 
   const getMyCompanyId = async () => {
     const res = await getMyInfo();

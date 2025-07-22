@@ -128,7 +128,7 @@ const UserManagementPage = () => {
     };
 
     getTableData();
-  }, [isModalOpen, isDeleteMode]);
+  }, [isModalOpen, isDeleteMode, modalTitle]);
 
   useEffect(()=>{
     if(!tableData)return
