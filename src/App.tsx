@@ -14,6 +14,7 @@ import GuestGuard from "./components/guard/GuestGuard";
 import NotFoundPage from "./pages/NotFoundPage";
 import { ToastContainer } from 'react-toastify'
 import FindPassword from "./pages/FindPassword";
+import MachineManagementPage from "./pages/MachineManagementPage";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/user" element={<UserManagementPage />} />
           <Route path="/rental" element={<RentalManagementPage />} />
           <Route path="/space" element={<SpaceManagementPage />} />
+          <Route path="/machine" element={<MachineManagementPage />} />
           <Route path="/campaign" element={<CampaignManagementPage />} />
           <Route path="/talk" element={<NotiTalkManagementPage />} />
         </Route>
