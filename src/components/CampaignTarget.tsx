@@ -18,7 +18,7 @@ const targetBlock = {
 }
 
 const CampaignTarget = ({isMust,label, value, onChange}:TargetProps) => {
-    const [tags, setTags] = useState<{key:string, tagValue: string | null}[]>([]);
+    const [tags, setTags] = useState<{id:number, key:string, tagValue: string | null}[]>([]);
 
     const addTargetTag = (key:string, tagValue: string[] | null) => {
         if(tags.some((obj)=>obj.key === key && obj.tagValue !== null)){
@@ -27,7 +27,7 @@ const CampaignTarget = ({isMust,label, value, onChange}:TargetProps) => {
         }
         setTags((prev)=>{
             const tempValue = tagValue===null ? tagValue : tagValue[0];
-            return [...prev, {key, tagValue:tempValue} ]
+            return [...prev, {id:prev.length+1 ,key, tagValue:tempValue} ]
         })
     }
 
@@ -42,16 +42,17 @@ const CampaignTarget = ({isMust,label, value, onChange}:TargetProps) => {
                 
                 {
                     tags.map((tagObj)=>{
-                        const key = Object.entries(tagObj)[0][1];
-                        const tagValue = Object.entries(tagObj)[1][1];
+                        const id = Object.entries(tagObj)[0][1];
+                        const key = Object.entries(tagObj)[1][1];
+                        const tagValue = Object.entries(tagObj)[2][1];
 
                         return (
                             <div 
-                                key={key}
+                                key={id}
                                 className="flex text-sm rounded-sm mr-[10px] overflow-hidden">
                                 <button
                                     className="cursor-pointer text-gray-500 bg-gray-100 p-[3px] pl-[10px] pr-[10px]"
-                                    onClick={()=>setTags((prev)=>prev.filter((tag)=>tag.key !== key))}>
+                                    onClick={()=>setTags((prev)=>prev.filter((tag)=>tag.id !== id))}>
                                     {key}
                                 </button>
                                 {
