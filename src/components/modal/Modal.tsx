@@ -131,9 +131,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
               if(item.key==='company_id'){
                 getMyCompanyId();
               }
-              
               if(item.hide)return;
-              console.log(item.disable)
               
               return item.type === "date" || item.type === "time" ? (
                 <ModalInput

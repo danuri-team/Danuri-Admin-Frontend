@@ -31,10 +31,6 @@ type ModalInputType =
 const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, disable }: ModalInputType) => {
   const location = useLocation();
 
-  console.log(disable);
-
-  console.log(availableCount);
-
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerms, setSearchTerms] = useState<{ name: string; id: string }[]>([]);
   const [isFocus, setIsFocus] = useState<boolean>(false);
