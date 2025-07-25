@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 type SignupState = {
   companyId: string,
   email: string;
+  phone:string;
   password: string;
   rePassword: string;
 };
@@ -21,6 +22,7 @@ type SignupAction = { type: "CHANGE"; payload: { key: string; value: string } } 
 const initialSignupForm: SignupState = {
   companyId: "",
   email: "",
+  phone: "",
   password: "",
   rePassword: "",
 };
@@ -50,6 +52,7 @@ const SignupPage = () => {
   const loginInputs = [
     { label: "회사", key: "companyId", value: signupForm.companyId },
     { label: "이메일", key: "email", value: signupForm.email },
+    { label: "전화번호", key: "email", value: signupForm.phone },
     { label: "비밀번호", key: "password", value: signupForm.password },
     { label: "비밀번호 확인", key: "rePassword", value: signupForm.rePassword },
   ];
@@ -67,6 +70,7 @@ const SignupPage = () => {
     const res = await postSignup({
       companyId: signupForm.companyId,
       email: signupForm.email,
+      phone: signupForm.phone,
       password: signupForm.password,
       rePassword: signupForm.rePassword,
     });

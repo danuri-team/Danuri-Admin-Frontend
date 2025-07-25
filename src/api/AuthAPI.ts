@@ -18,11 +18,13 @@ export const postLogin = async ({ email, password }: { email: string; password: 
 export const postSignup = async ({
   companyId,
   email,
+  phone,
   password,
   rePassword,
 }: {
   companyId:string;
   email: string;
+  phone:string;
   password: string;
   rePassword: string;
 }) => {
@@ -31,6 +33,7 @@ export const postSignup = async ({
     const res = await PublicAxios.post("/auth/admin/sign-up", {
       companyId,
       email,
+      phone,
       password,
       rePassword,
     });
