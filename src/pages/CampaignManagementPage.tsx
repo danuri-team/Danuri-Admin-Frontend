@@ -1,4 +1,6 @@
 import BannerButton from "../components/BannerButton"
+import CampaignTarget from "../components/CampaignTarget"
+import CustomDetail from "../components/CustomDetail"
 import CustomInput from "../components/CustomInput"
 import MainHeader from "../components/MainHeader"
 import ViewKakaoTalk from "../components/ViewKakaoTalk"
@@ -16,28 +18,28 @@ const CampaignManagementPage = () => {
                 </div>
                 <div className="flex mr-[50px] ml-[50px] mb-[50px]">
                     <ViewKakaoTalk/>
-                    <div className="ml-[130px] mt-[30px]">
-                        <CustomInput 
+                    <div className="ml-[10%] lg:ml-[110px] mt-[30px] flex-1 ">
+                        <div className="max-w-sm">
+                            <CustomInput 
+                                isMust
+                                type=""
+                                label="캠페인 이름"
+                                value=""
+                                onChange={()=>console.log('sdf')}/>
+                            <CampaignTarget 
+                                isMust
+                                label="캠페인 대상"
+                                value=""
+                                onChange={()=>console.log('sdf')}/>
+                            <CustomInput 
+                                isMust
+                                label="시작 시간"
+                                type="time"
+                                value={null}
+                                onChange={(date: Date|null)=>console.log(date)}/>
+                        </div>
+                        <CustomDetail 
                             isMust
-                            type=""
-                            label="캠페인 이름"
-                            value=""
-                            onChange={()=>console.log('sdf')}/>
-                        <CustomInput 
-                            isMust
-                            type=""
-                            label="캠페인 대상"
-                            value=""
-                            onChange={()=>console.log('sdf')}/>
-                        <CustomInput 
-                            isMust
-                            label="시작 시간"
-                            type="time"
-                            value={null}
-                            onChange={(date: Date|null)=>console.log(date)}/>
-                        <CustomInput 
-                            isMust
-                            type=""
                             label="캠페인 내용"
                             value=""
                             onChange={()=>console.log('sdf')}/>
