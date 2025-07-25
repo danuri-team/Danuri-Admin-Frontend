@@ -17,7 +17,7 @@ const targetBlock = {
     그리고: null
 }
 
-const CampaignTarget = ({isMust,label, value, onChange}:TargetProps) => {
+const CampaignTarget = ({isMust,label}:TargetProps) => {
     const [tags, setTags] = useState<{id:number, key:string, tagValue: string | null}[]>([]);
 
     const addTargetTag = (key:string, tagValue: string[] | null) => {
