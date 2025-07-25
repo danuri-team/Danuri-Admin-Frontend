@@ -21,7 +21,7 @@ const CampaignTarget = ({isMust,label, value, onChange}:TargetProps) => {
     const [tags, setTags] = useState<{key:string, tagValue: string | null}[]>([]);
 
     const addTargetTag = (key:string, tagValue: string[] | null) => {
-        if(tags.some((obj)=>obj.key === key)){
+        if(tags.some((obj)=>obj.key === key && obj.tagValue !== null)){
             toast.error('이미 추가된 조건입니다.');
             return;
         }
