@@ -1,4 +1,4 @@
-import { useState, useReducer, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { deleteItem } from "../api/ItemAPI";
 import BannerButton from "../components/BannerButton";
 import CustomTable, { type UsageData } from "../components/CustomTable";
@@ -6,6 +6,7 @@ import MainHeader from "../components/MainHeader";
 import TableButton from "../components/TableButton";
 import Modal from "../components/modal/Modal";
 import type { ModalInputTypesType } from "../components/modal/ModalInput";
+import { getSearchCompanyDevice, postAddDevice, putUpdateDevice } from "../api/DeviceAPI";
 
 export type modalState = Record<string, Date | string | number | null>;
 
@@ -16,33 +17,29 @@ const tableHeader = [
   { name: "추가일", id: "add_date" },
 ];
 
-const inputOption: Record<string, { name: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
+const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean, disable?:boolean }[]> = {
   추가: [
-    { name: "ID", key: "id", type: 'text' },
-    { name: "추가일", key: "add_date", type:'date' },
+    { label: "ID", key: "id", type: 'text' },
+    { label: "추가일", key: "add_date", type:'date' },
   ],
   수정: [
-    { name: "ID", key: "id" , type:'text', hide: true},
-    { name: "추가일", key: "add_date", type:'date' },
+    { label: "ID", key: "id" , type:'text', disable:true},
+    { label: "별칭", key: "alias", type:'text' },
   ],
 };
 
 //모달 Submit 함수
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
   추가: (form: modalState) =>
-    postCreateItem({
-      name: form.name as string,
-      totalQuantity: form.totalQuantity as string,
-      availableQuantity: '',
-      status: form.status as string,
+    postAddDevice({
+      deviceId: form.deviceId as string,
+      spaceId: form.spaceId as string,
     }),
   수정: (form: modalState) => 
-    putUpdateItem({
-      itemId: form.itemId as string, 
-      name: form.name as string, 
-      totalQuantity: form.total_quantity as string,
-      availableQuantity: form.available_quantity as string,
-      status: form.status as string,
+    putUpdateDevice({
+      deviceId: form.deviceId as string,
+      spaceId: form.spaceId as string,
+      isActivate: form.isActivate==='true' ? true : false
     }),
 };
 
@@ -57,36 +54,18 @@ const MachineManagementPage = () => {
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
   const [selectedRowId, setSelectedRowId] = useState<string>('');
 
-  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
-
-  const sortTableData = useMemo(()=>{
-    if(!tableData)return null
-    return [...tableData].sort((a,b) => {
-    if(selectForm.order==='재고순'){
-      return (a.available_quantity as number) - (b.available_quantity as number);
-    }
-    else if(selectForm.order==='이름순'){
-      return (a.name as string).localeCompare(b.name as string);
-    }
-    else {
-      if(a.status==='AVAILABLE'&&b.status!=='AVAILABLE')return -1;
-      else if(a.status!=='AVAILABLE'&&b.status==='AVAILABLE')return 1;
-      else return 0;
-    }
-  })},[tableData, selectForm.order])
-
-//   useEffect(() => {
-//     if (isModalOpen === true) return;
-//     const getTableData = async () => {
-//       const res = await ();
-//       if (res.pass) {
-//         setTableData(res.data);
-//       } else {
-//         console.log("데이터 불러오기 실패");
-//       }
-//     };
-//     getTableData();
-//   }, [isModalOpen, isDeleteMode]);
+  useEffect(() => {
+    if (isModalOpen === true) return;
+    const getTableData = async () => {
+      const res = await getSearchCompanyDevice();
+      if (res.pass) {
+        setTableData(res.data);
+      } else {
+        console.log("데이터 불러오기 실패");
+      }
+    };
+    getTableData();
+  }, [isModalOpen, isDeleteMode]);
 
   const changeSelectedRow = ({id}:{id:string}) => {
     setSelectedRowId(id);
@@ -148,7 +127,7 @@ const MachineManagementPage = () => {
                 <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode} />
             </div>
             </div>
-            <CustomTable header={tableHeader} data={sortTableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
+            <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
         </div>
         {isModalOpen && (
             <Modal

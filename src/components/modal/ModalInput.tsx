@@ -16,6 +16,7 @@ type ModalInputType =
       resetValue?: () => void;
       onChange: (date: Date | null) => void;
       availableCount?:number;
+      disable?:boolean;
     }
   | {
       label: string;
@@ -24,10 +25,13 @@ type ModalInputType =
       resetValue?: () => void;
       onChange: (value: string | number) => void;
       availableCount?:number;
+      disable?:boolean;
     };
 
-const ModalInput = ({ label, value, type, onChange, resetValue, availableCount }: ModalInputType) => {
+const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, disable }: ModalInputType) => {
   const location = useLocation();
+
+  console.log(disable);
 
   console.log(availableCount);
 
@@ -73,6 +77,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount }
             className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[10px]`}
           >
             <input
+              disabled={disable}
               className="w-full outline-none"
               placeholder={`${label}을 검색해주세요`}
               type="text"
@@ -145,7 +150,8 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount }
         />
       ) : (
         <input
-          className={`${isFocus ? "border-blue-400" : "border-gray-200"} w-full border-1 rounded-xl p-[10px] outline-none`}
+          disabled={disable}
+          className={`${isFocus ? "border-blue-400" : "border-gray-200"} w-full border-1 rounded-xl p-[10px] outline-none disabled:select-none disabled:text-gray-300`}
           placeholder={`${label}을 입력해주세요.`}
           type={type}
           min={0}

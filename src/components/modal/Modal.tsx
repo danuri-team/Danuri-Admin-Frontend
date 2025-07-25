@@ -10,7 +10,7 @@ import { selectTermAvailableCount } from "../../utils/searchTermOption";
 type ModalType = {
   isOpen: boolean;
   title: string;
-  inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[] | null;
+  inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean, disable?:boolean }[] | null;
   onClose: () => void; 
   onSubmit: ModalSubmitFn | ((form:modalState) => void);
 };
@@ -133,9 +133,11 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
               }
               
               if(item.hide)return;
+              console.log(item.disable)
               
               return item.type === "date" || item.type === "time" ? (
                 <ModalInput
+                  disable={item.disable}
                   key={item.label}
                   label={item.label}
                   type={item.type}
@@ -152,6 +154,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                 />
               ) : (
                 <ModalInput
+                  disable={item.disable}
                   key={item.label}
                   label={item.label}
                   type={item.type}
