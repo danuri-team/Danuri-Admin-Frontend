@@ -1,14 +1,15 @@
-import CustomTable, { type UsageData } from "../components/CustomTable";
-import MainHeader from "../components/MainHeader";
-import CustomSelect from "../components/CustomSelect";
-import BannerButton from "../components/BannerButton";
-import TableButton from "../components/TableButton";
-import type { ModalInputTypesType } from "../components/modal/ModalInput";
+import CustomTable, { type UsageData } from "../../components/CustomTable";
+import MainHeader from "../../components/MainHeader";
+import CustomSelect from "../../components/CustomSelect";
+import BannerButton from "../../components/BannerButton";
+import TableButton from "../../components/TableButton";
+import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import { useEffect, useReducer, useState } from "react";
-import Modal from "../components/modal/Modal";
-import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from "../api/UserAPI";
-import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
-import { formatDatetoISOString } from "../utils/dateFormat";
+import Modal from "../../components/modal/Modal";
+import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from "../../api/UserAPI";
+import type { ModalSubmitFn, modalState } from "./ItemPage";
+import { formatDatetoISOString } from "../../utils/dateFormat";
+import { useNavigate } from "react-router-dom";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -103,7 +104,9 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
     }),
 };
 
-const UserManagementPage = () => {
+const UserPage = () => {
+  const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
@@ -233,6 +236,7 @@ const UserManagementPage = () => {
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
             <TableButton value="검색" onClick={() => onClickTableButton({ value: "검색" })}/>
             <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode}/>
+            <TableButton value="가입 폼 관리" onClick={() => navigate('/joinForm')}/>
           </div>
         </div>
         <CustomTable header={tableHeader} data={filterData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId} />
@@ -250,4 +254,4 @@ const UserManagementPage = () => {
   );
 };
 
-export default UserManagementPage;
+export default UserPage;

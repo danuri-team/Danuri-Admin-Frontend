@@ -3,6 +3,7 @@ import { CiSquarePlus } from "react-icons/ci";
 import { CiSearch } from "react-icons/ci";
 import { CiGrid41 } from "react-icons/ci";
 import { CiTrash } from "react-icons/ci";
+import { CiEdit } from "react-icons/ci";
 import type { JSX } from "react";
 
 type TableButtonType = {
@@ -11,7 +12,7 @@ type TableButtonType = {
   isDeleteMode?: boolean
 };
 
-type ButtonLabel = "다운로드" | "추가" | "삭제" | "검색" | "대여관리";
+type ButtonLabel = "다운로드" | "추가" | "삭제" | "검색" | "대여관리" | "가입 폼 관리";
 
 const buttonIcon: Record<ButtonLabel, JSX.Element> = {
   다운로드: <CiFileOn size={20} />,
@@ -19,6 +20,7 @@ const buttonIcon: Record<ButtonLabel, JSX.Element> = {
   대여관리: <CiGrid41 size={20} />,
   검색: <CiSearch size={20} />,
   삭제: <CiTrash size={20} />,
+  "가입 폼 관리": <CiEdit size={20} />
 };
 
 const TableButton = ({ value, onClick, isDeleteMode }: TableButtonType) => {
