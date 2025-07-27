@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { deleteItem } from "../api/ItemAPI";
-import BannerButton from "../components/BannerButton";
-import CustomTable, { type UsageData } from "../components/CustomTable";
-import MainHeader from "../components/MainHeader";
-import TableButton from "../components/TableButton";
-import Modal from "../components/modal/Modal";
-import type { ModalInputTypesType } from "../components/modal/ModalInput";
-import { getSearchCompanyDevice, postAddDevice, putUpdateDevice } from "../api/DeviceAPI";
+import { deleteItem } from "../../api/ItemAPI";
+import BannerButton from "../../components/BannerButton";
+import CustomTable, { type UsageData } from "../../components/CustomTable";
+import MainHeader from "../../components/MainHeader";
+import TableButton from "../../components/TableButton";
+import Modal from "../../components/modal/Modal";
+import type { ModalInputTypesType } from "../../components/modal/ModalInput";
+import { getSearchCompanyDevice, postAddDevice, putUpdateDevice } from "../../api/DeviceAPI";
 
 export type modalState = Record<string, Date | string | number | null>;
 
@@ -43,7 +43,7 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
     }),
 };
 
-const MachineManagementPage = () => {
+const MachinePage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
@@ -142,4 +142,4 @@ const MachineManagementPage = () => {
     )
 }
 
-export default MachineManagementPage;
+export default MachinePage;

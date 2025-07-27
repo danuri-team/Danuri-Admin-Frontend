@@ -2,12 +2,12 @@ import { useReducer, useState } from "react";
 import { GoChevronLeft } from "react-icons/go";
 import { Link, useNavigate } from "react-router-dom";
 
-import EmailForFindPassword from "../components/findPassword/EmailForFindPassword";
-import VerifyCode from "../components/findPassword/VerifyCode";
-import ChangePassword from "../components/findPassword/ChangePassword";
+import EmailForFindPassword from "../../components/findPassword/EmailForFindPassword";
+import VerifyCode from "../../components/findPassword/VerifyCode";
+import ChangePassword from "../../components/findPassword/ChangePassword";
 
 import { toast } from "react-toastify";
-import { isValidEmail } from "../utils/infoValidation";
+import { isValidEmail } from "../../utils/infoValidation";
 
 type FindPasswordState = {
   email: string;

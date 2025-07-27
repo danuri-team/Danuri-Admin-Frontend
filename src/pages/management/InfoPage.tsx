@@ -1,12 +1,12 @@
 //import CustomInput from "../components/CustomInput";
 import { useEffect, useReducer, useState } from "react";
-import BannerButton from "../components/BannerButton";
-import CustomInput from "../components/CustomInput";
-import MainHeader from "../components/MainHeader";
-import { isValidEmail, isValidPhone } from "../utils/infoValidation";
-import CustomButton from "../components/CustomButton";
-import { replacePhone } from "../utils/infoFormat";
-import { getMyInfo, putAdminInfo } from "../api/InfoAPI";
+import BannerButton from "../../components/BannerButton";
+import CustomInput from "../../components/CustomInput";
+import MainHeader from "../../components/MainHeader";
+import { isValidEmail, isValidPhone } from "../../utils/infoValidation";
+import CustomButton from "../../components/CustomButton";
+import { replacePhone } from "../../utils/infoFormat";
+import { getMyInfo, putAdminInfo } from "../../api/InfoAPI";
 
 type InfoAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
@@ -45,7 +45,7 @@ const infoReducer = (state: InfoState, action: InfoAction) => {
 };
 
 //수정사항: 로그아웃 추가, API 연결
-const InfoManagementPage = () => {
+const InfoPage = () => {
   const [isChangeData, setIsChangeData] = useState<boolean>(false);
   const [infoForm, infoDispatch] = useReducer(infoReducer, initialInfoForm);
 
@@ -118,4 +118,4 @@ const InfoManagementPage = () => {
   );
 };
 
-export default InfoManagementPage;
+export default InfoPage;

@@ -1,9 +1,9 @@
-import BannerButton from "../components/BannerButton"
-import CampaignTarget from "../components/CampaignTarget"
-import CustomDetail from "../components/CustomDetail"
-import CustomInput from "../components/CustomInput"
-import MainHeader from "../components/MainHeader"
-import ViewKakaoTalk from "../components/ViewKakaoTalk"
+import BannerButton from "../../components/BannerButton"
+import CampaignTarget from "../../components/CampaignTarget"
+import CustomDetail from "../../components/CustomDetail"
+import CustomInput from "../../components/CustomInput"
+import MainHeader from "../../components/MainHeader"
+import ViewKakaoTalk from "../../components/ViewKakaoTalk"
 
 const CampaignManagementPage = () => {
     return(

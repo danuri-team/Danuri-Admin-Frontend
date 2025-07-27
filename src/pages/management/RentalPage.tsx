@@ -1,13 +1,13 @@
 import { useEffect, useReducer, useState } from "react";
-import BannerButton from "../components/BannerButton";
-import CustomSelect from "../components/CustomSelect";
-import CustomTable, { type UsageData } from "../components/CustomTable";
-import MainHeader from "../components/MainHeader";
-import Modal from "../components/modal/Modal";
-import type { ModalInputTypesType } from "../components/modal/ModalInput";
-import TableButton from "../components/TableButton";
-import { getSearchCompanyRental, postCreateRental, putUpdateRental } from "../api/RentalAPI";
-import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
+import BannerButton from "../../components/BannerButton";
+import CustomSelect from "../../components/CustomSelect";
+import CustomTable, { type UsageData } from "../../components/CustomTable";
+import MainHeader from "../../components/MainHeader";
+import Modal from "../../components/modal/Modal";
+import type { ModalInputTypesType } from "../../components/modal/ModalInput";
+import TableButton from "../../components/TableButton";
+import { getSearchCompanyRental, postCreateRental, putUpdateRental } from "../../api/RentalAPI";
+import type { ModalSubmitFn, modalState } from "./ItemPage";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -83,7 +83,7 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
     }),
 };
 
-const RentalManagementPage = () => {
+const RentalPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
@@ -186,4 +186,4 @@ const RentalManagementPage = () => {
   );
 };
 
-export default RentalManagementPage;
+export default RentalPage;

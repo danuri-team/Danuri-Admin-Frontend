@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import BannerButton from "../components/BannerButton";
-import CustomTable, { type UsageData } from "../components/CustomTable";
-import MainHeader from "../components/MainHeader";
-import Modal from "../components/modal/Modal";
-import type { ModalInputTypesType } from "../components/modal/ModalInput";
-import TableButton from "../components/TableButton";
-import { deleteSpace, getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../api/SpaceAPI";
-import type { ModalSubmitFn, modalState } from "./ItemManagementPage";
-import { formatDatetoTime, formatTimetoDate } from "../utils/dateFormat";
+import BannerButton from "../../components/BannerButton";
+import CustomTable, { type UsageData } from "../../components/CustomTable";
+import MainHeader from "../../components/MainHeader";
+import Modal from "../../components/modal/Modal";
+import type { ModalInputTypesType } from "../../components/modal/ModalInput";
+import TableButton from "../../components/TableButton";
+import { deleteSpace, getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../../api/SpaceAPI";
+import type { ModalSubmitFn, modalState } from "./ItemPage";
+import { formatDatetoTime, formatTimetoDate } from "../../utils/dateFormat";
 
 const tableHeader = [
   { name: "공간명", id: "name" },
@@ -47,7 +47,7 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
     }),
 };
 
-const SpaceManagementPage = () => {
+const SpacePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
@@ -147,4 +147,4 @@ const SpaceManagementPage = () => {
   );
 };
 
-export default SpaceManagementPage;
+export default SpacePage;

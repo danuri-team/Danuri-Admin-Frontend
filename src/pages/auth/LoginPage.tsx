@@ -1,11 +1,11 @@
 //email, password
 import { useReducer } from "react";
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../redux/reducers/authSlice";
+import { login } from "../../redux/reducers/authSlice";
 import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../redux/store";
+import type { AppDispatch } from "../../redux/store";
 import { toast } from 'react-toastify';
 
 type LoginState = {

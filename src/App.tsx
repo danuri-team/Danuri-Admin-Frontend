@@ -1,20 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import UsagePage from "./pages/UsagePage";
-import InfoManagementPage from "./pages/InfoManagementPage";
-import ItemManagementPage from "./pages/ItemManagementPage";
-import UserManagementPage from "./pages/UserManagementPage";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import SpaceManagementPage from "./pages/SpaceManagementPage";
-import RentalManagementPage from "./pages/RentalManagementPage";
-import CampaignManagementPage from "./pages/CampaignManagementPage";
-import NotiTalkManagementPage from "./pages/NotiTalkManagementPage";
+import { ToastContainer } from "react-toastify";
+
+import { LoginPage, SignupPage, FindPassword } from "./pages/auth";
+import { UsagePage, InfoPage, ItemPage, UserPage, RentalPage, SpacePage, MachinePage, CampaignPage, NotiTalkPage, JoinFormPage } from "./pages/management";
+import NotFoundPage from "./pages/NotFoundPage";
+
 import RequireLogin from "./components/guard/RequireLogin";
 import GuestGuard from "./components/guard/GuestGuard";
-import NotFoundPage from "./pages/NotFoundPage";
-import { ToastContainer } from 'react-toastify'
-import FindPassword from "./pages/FindPassword";
-import MachineManagementPage from "./pages/MachineManagementPage";
 
 function App() {
   return (
@@ -30,14 +22,15 @@ function App() {
 
         <Route element={<RequireLogin />}>
           <Route path="/usage" element={<UsagePage />} />
-          <Route path="/info" element={<InfoManagementPage />} />
-          <Route path="/item" element={<ItemManagementPage />} />
-          <Route path="/user" element={<UserManagementPage />} />
-          <Route path="/rental" element={<RentalManagementPage />} />
-          <Route path="/space" element={<SpaceManagementPage />} />
-          <Route path="/machine" element={<MachineManagementPage />} />
-          <Route path="/campaign" element={<CampaignManagementPage />} />
-          <Route path="/talk" element={<NotiTalkManagementPage />} />
+          <Route path="/info" element={<InfoPage />} />
+          <Route path="/item" element={<ItemPage />} />
+          <Route path="/user" element={<UserPage />} />
+          <Route path="/rental" element={<RentalPage />} />
+          <Route path="/space" element={<SpacePage />} />
+          <Route path="/machine" element={<MachinePage />} />
+          <Route path="/campaign" element={<CampaignPage />} />
+          <Route path="/talk" element={<NotiTalkPage />} />
+          <Route path="/joinForm" element={<JoinFormPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

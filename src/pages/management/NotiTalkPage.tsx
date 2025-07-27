@@ -1,10 +1,10 @@
-import BannerButton from "../components/BannerButton";
-import BorderSelect from "../components/BorderSelect";
-import CustomDetail from "../components/CustomDetail";
-import MainHeader from "../components/MainHeader";
-import ViewKakaoTalk from "../components/ViewKakaoTalk";
+import BannerButton from "../../components/BannerButton";
+import BorderSelect from "../../components/BorderSelect";
+import CustomDetail from "../../components/CustomDetail";
+import MainHeader from "../../components/MainHeader";
+import ViewKakaoTalk from "../../components/ViewKakaoTalk";
 
-const NotiTalkManagementPage = () => {
+const NotiTalkPage = () => {
     return(
         <div className="w-full">
             <MainHeader />
@@ -36,4 +36,4 @@ const NotiTalkManagementPage = () => {
     )
 }
 
-export default NotiTalkManagementPage;
+export default NotiTalkPage;
