@@ -53,8 +53,8 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
     { label: "회사 ID", key: "company_id", type: "text", hide:true },
     { label: "이름", key: "name", type: "text" },
     { label: "전화번호", key: "phone", type: "text" },
-    { label: "성별", key: "sex", type: "text" },
-    { label: "나이", key: "age", type: "text" },
+    { label: "성별", key: "sex", type: "option" },
+    { label: "나이", key: "age", type: "option" },
   ],
   수정: [
     { label: "사용자 ID", key: "id", type: "text", hide:true },
