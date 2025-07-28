@@ -78,3 +78,17 @@ export const postUsageExcel = async ({ startDate, endDate, spaceId, userId }: Us
     return { data: null, pass: false };
   }
 };
+
+//강제 퇴실
+export const putForcedToLeave = async ({usageId,end_at}:{usageId:string, end_at:string}) => {
+  try{
+    const res = await PrivateAxios.put(`/admin/usage/${usageId}`,{
+      end_at
+    })
+    console.log(res.data);
+    return {data:res.data, pass:true}
+  }
+  catch(error){
+    return {data:error, pass:false}
+  }
+}

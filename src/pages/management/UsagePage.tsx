@@ -6,11 +6,12 @@ import TableButton from "../../components/TableButton";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import Modal from "../../components/modal/Modal";
-import { postCreateUsage, postUsageExcel, postUsageSearch } from "../../api/UsageAPI";
+import { postCreateUsage, postUsageExcel, postUsageSearch, putForcedToLeave } from "../../api/UsageAPI";
 import { formatDatetoISOString } from "../../utils/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { useNavigate } from "react-router-dom";
 import { isAfter, isBefore } from "date-fns";
+import { toast } from "react-toastify";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -144,6 +145,9 @@ const UsagePage = () => {
   const [modalTitle, setModalTitle] = useState<string>("");
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
+  const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
+  const [selectedRowId, setSelectedRowId] = useState<string>('');
+
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
   const [usageForm, usageDispatch] = useReducer(usageReducer, initialUsageForm);
 
@@ -188,14 +192,22 @@ const UsagePage = () => {
       }
     };
     getTableData();
-  }, [usageForm, isModalOpen]);
+  }, [usageForm, isModalOpen, isDeleteMode]);
+
+  const changeSelectedRow = ({id}:{id:string}) => {
+    setSelectedRowId(id);
+  }
 
   const onClickTableButton = ({ value }: { value: string }) => {
-    setIsModalOpen(true);
+    if(value==='강제퇴실'){
+      onClickDeleteButton();
+      return;
+    }
     setModalTitle(value);
     if (inputOption[value]) {
       setModalInputs(inputOption[value]);
     }
+    setIsModalOpen(true);
   };
 
   const onCloseModal = () => {
@@ -203,6 +215,28 @@ const UsagePage = () => {
     setModalTitle("");
     setModalInputs(null);
   };
+
+  const onClickDeleteButton = async () => {
+    if(!isDeleteMode){
+      setIsDeleteMode(true);
+    }
+    else {
+      if(!selectedRowId){
+        toast.error('선택된 사용자가 없습니다.');
+        setIsDeleteMode(false);
+        return;
+      }
+      const currentTime = formatDatetoISOString(new Date());
+      const res = await putForcedToLeave({usageId: selectedRowId, end_at:currentTime});
+      if(res.pass){
+        toast.success('강제퇴실되었습니다.');
+        setIsDeleteMode(false);
+      }
+      else{
+        toast.error('강제퇴실에 실패했습니다.')
+      }
+    }
+  }
 
   return (
     <div className="w-full">
@@ -255,9 +289,10 @@ const UsagePage = () => {
             />
             <TableButton value="대여관리" onClick={()=>navigate('/rental') }/>
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
+            <TableButton value="강제퇴실" onClick={() => onClickTableButton({ value: "강제퇴실" })} isDeleteMode={isDeleteMode} />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={sortTableData} />
+        <CustomTable header={tableHeader} data={sortTableData} changeSelectedRow={changeSelectedRow} isDeleteMode={isDeleteMode} selectedRowId={selectedRowId} />
       </div>
       {isModalOpen && (
         <Modal
