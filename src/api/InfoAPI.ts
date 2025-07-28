@@ -55,28 +55,6 @@ export const putAdminInfo = async ({
   }
 };
 
-//비밀번호 변경
-export const updateAdminPassword = async ({
-    current_password,
-    new_password,
-    confirm_password
-}: {
-    current_password:string,
-    new_password:string,
-    confirm_password:string
-}) => {
-  try {
-    const res = await PrivateAxios.put(`/admin/management/password`, {
-        current_password,
-        new_password,
-        confirm_password,
-    });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
-  }
-};
-
 //관리자 삭제
 export const deleteAdmin = async ({ adminId }: { adminId: string }) => {
   try {
