@@ -50,7 +50,7 @@ const SignupPage = () => {
   const [signupForm, dispatch] = useReducer(signupReducer, initialSignupForm);
 
   const loginInputs = [
-    { label: "회사", key: "companyId", value: signupForm.companyId },
+    { label: "회사", key: "companyId", type:'search', value: signupForm.companyId },
     { label: "이메일", key: "email", value: signupForm.email },
     { label: "전화번호", key: "email", value: signupForm.phone },
     { label: "비밀번호", key: "password", value: signupForm.password },
@@ -91,6 +91,7 @@ const SignupPage = () => {
         <h1 className="justify-self-center text-3xl font-bold mb-[50px]">회원가입</h1>
         {loginInputs.map((item) => (
           <CustomInput
+            type={item.type}
             label={item.label}
             key={item.key}
             value={item.value}

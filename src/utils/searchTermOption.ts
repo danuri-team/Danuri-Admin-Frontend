@@ -11,6 +11,7 @@ const searchFn = {
     postUsageSearch({ startDate: "2025-03-01T00:00:00", endDate: "", spaceId: null, userId: null }),
   공간: () => getSearchCompanySpace(),
   유저: () => getSearchCompanyUser(),
+  // 회사: () => 
 };
 
 export type SearchLabel = keyof typeof searchFn;
