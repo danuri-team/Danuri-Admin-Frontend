@@ -6,6 +6,7 @@ import type { ModalSubmitFn } from "../../pages/management/ItemPage";
 import { getMyInfo } from "../../api/InfoAPI";
 import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "../../utils/searchTermOption";
+import { replacePhone } from "../../utils/infoFormat";
 
 type ModalType = {
   isOpen: boolean;
@@ -29,8 +30,14 @@ const modalReducer = (state: modalState, action: modalAction) => {
       if(action.payload.key==='available_quantity' && (state.total_quantity as number) < (action.payload.value as number)){
         return {...state};
       }
-      if(action.payload.key==='returned_quantity' && (state.quantity as number) < (action.payload.value as number)){
+      else if(action.payload.key==='returned_quantity' && (state.quantity as number) < (action.payload.value as number)){
         return {...state};
+      }
+      else if(action.payload.key==='phone'){
+        return {
+          ...state,
+          [action.payload.key]:replacePhone(String(action.payload.value))
+        }
       }
       return {
         ...state,
