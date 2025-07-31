@@ -1,10 +1,11 @@
-import { CiFileOn } from "react-icons/ci";
-import { CiSquarePlus } from "react-icons/ci";
-import { CiSearch } from "react-icons/ci";
-import { CiGrid41 } from "react-icons/ci";
-import { CiTrash } from "react-icons/ci";
-import { CiEdit } from "react-icons/ci";
-import { CiLogout } from "react-icons/ci";
+import AddIcon from "../assets/icons/add-icon.svg?react";
+import DeleteIcon from "../assets/icons/delete-icon.svg?react";
+import FileIcon from "../assets/icons/file-icon.svg?react";
+import GridIcon from "../assets/icons/grid-icon.svg?react";
+import LeaveIcon from "../assets/icons/leave-icon.svg?react";
+import PenIcon from "../assets/icons/pen-icon.svg?react";
+import SearchIcon from "../assets/icons/search-icon.svg?react";
+
 import type { JSX } from "react";
 
 type TableButtonType = {
@@ -16,13 +17,13 @@ type TableButtonType = {
 type ButtonLabel = "다운로드" | "추가" | "삭제" | "검색" | "대여관리" | "가입 폼 관리" | "강제퇴실";
 
 const buttonIcon: Record<ButtonLabel, JSX.Element> = {
-  다운로드: <CiFileOn size={20} />,
-  추가: <CiSquarePlus  size={20} />,
-  대여관리: <CiGrid41 size={20} />,
-  검색: <CiSearch size={20} />,
-  삭제: <CiTrash size={20} />,
-  강제퇴실: <CiLogout size={20} />,
-  "가입 폼 관리": <CiEdit size={20} />
+  다운로드: <FileIcon />,
+  추가: <AddIcon />,
+  대여관리: <GridIcon />,
+  검색: <SearchIcon />,
+  삭제: <DeleteIcon />,
+  강제퇴실: <LeaveIcon />,
+  "가입 폼 관리": <PenIcon />
 };
 
 const TableButton = ({ value, onClick, isDeleteMode }: TableButtonType) => {
@@ -30,16 +31,16 @@ const TableButton = ({ value, onClick, isDeleteMode }: TableButtonType) => {
     if(isDeleteMode){
       return "text-white bg-red-500"
     }
-    else return "text-danuri-text bg-gray-100"
+    else return "text-danuri-gray bg-gray-100"
   }
 
   return (
     <button
-      className={`${handleStyle()} flex items-center p-[10px] pr-[15px] pl-[10px] text-sm rounded-xl cursor-pointer`}
+      className={`${handleStyle()} flex items-center p-[8px] pr-[20px] pl-[20px] text-sm rounded-lg cursor-pointer`}
       onClick={onClick}
     >
       {buttonIcon[value]}
-      <span className="ml-[5px]">{value}</span>
+      <span className="ml-[5px] text-[15px]">{value}</span>
     </button>
   );
 };

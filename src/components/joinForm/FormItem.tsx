@@ -1,9 +1,9 @@
-import { LuMenu } from "react-icons/lu";
-import { PiCopySimpleLight } from "react-icons/pi";
-
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CiTrash } from "react-icons/ci";
+
+import DeleteIcon from "../../assets/icons/delete-icon.svg?react";
+import GripIcon from "../../assets/icons/grip-icon.svg?react";
+import PasteIcon from "../../assets/icons/paste-icon.svg?react";
 
 const FormItem = ({id}:{id:number}) => {
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
@@ -20,14 +20,14 @@ const FormItem = ({id}:{id:number}) => {
             style={style} 
             {...attributes}>
             <button className="text-gray-300 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm" {...listeners} aria-label="drag handle">
-                <LuMenu  size={20}/>
+                <GripIcon />
             </button>
             <div>
                 <button className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm">
-                    <PiCopySimpleLight size={20} />
+                    <PasteIcon  />
                 </button>
                 <button className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm">
-                    <CiTrash size={20} />
+                    <DeleteIcon  />
                 </button>
             </div>
         </div>

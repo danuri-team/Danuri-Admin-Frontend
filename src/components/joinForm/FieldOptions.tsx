@@ -1,6 +1,6 @@
-// import { IoTextOutline } from "react-icons/io5";
-// import { FiPhone } from "react-icons/fi";
-// import { FaRegSquareCheck } from "react-icons/fa6";
+import PhoneIcon from "../assets/icons/phone-icon.svg?react";
+import TextIcon from "../assets/icons/text-icon.svg?react";
+import CheckBoxIcon from "../assets/icons/checkbox-icon.svg?react";
 
 
 // const options = [
