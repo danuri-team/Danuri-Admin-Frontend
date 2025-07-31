@@ -91,10 +91,10 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
           {
             //검색어가 한 개도 없고, 입력박스에 포커싱이 있으면 검색어들 보이게
             searchTerms[0] && isFocus && (
-              <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[10px] bg-white mt-[10px] z-1">
+              <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[8px] bg-white mt-[10px] z-1">
                 {searchTerms.map((term) => (
                   <li
-                    className="cursor-pointer hover:bg-gray-100 p-[3px] rounded-sm"
+                    className="cursor-pointer hover:bg-gray-100 p-[12px] rounded-sm"
                     onMouseDown={() => onClickSearchTerm(term.id, term.name)}
                     key={term.id}
                   >
@@ -114,11 +114,11 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
             >{options && (value ? changeEnumtoText(value as string) || (label as string) : options[0].name)}</button>
           {
             isFocus && options && (
-            <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[8px] pl-[20px] pr-[20px] bg-white mt-[10px] z-1">
+            <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[8px] bg-white mt-[10px] z-1">
             {
               options.map((option)=>(
                 <li
-                    className={`cursor-pointer hover:bg-gray-100 pt-[12px] pb-[12px] rounded-sm`}
+                    className={`cursor-pointer hover:bg-gray-100 p-[12px] rounded-sm`}
                     onMouseDown={()=>onChange(option.value)}
                     key={option.value}
                   >
