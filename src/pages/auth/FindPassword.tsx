@@ -107,16 +107,16 @@ const FindPassword = () => {
           orderNumber === 1 ? 
             <EmailForFindPassword 
               value={findForm.email} 
-              onChange={(e)=>dispatch({type:'CHANGE', payload: {key:'email', value: e.target.value}})}
+              onChange={(e:React.ChangeEvent<HTMLInputElement>)=>dispatch({type:'CHANGE', payload: {key:'email', value: e.target.value}})}
               onClick={onClickSendEmail} /> 
           : orderNumber === 2 ? 
             <VerifyCode
               value={findForm.code}
-              onChange={(e)=>dispatch({type:'CHANGE', payload: {key:'code', value: e.target.value}})} 
+              onChange={(e:React.ChangeEvent<HTMLInputElement>)=>dispatch({type:'CHANGE', payload: {key:'code', value: e.target.value}})} 
               onClick={onClickVerifyCode}/>
           : <ChangePassword
               value={{new:findForm.newPassword, re:findForm.rePassword}} 
-              onChange={(e, key)=>dispatch({type:'CHANGE', payload: {key:key, value: e.target.value}})} 
+              onChange={(e:React.ChangeEvent<HTMLInputElement>, key)=>dispatch({type:'CHANGE', payload: {key:key, value: e.target.value}})} 
               onClick={onClickChangePassword}/>
         }
         

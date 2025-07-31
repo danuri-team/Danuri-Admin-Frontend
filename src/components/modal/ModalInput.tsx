@@ -70,7 +70,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
       {type === "search" ? (
         <div className="relative">
           <div
-            className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[10px]`}
+            className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[12px]`}
           >
             <input
               disabled={disable}
@@ -108,17 +108,17 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
       ) : type==='option' ? (
         <div className="relative">
           <button 
-            className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[10px] cursor-pointer`}
+            className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[12px] cursor-pointer`}
             onClick={()=>setIsFocus(true)}
             onBlur={()=>setIsFocus(false)}
             >{options && (value ? changeEnumtoText(value as string) || (label as string) : options[0].name)}</button>
           {
             isFocus && options && (
-            <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[10px] bg-white mt-[10px] z-1">
+            <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[8px] pl-[20px] pr-[20px] bg-white mt-[10px] z-1">
             {
               options.map((option)=>(
                 <li
-                    className={`cursor-pointer hover:bg-gray-100 p-[3px] rounded-sm`}
+                    className={`cursor-pointer hover:bg-gray-100 pt-[12px] pb-[12px] rounded-sm`}
                     onMouseDown={()=>onChange(option.value)}
                     key={option.value}
                   >
@@ -132,7 +132,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
 
       ) : type === "date" || type === "time" ? (
         <DatePicker
-          className={`${isFocus ? "border-blue-400" : "border-gray-200"} w-full border-1 rounded-xl p-[10px] outline-none`}
+          className={`${isFocus ? "border-blue-400" : "border-gray-200"} w-full border-1 rounded-xl p-[12px] outline-none`}
           calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
           placeholderText={`${label}을 선택해주세요.`}
           selected={value as Date | null}
