@@ -20,7 +20,6 @@ const EmailForFindPassword = ({value, onChange, onClick}:EmailForFind) => {
             <div className="mt-[60px]">
                 <CustomButton value="다음" onClick={onClick} />
             </div>
-
         </div>
     )
 }
