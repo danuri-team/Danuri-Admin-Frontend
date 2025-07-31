@@ -116,7 +116,7 @@ const FindPassword = () => {
               onClick={onClickVerifyCode}/>
           : <ChangePassword
               value={{new:findForm.newPassword, re:findForm.rePassword}} 
-              onChange={(e:React.ChangeEvent<HTMLInputElement>, key)=>dispatch({type:'CHANGE', payload: {key:key, value: e.target.value}})} 
+              onChange={(e:React.ChangeEvent<HTMLInputElement>, key:string)=>dispatch({type:'CHANGE', payload: {key:key, value: e.target.value}})} 
               onClick={onClickChangePassword}/>
         }
         
