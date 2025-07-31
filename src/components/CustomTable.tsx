@@ -28,6 +28,8 @@ type CustomTable = {
   selectedRowId?: string
 }
 
+const headerDateNames = ["시작일", "종료일", "가입일", "추가일"]
+
 const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow, selectedRowId }:CustomTable) => {
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
@@ -47,7 +49,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
           "HH:mm:ss"
         );
         return <p>{time}</p>;
-      } else if (item.name === "시작일" || item.name === "종료일" || item.name === "가입일") {
+      } else if (headerDateNames.includes(item.name ?? "")) {
         if (!value) return <p></p>;
         const date = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
         return <p>{date}</p>;

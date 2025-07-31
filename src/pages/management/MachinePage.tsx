@@ -14,13 +14,13 @@ export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass:
 
 const tableHeader = [
   { name: "ID", id: "id" },
-  { name: "추가일", id: "add_date" },
+  { name: "추가일", id: "created_at" },
 ];
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean, disable?:boolean }[]> = {
   추가: [
     { label: "ID", key: "id", type: 'text' },
-    { label: "추가일", key: "add_date", type:'date' },
+    { label: "추가일", key: "created_at", type:'date' },
   ],
   수정: [
     { label: "ID", key: "id" , type:'text', disable:true},
