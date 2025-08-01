@@ -58,6 +58,7 @@ const initialUsageForm: UsageState = {
 };
 
 const tableHeader = [
+  { name: "사용 ID", id: "id" },
   { name: "공간", id: "space_name" },
   { name: "시작일", id: "start_at" },
   { name: "종료일", id: "end_at" },

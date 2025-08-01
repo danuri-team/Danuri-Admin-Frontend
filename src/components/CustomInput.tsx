@@ -71,7 +71,7 @@ const CustomInput = (props: CustomInputType) => {
     <div className="mb-[20px]">
       <p className="text-danuri-text mb-[7px] font-semibold text-sm">{label}{isMust && <span className="text-red-400"> *</span>}</p>
       <div
-        className={`${isValid && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[10px] w-full min-w-2xs`}
+        className={`${isValid && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[12px] w-full min-w-2xs`}
       >
         {
           isTimeInput(props) ? (

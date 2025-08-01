@@ -104,6 +104,8 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
             break;
         }
         return <p>{age}</p>;
+      } else if(item.id === "id" || item.id === "user_name"){
+        return <p className="text-danuri-500">{value}</p>
       }
       return <p>{value}</p>;
     },
@@ -128,7 +130,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
                 )
               }
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="text-sm font-medium p-[10px]">
+                <th key={header.id} className="text-sm font-medium p-[8px] pl-[20px]">
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -164,7 +166,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
                 )
               }
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-[10px] text-sm text-wrap">
+                <td key={cell.id} className="p-[16px] pl-[20px] text-sm text-wrap">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

@@ -86,9 +86,9 @@ const SignupPage = () => {
 
   return (
     <div className="w-full h-screen flex">
-      <div className="m-auto w-[50%] min-w-xs max-w-md">
+      <div className="m-auto w-[50%] min-w-xs max-w-lg pt-[50px] pb-[50px]">
         <Link to={'/auth/login'}><GoChevronLeft size={30} /></Link>
-        <h1 className="justify-self-center text-3xl font-bold mb-[50px]">회원가입</h1>
+        <h1 className="justify-self-center text-4xl font-bold mb-[50px] mt-[36px]">회원가입</h1>
         {loginInputs.map((item) => (
           <CustomInput
             type={item.type}
