@@ -7,7 +7,7 @@ import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import TableButton from "../../components/TableButton";
 import { deleteSpace, getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../../api/SpaceAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
-import { formatDatetoTime, formatTimetoDate } from "../../utils/dateFormat";
+import { formatDatetoTime, formatTimetoDate } from "../../utils/format/dateFormat";
 
 const tableHeader = [
   { name: "공간명", id: "name" },

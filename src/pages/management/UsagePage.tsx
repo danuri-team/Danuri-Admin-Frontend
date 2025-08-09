@@ -7,7 +7,7 @@ import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import Modal from "../../components/modal/Modal";
 import { postCreateUsage, postUsageExcel, postUsageSearch, putForcedToLeave } from "../../api/UsageAPI";
-import { formatDatetoISOString } from "../../utils/dateFormat";
+import { formatDatetoISOString } from "../../utils/format/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { useNavigate } from "react-router-dom";
 import { isAfter, isBefore } from "date-fns";

@@ -2,7 +2,7 @@ import { getSearchCompanyItem } from "../api/ItemAPI";
 import { getSearchCompanySpace } from "../api/SpaceAPI";
 import { postUsageSearch } from "../api/UsageAPI";
 import { getSearchCompanyUser } from "../api/UserAPI";
-import { isFutureDate } from "./dateFormat";
+import { isFutureDate } from "./format/dateFormat";
 
 //물품/공간/유저/이용현황 검색어 찾기
 const searchFn = {

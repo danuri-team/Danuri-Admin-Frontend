@@ -8,7 +8,7 @@ import { useEffect, useReducer, useState } from "react";
 import Modal from "../../components/modal/Modal";
 import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from "../../api/UserAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
-import { formatDatetoISOString } from "../../utils/dateFormat";
+import { formatDatetoISOString } from "../../utils/format/dateFormat";
 import { useNavigate } from "react-router-dom";
 
 type filterSelectType = {

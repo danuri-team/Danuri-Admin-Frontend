@@ -6,7 +6,7 @@ import type { ModalSubmitFn } from "../../pages/management/ItemPage";
 import { getMyInfo } from "../../api/InfoAPI";
 import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "../../utils/searchTermOption";
-import { replacePhone } from "../../utils/infoFormat";
+import { replacePhone } from "../../utils/format/infoFormat";
 
 type ModalType = {
   isOpen: boolean;

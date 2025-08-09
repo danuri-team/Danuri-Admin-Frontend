@@ -5,7 +5,7 @@ import CustomButton from "../../components/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
 import { postSignup } from "../../api/AuthAPI";
 import { isValidEmail } from "../../utils/infoValidation";
-import { replacePhone } from "../../utils/infoFormat";
+import { replacePhone } from "../../utils/format/infoFormat";
 import { GoChevronLeft } from "react-icons/go";
 import { toast } from "react-toastify";
 
