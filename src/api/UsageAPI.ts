@@ -74,7 +74,6 @@ export const postUsageExcel = async ({ startDate, endDate, spaceId, userId }: Us
     window.URL.revokeObjectURL(url);
     return { data: null, pass: true };
   } catch (error) {
-    console.log("다운로드 실패", error);
     return { data: null, pass: false };
   }
 };

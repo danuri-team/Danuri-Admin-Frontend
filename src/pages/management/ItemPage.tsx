@@ -7,6 +7,7 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 import Modal from "../../components/modal/Modal";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import { deleteItem, getSearchCompanyItem, postCreateItem, putUpdateItem } from "../../api/ItemAPI";
+import { toast } from "react-toastify";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -45,8 +46,9 @@ const filterSelects: filterSelectType[] = [
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
   추가: [
     { label: "물품", key: "name", type: "text" },
-    { label: "총 수량", key: "totalQuantity", type: "number" },
-    { label: "상태", key: "status", type: "text" },
+    { label: "총 수량", key: "total_quantity", type: "number" },
+    { label: "이용 가능 개수", key: "available_quantity", type: "number" },
+    { label: "상태", key: "status", type: "option" },
   ],
   수정: [
     { label: "물품 ID", key: "itemId", type: "text", hide: true },
@@ -62,8 +64,8 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
   추가: (form: modalState) =>
     postCreateItem({
       name: form.name as string,
-      totalQuantity: form.totalQuantity as string,
-      availableQuantity: '',
+      totalQuantity: form.total_quantity as string,
+      availableQuantity: form.available_quantity as string,
       status: form.status as string,
     }),
   수정: (form: modalState) => 
@@ -151,10 +153,18 @@ const ItemPage = () => {
       setIsDeleteMode(true);
     }
     else {
-      if(!selectedRowId)console.log('선택없음');
+      if(!selectedRowId){
+        toast.error('선택된 물품이 없습니다.');
+        setIsDeleteMode(false);
+        return;
+      }
       const res = await deleteItem({itemId: selectedRowId});
       if(res.pass){
+        toast.success('삭제되었습니다.');
         setIsDeleteMode(false);
+      }
+      else {
+        toast.error('삭제에 실패했습니다.');
       }
     }
   }

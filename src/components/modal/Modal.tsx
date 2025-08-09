@@ -7,6 +7,7 @@ import { getMyInfo } from "../../api/InfoAPI";
 import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "../../utils/searchTermOption";
 import { replacePhone } from "../../utils/format/infoFormat";
+import { toast } from "react-toastify";
 
 type ModalType = {
   isOpen: boolean;
@@ -97,6 +98,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   }, [isOpen]);
 
   useEffect(()=>{
+    //가능한 대여 개수 계산
     if(location.pathname !== '/rental')return;
     if((title==='추가' && !modalForm.itemId) || (title==='수정' && !modalForm.rentalId))return;
     const getCount = async () => {
@@ -116,10 +118,15 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   
 
   const onClickSubmitModal = async () => {
-    const res = await onSubmit(modalForm) as { data: unknown; pass: boolean; }
+    console.log(modalForm);
+    const res = await onSubmit(modalForm) as { data: string; pass: boolean; }
     if (res.pass) {
-      onClose();
+      toast.success(`${title}되었습니다.`);
     }
+    else {
+      toast.error(`${title}에 실패했습니다.`);
+    }
+    onClose();
   };
 
   return (

@@ -10,6 +10,7 @@ import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from 
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { formatDatetoISOString } from "../../utils/format/dateFormat";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -181,12 +182,17 @@ const UserPage = () => {
     }
     else {
       if(!selectedRowId){
-        alert('삭제할 사용자를 선택해주세요.');
+        toast.error('선택된 사용자가 없습니다.');
+        setIsDeleteMode(false);
         return;
       }
       const res = await deleteUser({userId: selectedRowId});
       if(res.pass){
+        toast.success('삭제되었습니다.');
         setIsDeleteMode(false);
+      }
+      else {
+        toast.error('삭제에 실패했습니다.');
       }
     }
   }

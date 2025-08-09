@@ -38,6 +38,14 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
 
   const options = selectStatusOption(location.pathname as string, label);
 
+  useEffect(()=>{
+    if(type === 'option' && options){
+      if(!value){
+        onChange(options[0].value);
+      }
+    }
+  }, [value, options])
+
   useEffect(() => {
     if (type !== "search") return;
 

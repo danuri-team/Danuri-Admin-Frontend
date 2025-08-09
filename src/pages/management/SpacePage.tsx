@@ -8,6 +8,7 @@ import TableButton from "../../components/TableButton";
 import { deleteSpace, getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../../api/SpaceAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { formatDatetoTime, formatTimetoDate } from "../../utils/format/dateFormat";
+import { toast } from "react-toastify";
 
 const tableHeader = [
   { name: "공간명", id: "name" },
@@ -92,10 +93,18 @@ const SpacePage = () => {
       setIsDeleteMode(true);
     }
     else {
-      if(!selectedRowId)console.log('선택없음');
+      if(!selectedRowId){
+        toast.error('선택된 공간이 없습니다.');
+        setIsDeleteMode(false);
+        return;
+      }
       const res = await deleteSpace({spaceId: selectedRowId});
       if(res.pass){
+        toast.success('삭제되었습니다.');
         setIsDeleteMode(false);
+      }
+      else {
+        toast.error('삭제에 실패했습니다.');
       }
     }
   }
