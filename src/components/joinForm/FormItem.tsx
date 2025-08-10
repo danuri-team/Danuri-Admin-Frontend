@@ -19,7 +19,7 @@ const FormItem = ({id}:{id:number}) => {
             ref={setNodeRef} 
             style={style} 
             {...attributes}>
-            <button className="text-gray-300 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm" {...listeners} aria-label="drag handle">
+            <button className="text-gray-400 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm" {...listeners} aria-label="drag handle">
                 <GripIcon />
             </button>
             <div>
