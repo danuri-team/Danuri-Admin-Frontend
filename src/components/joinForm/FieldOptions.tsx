@@ -19,7 +19,7 @@ const options = [
 const FieldOptions = ({selectOption, handleOption}:FieldOptions) => {
     const [isFocus, setIsFocus] = useState<boolean>(false);
     return(
-        <div className="w-[335px]">
+        <div className="w-[335px] relative">
             <button
                 className="flex items-center p-[12px] w-full text-gray-500 border-1 border-gray-200 rounded-xl  cursor-pointer justify-between"
                 onClick={()=>setIsFocus(!isFocus)}
@@ -39,7 +39,7 @@ const FieldOptions = ({selectOption, handleOption}:FieldOptions) => {
             </button>
             {
                 isFocus && (
-                <ul className="border-1 border-gray-200 rounded-xl p-[8px] mt-[8px]">
+                <ul className="border-1 border-gray-200 rounded-xl p-[8px] mt-[8px] absolute bg-white w-full z-3">
                 {options.map((item)=>(
                     <li 
                     className={`${item.name === selectOption ? "bg-gray-100" : null} list-none flex items-center gap-[8px] rounded-xl text-black p-[12px] gap-[12px] cursor-pointer`}
