@@ -35,7 +35,7 @@ const JoinFormPage = () => {
     }
 
     return(
-        <div className="w-full">
+        <div className="w-full min-w-[400px]">
         <MainHeader />
         <BannerButton />
             <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
