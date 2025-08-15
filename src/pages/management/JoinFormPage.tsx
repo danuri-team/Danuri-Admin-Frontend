@@ -50,8 +50,8 @@ const JoinFormPage = () => {
                 <div className="w-full">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={formItems} strategy={verticalListSortingStrategy}>
-                            {formItems.map((id)=>(
-                                <FormItem key={id} id={id} />
+                            {formItems.map((id,index)=>(
+                                <FormItem key={id} id={id} index={index}/>
                             ))}
                         </SortableContext>
                     </DndContext>
