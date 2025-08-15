@@ -55,7 +55,13 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
                     {title}
                 </span>
             </div>
-            <div className="justify-between">
+            <div className="flex items-center justify-between">
+                <div>
+                    <div className="flex items-center gap-[16px]">
+                        <p className="text-[15px]">필수 입력</p>
+                        <ToggleButton/>
+                    </div>
+                </div>
                 <div>
                     <button className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm">
                         <PasteIcon  />
