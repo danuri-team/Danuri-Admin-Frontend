@@ -1,6 +1,8 @@
 import PhoneIcon from "../../assets/icons/phone-icon.svg?react";
 import TextIcon from "../../assets/icons/text-icon.svg?react";
 import CheckBoxIcon from "../../assets/icons/checkbox-icon.svg?react";
+import ChevronDown from "../../assets/icons/chevron-down.svg?react"
+import ChevronUp from "../../assets/icons/chevron-up.svg?react"
 import { useState } from "react";
 
 type FieldOptions = {
@@ -19,12 +21,21 @@ const FieldOptions = ({selectOption, handleOption}:FieldOptions) => {
     return(
         <div className="w-[335px]">
             <button
-                className="flex items-center p-[12px] w-full text-gray-500 border-1 border-gray-200 rounded-xl gap-[12px]"
-                onClick={()=>setIsFocus(true)}
+                className="flex items-center p-[12px] w-full text-gray-500 border-1 border-gray-200 rounded-xl  cursor-pointer justify-between"
+                onClick={()=>setIsFocus(!isFocus)}
                 onBlur={()=>setIsFocus(false)}
             >   
-                <div>{options.find((option)=>option.name===selectOption)?.icon}</div>
-                <p>{selectOption}</p>
+                <div className="flex items-center gap-[12px]">
+                    <div>{options.find((option)=>option.name===selectOption)?.icon}</div>
+                    <p>{selectOption}</p>   
+                </div>
+                {
+                    isFocus ? (
+                        <ChevronUp />
+                    ) : (
+                        <ChevronDown />
+                    )
+                }
             </button>
             {
                 isFocus && (
