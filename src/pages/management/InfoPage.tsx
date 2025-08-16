@@ -6,7 +6,7 @@ import MainHeader from "../../components/MainHeader";
 import { isValidEmail, isValidPhone } from "../../utils/infoValidation";
 import CustomButton from "../../components/CustomButton";
 import { replacePhone } from "../../utils/format/infoFormat";
-import { getMyInfo, putAdminInfo } from "../../api/InfoAPI";
+import { getMyInfo, putAdminInfo } from "../../api/AdminAPI";
 
 type InfoAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
