@@ -1,18 +1,26 @@
-import { useSortable } from "@dnd-kit/sortable";
+import { useSortable,SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import DeleteIcon from "../../assets/icons/delete-icon.svg?react";
 import GripIcon from "../../assets/icons/grip-icon.svg?react";
 import PasteIcon from "../../assets/icons/paste-icon.svg?react";
+import PlusIcon from "../../assets/icons/plus-icon.svg?react";
 import FieldOptions from "./FieldOptions";
 import ToggleButton from "./ToggleButton";
 import { useEffect, useRef, useState } from "react";
+import { KeyboardSensor, MouseSensor, useSensor, useSensors, type DragEndEvent, DndContext, closestCenter } from "@dnd-kit/core";
+import MultipleChoiceItem from "./MultipleChoiceItem";
 
 const FormItem = ({id, index}:{id:number, index:number}) => {
+    const [multiQuestions, setMultiQuestions] = useState<number[]>([1,2,3])
+
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
     const [selectOption, setSelectOption] = useState<string>('객관식');
     const [title, setTitle] = useState<string>('');
+
     const [essential, setEssential] = useState<boolean>(false);
+    const [multiple, setMultiple] = useState<boolean>(false);
+
 
     //title 길이 측정용 Ref
     const spanRef = useRef<HTMLSpanElement>(null);
@@ -30,13 +38,42 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
         transition,
     }
 
+
+    const sensors = useSensors(
+        useSensor(MouseSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates
+        })
+    )
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const {active, over} = event;
+    
+        if(over && active.id !== over.id){
+            const preIndex = multiQuestions.indexOf(Number(active.id));
+            const newIndex = multiQuestions.indexOf(Number(over.id));
+
+            setMultiQuestions((items)=>arrayMove(items, preIndex, newIndex))
+        }    
+    }
+
+    const addQuestion = () => {
+        const newItemId = Math.max(...multiQuestions)+1
+        setMultiQuestions((items)=> [...items, newItemId]);
+    }
+
     const handleOption = (option:string) => {
         setSelectOption(option);
     }
 
-    const handleToggle = (state:boolean) => {
-        setEssential(state);
+    const handleToggle = (type:string, state:boolean) => {
+        if(type==='essential'){
+            setEssential(state);
+            return;
+        }
+        setMultiple(state)
     }
+
 
 
     return(
@@ -65,14 +102,46 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
                     )
                 }
             </div>
+            <div>
+                {
+                    selectOption==='객관식' ? (
+                        <div className="flex flex-col w-full">
+                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                <SortableContext items={multiQuestions} strategy={verticalListSortingStrategy}>
+                                    {multiQuestions.map((id)=>(
+                                        <MultipleChoiceItem key={id} id={id}/>
+                                    ))}
+                                </SortableContext>
+                            </DndContext>
+                            <button 
+                                className="self-center text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm" 
+                                onClick={()=>addQuestion()}>
+                                <PlusIcon />
+                            </button>
+                        </div>
+                    ): (
+                        <div>
+
+                        </div>
+                    )
+                }
+            </div>
             <div className="flex items-center justify-between">
-                <div>
+                <div className="flex items-center">
                     <div className="flex items-center gap-[16px]">
                         <p className="text-[15px]">필수 입력</p>
-                        <ToggleButton handleToggle={handleToggle} isActive={essential} />
+                        <ToggleButton handleToggle={handleToggle} isActive={essential} type={'essential'} />
                     </div>
+                    {
+                        selectOption==='객관식' && (
+                            <div className="flex items-center gap-[16px] ml-[24px]">
+                                <p className="text-[15px]">복수 선택</p>
+                                <ToggleButton handleToggle={handleToggle} isActive={multiple} type={'multiple'} />
+                            </div>
+                        )
+                    }
                 </div>
-                <div>
+                <div className="flex gap-[50px]">
                     <button className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm">
                         <PasteIcon  />
                     </button>
