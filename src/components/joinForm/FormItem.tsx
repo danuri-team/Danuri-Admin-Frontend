@@ -12,6 +12,7 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
     const [selectOption, setSelectOption] = useState<string>('객관식');
     const [title, setTitle] = useState<string>('');
+    const [essential, setEssential] = useState<boolean>(false);
 
     //title 길이 측정용 Ref
     const spanRef = useRef<HTMLSpanElement>(null);
@@ -33,6 +34,10 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
         setSelectOption(option);
     }
 
+    const handleToggle = (state:boolean) => {
+        setEssential(state);
+    }
+
 
     return(
         <div 
@@ -45,21 +50,26 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
             </button>
             <FieldOptions handleOption={handleOption} selectOption={selectOption} />
             <div className="flex text-[22px] font-semibold mt-[24px] mb-[24px] border-b border-gray-100">
-                <p>{index+1}.</p>
+                <p className="mr-[12px]">{index+1}.</p>
                 <input 
-                    className={`focus:outline-none focus:w-full max-w-full`} 
-                    style={{width:`${inputWidth > 0 ? inputWidth : 10}px`}}
+                    className={`focus:outline-none max-w-full`} 
+                    style={{width:`${inputWidth > 0 ? (inputWidth+5)+'px' : '100%'}`}}
                     type="text" 
                     onChange={(e)=>setTitle(e.target.value)} />
                 <span className="bg-gray-300 absolute" ref={spanRef} style={{visibility:'hidden'}}>
                     {title}
                 </span>
+                {
+                    essential && (
+                        <span className="text-red-500">*</span>
+                    )
+                }
             </div>
             <div className="flex items-center justify-between">
                 <div>
                     <div className="flex items-center gap-[16px]">
                         <p className="text-[15px]">필수 입력</p>
-                        <ToggleButton/>
+                        <ToggleButton handleToggle={handleToggle} isActive={essential} />
                     </div>
                 </div>
                 <div>

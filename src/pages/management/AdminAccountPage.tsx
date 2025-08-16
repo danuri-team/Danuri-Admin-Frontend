@@ -84,7 +84,7 @@ const AdminAccountPage = () => {
       }
       else {
         if(!selectedRowId){
-          toast.error('선택된 물품이 없습니다.');
+          toast.error('선택된 계정이 없습니다.');
           setIsDeleteMode(false);
           return;
         }

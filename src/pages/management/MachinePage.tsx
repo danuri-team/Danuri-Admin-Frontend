@@ -89,7 +89,7 @@ const MachinePage = () => {
     }
     else {
       if(!selectedRowId){
-        toast.error('선택된 물품이 없습니다.');
+        toast.error('선택된 기기가 없습니다.');
         setIsDeleteMode(false);
         return;
       }

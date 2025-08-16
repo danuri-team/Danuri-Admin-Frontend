@@ -42,6 +42,7 @@ const FieldOptions = ({selectOption, handleOption}:FieldOptions) => {
                 <ul className="border-1 border-gray-200 rounded-xl p-[8px] mt-[8px] absolute bg-white w-full z-3">
                 {options.map((item)=>(
                     <li 
+                    key={item.name}
                     className={`${item.name === selectOption ? "bg-gray-100" : null} list-none flex items-center gap-[8px] rounded-xl text-black p-[12px] gap-[12px] cursor-pointer`}
                     onMouseDown={()=>handleOption(item.name)}
                     >
