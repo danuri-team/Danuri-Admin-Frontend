@@ -8,6 +8,7 @@ import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import TableButton from "../../components/TableButton";
 import { getSearchCompanyRental, postCreateRental, putUpdateRental } from "../../api/RentalAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
+import { toast } from "react-toastify";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -101,7 +102,7 @@ const RentalPage = () => {
       if (res.pass) {
         setTableData(res.data);
       } else {
-        console.log("데이터 불러오기 실패");
+        toast.error('데이터를 불러오지 못했습니다.');
       }
     };
     getTableData();

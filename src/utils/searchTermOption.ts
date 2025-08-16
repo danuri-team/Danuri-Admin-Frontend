@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { getSearchCompanyItem } from "../api/ItemAPI";
 import { getSearchCompanySpace } from "../api/SpaceAPI";
 import { postUsageSearch } from "../api/UsageAPI";
@@ -32,7 +33,7 @@ export const getSearchTerm = async (label: SearchLabel, value: string) => {
 
     return term;
   } else {
-    console.log("데이터 불러오기 실패");
+    toast.error('데이터를 불러오지 못했습니다.');
   }
 };
 

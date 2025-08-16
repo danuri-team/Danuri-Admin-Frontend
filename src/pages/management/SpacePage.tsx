@@ -66,7 +66,7 @@ const SpacePage = () => {
       if (res.pass) {
         setTableData(res.data);
       } else {
-        console.log("데이터 불러오기 실패");
+        toast.error('데이터를 불러오지 못했습니다.');
       }
     };
     getTableData();
