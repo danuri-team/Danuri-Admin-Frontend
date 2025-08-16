@@ -118,7 +118,6 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   
 
   const onClickSubmitModal = async () => {
-    console.log(modalForm);
     const res = await onSubmit(modalForm) as { data: string; pass: boolean; }
     if (res.pass) {
       toast.success(`${title}되었습니다.`);
@@ -138,7 +137,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
             <button className="absolute right-[25px]" onClick={onClose}>
               <IoCloseOutline size={25} />
             </button>
-            <h2 className="text-lg font-semibold">{title}</h2>
+            <h2 className="text-lg font-semibold w-[240px] whitespace-nowrap truncate">{title==='저장' ? String(modalForm['id'])  : title}</h2>
           </div>
           <div className="p-[10px] mb-[15px]">
             {inputs?.map((item) =>{

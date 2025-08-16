@@ -6,7 +6,7 @@ import MainHeader from "../../components/MainHeader";
 import TableButton from "../../components/TableButton";
 import Modal from "../../components/modal/Modal";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import { getSearchCompanyDevice, postAddDevice, putUpdateDevice } from "../../api/DeviceAPI";
+import {  putUpdateDevice } from "../../api/DeviceAPI";
 import { toast } from "react-toastify";
 import { getAllAdminInfo } from "../../api/AdminAPI";
 
@@ -22,15 +22,15 @@ const tableHeader = [
 ];
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean, disable?:boolean }[]> = {
-  수정: [
-    { label: "ID", key: "id" , type:'text', disable:true},
-    { label: "별칭", key: "alias", type:'text' },
+  저장: [
+    { label: "ID", key: "id" , type:'text', disable:true, hide:true},
+    { label: "허가 여부", key: "status", type:'option' },
   ],
 };
 
 //모달 Submit 함수
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  수정: (form: modalState) => 
+  저장: (form: modalState) => 
     putUpdateDevice({
       deviceId: form.deviceId as string,
       spaceId: form.spaceId as string,
@@ -102,11 +102,11 @@ const AdminAccountPage = () => {
   }
 
   const onClickTableRow = (row:UsageData) => {
-    setModalTitle('수정');
-    const addInitialInputs = inputOption['수정'].map((item) => {
+    setModalTitle('저장');
+    const addInitialInputs = inputOption['저장'].map((item) => {
       return {
         ...item,
-        initial: item.key==='itemId' ? row.id : row[item.key]
+        initial: item.key==='id' ? row.id : row[item.key]
       }
     })
     setModalInputs(addInitialInputs);

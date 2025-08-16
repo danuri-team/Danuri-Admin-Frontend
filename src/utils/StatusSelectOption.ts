@@ -24,13 +24,25 @@ export const selectStatusOption = (path:string, label:string) => {
             {name: '중학생', value: 'MIDDLE'},
         ]
     }
+    else if(path==='/admin'){
+        return [
+            {name:'예', value:'AVAILABLE'},
+            {name:'아니오', value:'NOT_AVAILABLE'},
+        ]
+    }
 }
 
-export const changeEnumtoText = (status:string) => {
+export const changeEnumtoText = (status:string, path?:string) => {
     switch(status){
         case 'AVAILABLE':
+            if(path==='/admin'){
+                return '예';
+            }
             return '이용가능';
         case 'NOT_AVAILABLE':
+            if(path==='/admin'){
+                return '아니오';
+            }
             return '이용불가';
         case 'USE':
             return '이용중';

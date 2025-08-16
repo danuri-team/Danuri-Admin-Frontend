@@ -119,7 +119,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
             className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[12px] cursor-pointer`}
             onClick={()=>setIsFocus(true)}
             onBlur={()=>setIsFocus(false)}
-            >{options && (value ? changeEnumtoText(value as string) || (label as string) : options[0].name)}</button>
+            >{options && (value ? changeEnumtoText(value as string, location.pathname) || (label as string) : options[0].name)}</button>
           {
             isFocus && options && (
             <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[8px] bg-white mt-[10px] z-1">
