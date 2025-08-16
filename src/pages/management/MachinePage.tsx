@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { deleteItem } from "../../api/ItemAPI";
 import BannerButton from "../../components/BannerButton";
 import CustomTable, { type UsageData } from "../../components/CustomTable";
 import MainHeader from "../../components/MainHeader";
 import TableButton from "../../components/TableButton";
 import Modal from "../../components/modal/Modal";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import { getSearchCompanyDevice, postAddDevice, putUpdateDevice } from "../../api/DeviceAPI";
+import { getSearchCompanyDevice, postAddDevice, putUpdateDevice, deleteDevice } from "../../api/DeviceAPI";
+import { toast } from "react-toastify";
 
 export type modalState = Record<string, Date | string | number | null>;
 
@@ -88,10 +88,18 @@ const MachinePage = () => {
       setIsDeleteMode(true);
     }
     else {
-      if(!selectedRowId)console.log('선택없음');
-      const res = await deleteItem({itemId: selectedRowId});
-      if(res.pass){
+      if(!selectedRowId){
+        toast.error('선택된 물품이 없습니다.');
         setIsDeleteMode(false);
+        return;
+      }
+      const res = await deleteDevice({deviceId: selectedRowId});
+      if(res.pass){
+        toast.success('삭제되었습니다.');
+        setIsDeleteMode(false);
+      }
+      else {
+        toast.error('삭제에 실패했습니다.');
       }
     }
   }
