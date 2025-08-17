@@ -126,7 +126,7 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
                     )
                 }
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mt-[60px]">
                 <div className="flex items-center">
                     <div className="flex items-center gap-[16px]">
                         <p className="text-[15px]">필수 입력</p>

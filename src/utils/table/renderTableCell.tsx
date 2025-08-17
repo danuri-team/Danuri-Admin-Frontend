@@ -1,6 +1,7 @@
 import type { HeaderType, UsageData } from "../../components/CustomTable";
 import { format, isAfter, isBefore, set } from "date-fns";
 import StatusTag from "../../components/StatusTag";
+import { useNavigate } from "react-router-dom";
 
 type RenderCell = {
     item:{
@@ -15,6 +16,8 @@ type RenderCell = {
 const headerDateNames = ["시작일", "종료일", "가입일", "추가일"]
 
 const renderTableCell = ({item, rowData, value, header}:RenderCell) => {
+  const navigate = useNavigate();
+
     if (item.name == "시작시간" || item.name === "종료시간") {
         const timeArray = rowData[item.id] as number[];
         const time = format(
@@ -82,7 +85,11 @@ const renderTableCell = ({item, rowData, value, header}:RenderCell) => {
         }
         return <p>{age}</p>;
       } else if(item.id === "id" || item.id === "user_name"){
-        return <p className="text-danuri-500">{value}</p>
+        const isUserName = item.id === "user_name";
+        return <p className={`${isUserName ? 'cursor-pointer' : null} text-danuri-500`}
+                  {...(isUserName ? {onClick:()=>navigate('/user')} : {})}>
+                    {value}
+                </p>
       }
       return <p>{value}</p>;
 }
