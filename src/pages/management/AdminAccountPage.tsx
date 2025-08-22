@@ -24,7 +24,7 @@ const tableHeader = [
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean, disable?:boolean }[]> = {
   저장: [
     { label: "ID", key: "id" , type:'text', disable:true, hide:true},
-    { label: "허가 여부", key: "status", type:'option' },
+    { label: "관리 권한 허가 여부", key: "status", type:'option' },
   ],
 };
 
