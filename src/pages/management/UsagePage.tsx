@@ -62,7 +62,7 @@ const tableHeader = [
   { name: "공간", id: "space_name" },
   { name: "시작일", id: "start_at" },
   { name: "종료일", id: "end_at" },
-  { name: "유저", id: "user_name" },
+  { name: "유저", id: "user_id" },
   { name: "상태", id: "status" },
 ];
 

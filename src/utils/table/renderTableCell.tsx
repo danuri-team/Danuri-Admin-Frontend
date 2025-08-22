@@ -84,8 +84,8 @@ const renderTableCell = ({item, rowData, value, header}:RenderCell) => {
             break;
         }
         return <p>{age}</p>;
-      } else if(item.id === "id" || item.id === "user_name"){
-        const isUserName = item.id === "user_name";
+      } else if(item.id === "id" || item.id === "user_name" || item.id === "user_id"){
+        const isUserName = item.id === "user_name" || item.id === "user_id";
         return <p className={`${isUserName ? 'cursor-pointer' : null} text-danuri-500`}
                   {...(isUserName ? {onClick:()=>navigate('/user')} : {})}>
                     {value}

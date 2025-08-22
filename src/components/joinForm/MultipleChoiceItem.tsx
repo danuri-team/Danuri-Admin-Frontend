@@ -16,7 +16,7 @@ const MultipleChoiceItem = ({id}:{id:number}) => {
             ref={setNodeRef} 
             style={style} 
             {...attributes}>
-            <div className="flex items-center">
+            <div className="flex flex-1 items-center">
                 <button className="text-black cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm self-center mr-[24px]" {...listeners} aria-label="drag handle">
                     <HandleIcon />
                 </button>
