@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { isValidEmail } from "../../utils/infoValidation";
 
 type FindPasswordState = {
-  email: string;
+  phone: string;
   code: string;
   newPassword: string,
   rePassword: string,
@@ -19,7 +19,7 @@ type FindPasswordState = {
 type FindPasswordAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
 const initialFindForm: FindPasswordState = {
-  email: "",
+  phone: "",
   code: "",
   newPassword: "",
   rePassword: "",
@@ -45,12 +45,12 @@ const FindPassword = () => {
   const [orderNumber, setOrderNumber] = useState<number>(1);
 
   const onClickSendEmail = () => {
-    if(findForm.email===""){
-      toast.error('이메일을 입력해주세요.');
+    if(findForm.phone===""){
+      toast.error('전화번호를 입력해주세요.');
       return;
     }
-    if (!isValidEmail(findForm.email)){
-      toast.error('이메일이 형식에 맞지않습니다.');
+    if (!isValidEmail(findForm.phone)){
+      toast.error('전화번호가 형식에 맞지않습니다.');
       return;
     }
     //api 연결
@@ -106,7 +106,7 @@ const FindPassword = () => {
         {
           orderNumber === 1 ? 
             <EmailForFindPassword 
-              value={findForm.email} 
+              value={findForm.phone} 
               onChange={(e:React.ChangeEvent<HTMLInputElement>)=>dispatch({type:'CHANGE', payload: {key:'email', value: e.target.value}})}
               onClick={onClickSendEmail} /> 
           : orderNumber === 2 ? 
