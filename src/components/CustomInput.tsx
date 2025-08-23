@@ -68,8 +68,8 @@ const CustomInput = (props: CustomInputType) => {
   };
 
   return (
-    <div className="mb-[20px]">
-      <p className="text-danuri-text mb-[7px] font-semibold text-sm">{label}{isMust && <span className="text-red-400"> *</span>}</p>
+    <div>
+      <p className="text-danuri-text mb-[7px] font-semibold text-sm">{label!=='placeholder' && label}{isMust && <span className="text-red-400"> *</span>}</p>
       <div
         className={`${isValid && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[12px] w-full min-w-2xs`}
       >
@@ -104,7 +104,7 @@ const CustomInput = (props: CustomInputType) => {
           : (
             <input
               disabled={disabled}
-              className="outline-none w-full placeholder:text-gray-300"
+              className={`${label==='placeholder' ? 'text-gray-300' : undefined} outline-none w-full placeholder:text-gray-300`}
               type={label === "비밀번호" ? "password" : "text"}
               placeholder={`${label}를 입력해주세요`}
               value={props.value}

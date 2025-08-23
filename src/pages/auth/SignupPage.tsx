@@ -89,22 +89,24 @@ const SignupPage = () => {
       <div className="m-auto w-[50%] min-w-xs max-w-lg pt-[50px] pb-[50px]">
         <Link to={'/auth/login'}><GoChevronLeft size={30} /></Link>
         <h1 className="justify-self-center text-4xl font-bold mb-[50px] mt-[36px]">회원가입</h1>
-        {loginInputs.map((item) => (
-          <CustomInput
-            type={item.type}
-            label={item.label}
-            key={item.key}
-            value={item.value}
-            valid={
-              item.key === "email"
-                ? isValidEmail(signupForm.email)
-                : undefined
-            }
-            onChange={(e) =>
-              dispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
-            }
-          />
-        ))}
+        <div className="flex flex-col gap-[24px]"> 
+          {loginInputs.map((item) => (
+            <CustomInput
+              type={item.type}
+              label={item.label}
+              key={item.key}
+              value={item.value}
+              valid={
+                item.key === "email"
+                  ? isValidEmail(signupForm.email)
+                  : undefined
+              }
+              onChange={(e) =>
+                dispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
+              }
+            />
+          ))}
+        </div>
         <div className="mt-[60px]">
           <CustomButton value="완료" onClick={() => onclickSignup()} />
         </div>

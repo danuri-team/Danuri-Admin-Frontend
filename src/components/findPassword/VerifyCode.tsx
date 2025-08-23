@@ -41,7 +41,7 @@ const VerifyCode = ({value, onChange, onClick}:VerifyCode) => {
                 onChange={onChange}            
             />
             <div>
-                <p className="text-red-400 text-xs">00:{String(remainingTime).padStart(2,'0')}</p>
+                <p className="mt-[8px] text-red-400 text-xs">00:{String(remainingTime).padStart(2,'0')}</p>
             </div>
             <div className="mt-[60px]">
                 <CustomButton value="확인" onClick={onClick} />

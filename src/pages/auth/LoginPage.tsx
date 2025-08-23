@@ -65,16 +65,18 @@ const LoginPage = () => {
     <div className="w-full h-screen flex">
       <div className="m-auto w-[50%] min-w-xs max-w-lg">
         <h1 className="justify-self-center text-4xl font-bold mb-[50px]">다누리</h1>
-        {loginInputs.map((item) => (
-          <CustomInput
-            label={item.label}
-            key={item.key}
-            value={item.value}
-            onChange={(e) =>
-              loginDispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
-            }
-          />
-        ))}
+        <div className="flex flex-col gap-[24px]"> 
+          {loginInputs.map((item) => (
+            <CustomInput
+              label={item.label}
+              key={item.key}
+              value={item.value}
+              onChange={(e) =>
+                loginDispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
+              }
+            />
+          ))}
+        </div>
         <div className="mt-[60px]">
           <CustomButton value="로그인" onClick={onclickLogin} />
         </div>

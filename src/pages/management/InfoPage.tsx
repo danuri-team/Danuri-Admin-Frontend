@@ -84,7 +84,7 @@ const InfoPage = () => {
         <div className="mb-[30px] flex">
           <h1 className="text-xl font-bold">정보 관리</h1>
         </div>
-        <div className="w-sm">
+        <div className="w-sm flex flex-col gap-[30px]">
           <CustomInput
             label="회사"
             value={infoForm.company_name}

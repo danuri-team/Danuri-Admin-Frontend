@@ -107,7 +107,7 @@ const FindPassword = () => {
           orderNumber === 1 ? 
             <EmailForFindPassword 
               value={findForm.phone} 
-              onChange={(e:React.ChangeEvent<HTMLInputElement>)=>dispatch({type:'CHANGE', payload: {key:'email', value: e.target.value}})}
+              onChange={(e:React.ChangeEvent<HTMLInputElement>)=>dispatch({type:'CHANGE', payload: {key:'phone', value: e.target.value}})}
               onClick={onClickSendEmail} /> 
           : orderNumber === 2 ? 
             <VerifyCode
