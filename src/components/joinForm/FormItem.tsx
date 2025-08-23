@@ -22,6 +22,8 @@ const FormItem = ({id, index, deleteFormItem, addFormItem}:{id:number, index:num
     const [essential, setEssential] = useState<boolean>(false);
     const [multiple, setMultiple] = useState<boolean>(false);
 
+    const [placeholder, setPlaceholder] = useState<string>('');
+
 
     //title 길이 측정용 Ref
     const spanRef = useRef<HTMLSpanElement>(null);
@@ -127,7 +129,7 @@ const FormItem = ({id, index, deleteFormItem, addFormItem}:{id:number, index:num
                         </div>
                     ): (
                         <div>
-                            <CustomInput label="placeholder" type="text" value={'이름을 입력해주세요'} onChange={()=>{}}/>
+                            <CustomInput label="placeholder" type="text" value={placeholder} onChange={(e)=>{setPlaceholder(e.target.value)}}/>
                             <p className="text-[12px] text-gray-500 mt-[8px]">사용자 입력창에 표시될 예시 문구를 입력하세요.</p>
                         </div>
                     )

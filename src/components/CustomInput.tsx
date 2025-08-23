@@ -106,7 +106,7 @@ const CustomInput = (props: CustomInputType) => {
               disabled={disabled}
               className={`${label==='placeholder' ? 'text-gray-300' : undefined} outline-none w-full placeholder:text-gray-300`}
               type={label === "비밀번호" ? "password" : "text"}
-              placeholder={`${label}를 입력해주세요`}
+              placeholder={`${label!=='placeholder' ? `${label}를 입력해주세요` : ''}`}
               value={props.value}
               onChange={props.onChange}
               onFocus={() => setIsFocus(true)}
