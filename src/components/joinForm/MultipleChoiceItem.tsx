@@ -3,7 +3,7 @@ import HandleIcon from "../../assets/icons/handle-icon.svg?react";
 import XIcon from "../../assets/icons/x-icon.svg?react";
 import { CSS } from "@dnd-kit/utilities";
 
-const MultipleChoiceItem = ({id}:{id:number}) => {
+const MultipleChoiceItem = ({id,deleteQuestion}:{id:number, deleteQuestion:(id:number)=>void}) => {
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
 
     const style = {
@@ -23,7 +23,9 @@ const MultipleChoiceItem = ({id}:{id:number}) => {
                 <div className="border-2 border-gray-200 w-[18px] h-[18px] rounded-md mr-[8px]"></div>
                 <input className="flex-1 outline-none text-[15px]" type="text" />
             </div>
-            <button className="text-black cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm self-center" {...listeners} aria-label="drag handle">
+            <button 
+                className="text-black cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm self-center" 
+                onClick={()=>deleteQuestion(id)}>
                 <XIcon />
             </button>
         </div>

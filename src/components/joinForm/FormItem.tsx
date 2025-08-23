@@ -10,8 +10,9 @@ import ToggleButton from "./ToggleButton";
 import { useEffect, useRef, useState } from "react";
 import { KeyboardSensor, MouseSensor, useSensor, useSensors, type DragEndEvent, DndContext, closestCenter } from "@dnd-kit/core";
 import MultipleChoiceItem from "./MultipleChoiceItem";
+import CustomInput from "../CustomInput";
 
-const FormItem = ({id, index}:{id:number, index:number}) => {
+const FormItem = ({id, index, deleteFormItem, addFormItem}:{id:number, index:number, deleteFormItem:(id:number)=>void, addFormItem:()=>void}) => {
     const [multiQuestions, setMultiQuestions] = useState<number[]>([1,2,3])
 
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
@@ -62,6 +63,11 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
         setMultiQuestions((items)=> [...items, newItemId]);
     }
 
+    const deleteQuestion = (id:number) => {
+        const newQuestion = multiQuestions.filter((item)=>item!==id)
+        setMultiQuestions(newQuestion);
+    }
+
     const handleOption = (option:string) => {
         setSelectOption(option);
     }
@@ -109,7 +115,7 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
                             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                                 <SortableContext items={multiQuestions} strategy={verticalListSortingStrategy}>
                                     {multiQuestions.map((id)=>(
-                                        <MultipleChoiceItem key={id} id={id}/>
+                                        <MultipleChoiceItem key={id} id={id} deleteQuestion={deleteQuestion}/>
                                     ))}
                                 </SortableContext>
                             </DndContext>
@@ -121,7 +127,8 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
                         </div>
                     ): (
                         <div>
-
+                            <CustomInput label="placeholder" type="text" value={'이름을 입력해주세요'} onChange={()=>{}}/>
+                            <p className="text-[12px] text-gray-500 mt-[8px]">사용자 입력창에 표시될 예시 문구를 입력하세요.</p>
                         </div>
                     )
                 }
@@ -142,10 +149,14 @@ const FormItem = ({id, index}:{id:number, index:number}) => {
                     }
                 </div>
                 <div className="flex gap-[50px]">
-                    <button className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm">
+                    <button 
+                        className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm"
+                        onClick={addFormItem}>
                         <PasteIcon  />
                     </button>
-                    <button className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm">
+                    <button 
+                        className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm"
+                        onClick={()=>deleteFormItem(id)}>
                         <DeleteIcon  />
                     </button>
                 </div>
