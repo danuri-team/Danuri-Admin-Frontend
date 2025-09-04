@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { deleteItem } from "../../api/ItemAPI";
 import BannerButton from "../../components/BannerButton";
 import CustomTable, { type UsageData } from "../../components/CustomTable";
 import MainHeader from "../../components/MainHeader";
@@ -8,7 +7,7 @@ import Modal from "../../components/modal/Modal";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import {  putUpdateDevice } from "../../api/DeviceAPI";
 import { toast } from "react-toastify";
-import { getAllAdminInfo } from "../../api/AdminAPI";
+import { getAllAdminInfo, deleteAdmin } from "../../api/AdminAPI";
 
 //수정 필요: 관리자 계정 관리 API로 변경해야함
 
@@ -55,6 +54,7 @@ const AdminAccountPage = () => {
       const res = await getAllAdminInfo();
       if (res.pass) {
         setTableData(res.data);
+        console.log(res.data)
       } else {
         toast.error('데이터를 불러오지 못했습니다.');
       }
@@ -90,7 +90,7 @@ const AdminAccountPage = () => {
         }
 
         //api 수정 필요
-        const res = await deleteItem({itemId: selectedRowId});
+        const res = await deleteAdmin({adminId: selectedRowId});
         if(res.pass){
           toast.success('삭제되었습니다.');
           setIsDeleteMode(false);

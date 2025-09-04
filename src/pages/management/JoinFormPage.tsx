@@ -6,16 +6,17 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSo
 import { useState } from "react"
 import FormItem from "../../components/joinForm/FormItem"
 
-type FormItem = {
+export type FormItemType = {
+  id:number,
   label: string,
-  options: string[],
+  options: string[] | null,
   placeHolder: string | null,
   isRequired: boolean,
-  isMultiSelect: boolean | null,
+  isMultiSelect: boolean,
 };
 
 const JoinFormPage = () => {
-  const [formItems, setFormItems] = useState<number[]>([1,2,3])
+  const [formItems, setFormItems] = useState<FormItemType[]>([])
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -28,20 +29,43 @@ const JoinFormPage = () => {
     const {active, over} = event;
 
     if(over && active.id !== over.id){
-      const preIndex = formItems.indexOf(Number(active.id));
-      const newIndex = formItems.indexOf(Number(over.id));
+      const preIndex = formItems.findIndex(item=>Number(active.id) === item.id);
+      const newIndex = formItems.findIndex(item=>(over.id) === item.id);
 
       setFormItems((items)=>arrayMove(items, preIndex, newIndex))
     }    
   }
 
-  const addFormItem = () => {
-    const newItemId = Math.max(...formItems)+1
-    setFormItems((items)=> [...items, newItemId]);
+  const addFormItem = (id?:number) => {
+    const newItemId = formItems.length > 0 ? Math.max(...formItems.map((item=>item.id)))+1 : 0;
+    if(!id){
+      setFormItems((items)=> [...items, {
+        id:newItemId,
+        label: '',
+        options: null,
+        placeHolder: '',
+        isRequired: true,
+        isMultiSelect: false,
+      } as FormItemType]);
+    }
+    else {
+      const target = formItems.find((item)=>item.id===id);
+      if(target){
+        setFormItems((items)=> [...items, {
+          id:newItemId,
+          label:target.label,
+          options: target.options,
+          placeHolder: target.placeHolder,
+          isRequired: target.isRequired,
+          isMultiSelect: target.isMultiSelect,
+        }])
+
+      }
+    }
   }
 
   const deleteFormItem = (id:number) => {
-    const newFormItems = formItems.filter((item)=>item!==id);
+    const newFormItems = formItems.filter((item)=>item.id!==id);
     setFormItems(newFormItems);
   }
 
@@ -55,14 +79,14 @@ const JoinFormPage = () => {
             <h1 className="text-xl font-bold">가입 폼 관리</h1>
           </div>
           <div className="flex gap-[10px]">
-            <TableButton value="추가" onClick={addFormItem} />
+            <TableButton value="추가" onClick={()=>addFormItem()} />
           </div>
         </div>
         <div className="w-full">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={formItems} strategy={verticalListSortingStrategy}>
-              {formItems.map((id,index)=>(
-                <FormItem key={id} id={id} index={index} deleteFormItem={deleteFormItem} addFormItem={addFormItem}/>
+              {formItems.map((item,index)=>(
+                <FormItem key={item.id} index={index} deleteFormItem={deleteFormItem} addFormItem={addFormItem} {...item} />
               ))}
             </SortableContext>
           </DndContext>

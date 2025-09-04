@@ -223,7 +223,7 @@ const UsagePage = () => {
     }
     else {
       if(!selectedRowId){
-        toast.error('선택된 사용자가 없습니다.');
+        toast.error('선택된 이용이 없습니다.');
         setIsDeleteMode(false);
         return;
       }

@@ -11,8 +11,15 @@ import { useEffect, useRef, useState } from "react";
 import { KeyboardSensor, MouseSensor, useSensor, useSensors, type DragEndEvent, DndContext, closestCenter } from "@dnd-kit/core";
 import MultipleChoiceItem from "./MultipleChoiceItem";
 import CustomInput from "../CustomInput";
+import type { FormItemType } from "../../pages/management/JoinFormPage";
 
-const FormItem = ({id, index, deleteFormItem, addFormItem}:{id:number, index:number, deleteFormItem:(id:number)=>void, addFormItem:()=>void}) => {
+type FormItemProps = FormItemType & {
+    index:number,
+    deleteFormItem:(id:number)=>void,
+    addFormItem:(id:number)=>void,
+}
+
+const FormItem = ({id, index, deleteFormItem, addFormItem,label, options, placeHolder, isMultiSelect, isRequired }:FormItemProps) => {
     const [multiQuestions, setMultiQuestions] = useState<number[]>([1,2,3])
 
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
@@ -153,7 +160,7 @@ const FormItem = ({id, index, deleteFormItem, addFormItem}:{id:number, index:num
                 <div className="flex gap-[50px]">
                     <button 
                         className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm"
-                        onClick={addFormItem}>
+                        onClick={()=>addFormItem(id)}>
                         <PasteIcon  />
                     </button>
                     <button 
