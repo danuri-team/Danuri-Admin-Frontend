@@ -69,3 +69,15 @@ export const getSearchCompanyDevice = async () => {
     return { data: error, pass: false };
   }
 };
+
+
+//기기 로그인 QR 발급
+export const getDeviceQR = async ({deviceId}:{deviceId:string}) => {
+  try{
+    const res = await PrivateAxios.get(`/admin/devices/${deviceId}/sign-in`);
+    return {data:res.data, pass:true}
+  }
+  catch (error){
+    return {data:error, pass:false};
+  }
+}
