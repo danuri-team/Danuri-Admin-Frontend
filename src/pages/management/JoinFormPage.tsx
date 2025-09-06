@@ -9,7 +9,7 @@ import FormItem from "../../components/joinForm/FormItem"
 export type FormItemType = {
   id:number,
   label: string,
-  options: string[] | null,
+  options: {id:number, option: string}[],
   placeHolder: string | null,
   isRequired: boolean,
   isMultiSelect: boolean,
@@ -25,6 +25,19 @@ const JoinFormPage = () => {
     })
   )
 
+  const handleFormItem = (id:number, key: keyof FormItemType, value: string | {id:number, option:string}[] | boolean) => {
+    setFormItems((prev)=> (prev.map((item) => {
+      if(item.id === id){
+        return {
+          ...item,
+          [key]:value
+        }
+      }
+      return {...item}
+    })))
+
+  }
+
   const handleDragEnd = (event: DragEndEvent) => {
     const {active, over} = event;
 
@@ -38,11 +51,11 @@ const JoinFormPage = () => {
 
   const addFormItem = (id?:number) => {
     const newItemId = formItems.length > 0 ? Math.max(...formItems.map((item=>item.id)))+1 : 0;
-    if(!id){
+    if(id===undefined){
       setFormItems((items)=> [...items, {
         id:newItemId,
         label: '',
-        options: null,
+        options: [{id:0, option: ''}],
         placeHolder: '',
         isRequired: true,
         isMultiSelect: false,
@@ -50,6 +63,7 @@ const JoinFormPage = () => {
     }
     else {
       const target = formItems.find((item)=>item.id===id);
+      console.log(target, formItems.find((item)=>item.id===id));
       if(target){
         setFormItems((items)=> [...items, {
           id:newItemId,
@@ -86,7 +100,7 @@ const JoinFormPage = () => {
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={formItems} strategy={verticalListSortingStrategy}>
               {formItems.map((item,index)=>(
-                <FormItem key={item.id} index={index} deleteFormItem={deleteFormItem} addFormItem={addFormItem} {...item} />
+                <FormItem key={item.id} index={index} deleteFormItem={deleteFormItem} addFormItem={addFormItem} changeFormItem={handleFormItem} {...item} />
               ))}
             </SortableContext>
           </DndContext>

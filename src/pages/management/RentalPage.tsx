@@ -30,8 +30,8 @@ const initialSelectForm: SelectState = {
 
 const tableHeader = [
   { name: "물품", id: "item_name" },
-  { name: "유저", id: "user_name" },
-  { name: "사용 ID", id: "user_id" },
+  { name: "유저", id: "user_id" },
+  { name: "이용 ID", id: "rental_id" },
   { name: "대여 개수", id: "quantity" },
   { name: "반납 개수", id: "returned_quantity" },
   { name: "상태 ", id: "status" },

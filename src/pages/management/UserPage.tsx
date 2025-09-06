@@ -35,7 +35,7 @@ const initialSelectForm: SelectState = {
 };
 
 const tableHeader = [
-  { name: "이름", id: "name" },
+  { name: "ID", id: "id" },
   { name: "전화번호", id: "phone" },
   { name: "성별", id: "sex" },
   { name: "나이", id: "age" },

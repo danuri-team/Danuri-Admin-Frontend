@@ -17,22 +17,19 @@ type FormItemProps = FormItemType & {
     index:number,
     deleteFormItem:(id:number)=>void,
     addFormItem:(id:number)=>void,
+    changeFormItem: (id:number, key: keyof FormItemType, value: string|{id:number, option:string}[]|boolean) => void
 }
 
-const FormItem = ({id, index, deleteFormItem, addFormItem,label, options, placeHolder, isMultiSelect, isRequired }:FormItemProps) => {
-    const [multiQuestions, setMultiQuestions] = useState<number[]>([1,2,3])
+const FormItem = ({id, index, deleteFormItem, addFormItem, changeFormItem, label, options, placeHolder, isMultiSelect, isRequired }:FormItemProps) => {
 
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
+    //옵션 선택에 대한 데이터 전달 논의 필요
     const [selectOption, setSelectOption] = useState<string>('객관식');
-    const [title, setTitle] = useState<string>('');
-
-    const [essential, setEssential] = useState<boolean>(false);
-    const [multiple, setMultiple] = useState<boolean>(false);
-
-    const [placeholder, setPlaceholder] = useState<string>('');
 
 
-    //title 길이 측정용 Ref
+    console.log(id, label);
+
+    //label 길이 측정용 Ref
     const spanRef = useRef<HTMLSpanElement>(null);
     const [inputWidth, setInputWidth] = useState<number>(0);
 
@@ -41,7 +38,7 @@ const FormItem = ({id, index, deleteFormItem, addFormItem,label, options, placeH
             const spanWidth = spanRef.current.offsetWidth;
             setInputWidth(spanWidth);
         }
-    },[title]);
+    },[label]);
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -58,35 +55,54 @@ const FormItem = ({id, index, deleteFormItem, addFormItem,label, options, placeH
 
     const handleDragEnd = (event: DragEndEvent) => {
         const {active, over} = event;
-    
+        if(!options)return;
         if(over && active.id !== over.id){
-            const preIndex = multiQuestions.indexOf(Number(active.id));
-            const newIndex = multiQuestions.indexOf(Number(over.id));
+            const preIndex = options?.findIndex((item)=> item.id === Number(active.id));
+            const newIndex = options?.findIndex((item)=> item.id === Number(over.id));
 
-            setMultiQuestions((items)=>arrayMove(items, preIndex, newIndex))
+            const changeOptions = arrayMove(options, preIndex, newIndex);
+
+            changeFormItem(id, 'options',changeOptions);
         }    
     }
 
+    //객관식 문항 추가
     const addQuestion = () => {
-        const newItemId = Math.max(...multiQuestions)+1
-        setMultiQuestions((items)=> [...items, newItemId]);
+        const newItemId = Math.max(...options.map((item) => item.id))+1
+        changeFormItem(id, 'options', [...options, {id:newItemId, option:''}]);
     }
 
+    //객관식 문항 삭제
     const deleteQuestion = (id:number) => {
-        const newQuestion = multiQuestions.filter((item)=>item!==id)
-        setMultiQuestions(newQuestion);
+        const newQuestion = options.filter((item)=>item.id!==id);
+        changeFormItem(id, 'options', newQuestion);
+    }
+
+    //객관식 문항 내용 수정
+    const changeQuestion = (id:number, value:string) => {
+        const changeQuestion = options.map((item) => {
+            if(item.id === id){
+                return {
+                    ...item,
+                    option: value,
+                }
+            }
+            return {...item};
+        })
+        changeFormItem(id, 'options', changeQuestion);
     }
 
     const handleOption = (option:string) => {
         setSelectOption(option);
     }
 
+
     const handleToggle = (type:string, state:boolean) => {
         if(type==='essential'){
-            setEssential(state);
+            changeFormItem(id, 'isRequired' ,state);
             return;
         }
-        setMultiple(state)
+        changeFormItem(id, 'isMultiSelect' ,state);
     }
 
 
@@ -106,13 +122,14 @@ const FormItem = ({id, index, deleteFormItem, addFormItem,label, options, placeH
                 <input 
                     className={`focus:outline-none max-w-full`} 
                     style={{width:`${inputWidth > 0 ? (inputWidth+5)+'px' : '100%'}`}}
-                    type="text" 
-                    onChange={(e)=>setTitle(e.target.value)} />
+                    type="text"
+                    value={label} 
+                    onChange={(e)=>changeFormItem(id, 'label', e.target.value)} />
                 <span className="bg-gray-300 absolute" ref={spanRef} style={{visibility:'hidden'}}>
-                    {title}
+                    {label}
                 </span>
                 {
-                    essential && (
+                    isRequired && (
                         <span className="text-red-500">*</span>
                     )
                 }
@@ -122,9 +139,9 @@ const FormItem = ({id, index, deleteFormItem, addFormItem,label, options, placeH
                     selectOption==='객관식' ? (
                         <div className="flex flex-col w-full">
                             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                                <SortableContext items={multiQuestions} strategy={verticalListSortingStrategy}>
-                                    {multiQuestions.map((id)=>(
-                                        <MultipleChoiceItem key={id} id={id} deleteQuestion={deleteQuestion}/>
+                                <SortableContext items={options} strategy={verticalListSortingStrategy}>
+                                    {options.map((item)=>(
+                                        <MultipleChoiceItem key={item.id} id={item.id} deleteQuestion={deleteQuestion} changeOption={(e)=>changeQuestion(item.id, e.target.value )} option={item.option}/>
                                     ))}
                                 </SortableContext>
                             </DndContext>
@@ -136,7 +153,7 @@ const FormItem = ({id, index, deleteFormItem, addFormItem,label, options, placeH
                         </div>
                     ): (
                         <div>
-                            <CustomInput label="placeholder" type="text" value={placeholder} onChange={(e)=>{setPlaceholder(e.target.value)}}/>
+                            <CustomInput label="placeholder" type="text" value={placeHolder || ''} onChange={(e)=>{changeFormItem(id, 'placeHolder' ,e.target.value)}}/>
                             <p className="text-[12px] text-gray-500 mt-[8px]">사용자 입력창에 표시될 예시 문구를 입력하세요.</p>
                         </div>
                     )
@@ -146,13 +163,13 @@ const FormItem = ({id, index, deleteFormItem, addFormItem,label, options, placeH
                 <div className="flex items-center">
                     <div className="flex items-center gap-[16px]">
                         <p className="text-[15px]">필수 입력</p>
-                        <ToggleButton handleToggle={handleToggle} isActive={essential} type={'essential'} />
+                        <ToggleButton handleToggle={handleToggle} isActive={isRequired} type={'essential'} />
                     </div>
                     {
                         selectOption==='객관식' && (
                             <div className="flex items-center gap-[16px] ml-[24px]">
                                 <p className="text-[15px]">복수 선택</p>
-                                <ToggleButton handleToggle={handleToggle} isActive={multiple} type={'multiple'} />
+                                <ToggleButton handleToggle={handleToggle} isActive={isMultiSelect} type={'multiple'} />
                             </div>
                         )
                     }
