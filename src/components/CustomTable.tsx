@@ -21,7 +21,7 @@ export type HeaderType = {
 type CustomTable = {
   header: HeaderType[]; 
   data: UsageData[] | null, 
-  rowUpdate?: (row:UsageData) => void  | undefined 
+  rowUpdate?: (row:UsageData, title?:string) => void  | undefined 
   isDeleteMode?: boolean,
   changeSelectedRow?: ({id}:{id:string}) => void,
   selectedRowId?: string

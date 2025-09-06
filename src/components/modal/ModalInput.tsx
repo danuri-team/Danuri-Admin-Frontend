@@ -5,8 +5,9 @@ import { IoCloseCircleSharp } from "react-icons/io5";
 import { getSearchTerm, type SearchLabel } from "../../utils/searchTermOption";
 import { useLocation } from "react-router-dom";
 import { changeEnumtoText, selectStatusOption } from "../../utils/StatusSelectOption";
+import { getDeviceQR } from "../../api/DeviceAPI";
 
-export type ModalInputTypesType = "search" | "date" | "time" | "text" | "number" | "option";
+export type ModalInputTypesType = "search" | "date" | "time" | "text" | "number" | "option" | "image";
 
 type ModalInputType =
   | {
@@ -20,7 +21,7 @@ type ModalInputType =
     }
   | {
       label: string;
-      type: "search" | "text" | "number" | "option";
+      type: "search" | "text" | "number" | "option" | "image";
       value: string | number;
       resetValue?: () => void;
       onChange: (value: string | number) => void;
@@ -35,6 +36,8 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
   const [searchTerms, setSearchTerms] = useState<{ name: string; id: string }[]>([]);
   const [isFocus, setIsFocus] = useState<boolean>(false);
   
+  const [qrSrc, setQrSrc] = useState<string>("");
+
 
   const options = selectStatusOption(location.pathname as string, label);
 
@@ -65,12 +68,31 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
     }
   }, [value, type]);
 
+  useEffect(() => {
+    const getQR = async () => {
+      if (type === "image" && value) {
+        const res = await getDeviceQR({ deviceId: value as string });
+        if (res.pass) {
+          setQrSrc(res.data.qr_link);
+        } else {
+          setQrSrc("");
+        }
+      }
+    };
+    getQR();
+  }, [type, value]);
+
   const onClickSearchTerm = (id: string, name: string) => {
     if (type === "search") {
       onChange(id);
       setSearchInput(name);
     }
   };
+
+  if(type==="image"){
+    return <img src={qrSrc} alt="QRCode" />
+  }
+  
 
   return (
     <div className="text-sm mb-[15px]">

@@ -26,6 +26,11 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
     { label: "ID", key: "id" , type:'text', disable:true},
     { label: "별칭", key: "alias", type:'text' },
   ],
+  기기연결: [
+    { label: "", key: "QRCode" , type:'image', disable:true},
+    { label: "별칭", key: "alias", type:'text' },
+  ],
+
 };
 
 //모달 Submit 함수
@@ -104,14 +109,21 @@ const MachinePage = () => {
     }
   }
 
-  const onClickTableRow = (row:UsageData) => {
-    setModalTitle('수정');
-    const addInitialInputs = inputOption['수정'].map((item) => {
+  const onClickTableRow = (row:UsageData, title:string) => {
+    setModalTitle(title);
+    const addInitialInputs = inputOption[title].map((item) => {
+      if(title==='기기연결' && item.key ==='QRCode'){
+        return {
+          ...item,
+          initial: row.id
+        }
+      }
       return {
         ...item,
         initial: item.key==='itemId' ? row.id : row[item.key]
       }
     })
+    console.log(inputOption)
     setModalInputs(addInitialInputs);
     setIsModalOpen(true);
   }
@@ -135,7 +147,7 @@ const MachinePage = () => {
                 <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode} />
             </div>
             </div>
-            <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
+            <CustomTable header={tableHeader} data={tableData} rowUpdate={(row:UsageData, title: string | undefined)=>onClickTableRow(row, title || '기기연결')} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
         </div>
         {isModalOpen && (
             <Modal
