@@ -20,11 +20,10 @@ type FormItemProps = FormItemType & {
     changeFormItem: (id:number, key: keyof FormItemType, value: string|{id:number, option:string}[]|boolean) => void
 }
 
-const FormItem = ({id, index, deleteFormItem, addFormItem, changeFormItem, label, options, placeHolder, isMultiSelect, isRequired }:FormItemProps) => {
+const FormItem = ({id, index, deleteFormItem, addFormItem, changeFormItem, label, options, placeHolder, isMultiSelect, isRequired, type }:FormItemProps) => {
 
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
     //옵션 선택에 대한 데이터 전달 논의 필요
-    const [selectOption, setSelectOption] = useState<string>('객관식');
 
 
     console.log(id, label);
@@ -92,8 +91,8 @@ const FormItem = ({id, index, deleteFormItem, addFormItem, changeFormItem, label
         changeFormItem(id, 'options', changeQuestion);
     }
 
-    const handleOption = (option:string) => {
-        setSelectOption(option);
+    const handleOption = (option:'INPUT' | 'CHECK' | 'PHONE') => {
+        changeFormItem(id, 'type', option)
     }
 
 
@@ -116,7 +115,7 @@ const FormItem = ({id, index, deleteFormItem, addFormItem, changeFormItem, label
             <button className="text-gray-400 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm self-center" {...listeners} aria-label="drag handle">
                 <GripIcon />
             </button>
-            <FieldOptions handleOption={handleOption} selectOption={selectOption} />
+            <FieldOptions handleOption={handleOption} selectOption={type} />
             <div className="flex text-[22px] font-semibold mt-[24px] mb-[24px] border-b border-gray-100">
                 <p className="mr-[12px]">{index+1}.</p>
                 <input 
@@ -136,7 +135,7 @@ const FormItem = ({id, index, deleteFormItem, addFormItem, changeFormItem, label
             </div>
             <div>
                 {
-                    selectOption==='객관식' ? (
+                    type==='CHECK' ? (
                         <div className="flex flex-col w-full">
                             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                                 <SortableContext items={options} strategy={verticalListSortingStrategy}>
@@ -166,7 +165,7 @@ const FormItem = ({id, index, deleteFormItem, addFormItem, changeFormItem, label
                         <ToggleButton handleToggle={handleToggle} isActive={isRequired} type={'essential'} />
                     </div>
                     {
-                        selectOption==='객관식' && (
+                        type==='CHECK' && (
                             <div className="flex items-center gap-[16px] ml-[24px]">
                                 <p className="text-[15px]">복수 선택</p>
                                 <ToggleButton handleToggle={handleToggle} isActive={isMultiSelect} type={'multiple'} />

@@ -5,9 +5,11 @@ import TableButton from "../../components/TableButton"
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useState } from "react"
 import FormItem from "../../components/joinForm/FormItem"
+import CustomButton from "../../components/CustomButton"
 
 export type FormItemType = {
   id:number,
+  type: 'INPUT' | 'CHECK' | 'PHONE',
   label: string,
   options: {id:number, option: string}[],
   placeHolder: string | null,
@@ -55,6 +57,7 @@ const JoinFormPage = () => {
       setFormItems((items)=> [...items, {
         id:newItemId,
         label: '',
+        type: 'CHECK',
         options: [{id:0, option: ''}],
         placeHolder: '',
         isRequired: true,
@@ -67,6 +70,7 @@ const JoinFormPage = () => {
       if(target){
         setFormItems((items)=> [...items, {
           id:newItemId,
+          type: target.type,
           label:target.label,
           options: target.options,
           placeHolder: target.placeHolder,
@@ -106,6 +110,9 @@ const JoinFormPage = () => {
           </DndContext>
         </div>
       </div>
+      {
+        formItems.length > 0 && (<CustomButton value="저장" onClick={ ()=>{}}/>)
+      }
     </div>
   )
 }
