@@ -1,17 +1,14 @@
+import type { FormItemType } from "../pages/management/JoinFormPage";
 import { PrivateAxios } from "./PrivateAxios";
 
 //가입폼 생성
-export const postJoinForm = async ({
-  deviceId,
-  spaceId
-}: {
-  deviceId:string,
-  spaceId:string
-}) => {
+export const postJoinForm = async (
+  form: FormItemType[]) => {
   try {
     const res = await PrivateAxios.post("/admin/forms", {
-      device_id: deviceId,
-      space_id: spaceId,
+      title: "가입폼",
+      schema: JSON.stringify(form),
+      "is_sign_up_form": true
     });
     return { data: res.data, pass: true };
   } catch (error) {
@@ -40,3 +37,12 @@ export const putJoinForm = async ({
   }
 };
 
+//가입폼 전체 조회
+export const getJoinForm = async () => {
+  try {
+    const res = await PrivateAxios.get("/admin/forms");
+    return { data: res.data, pass: true };
+  } catch (error) {
+    return { data: error, pass: false };
+  }
+};

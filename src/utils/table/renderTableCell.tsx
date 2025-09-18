@@ -11,11 +11,12 @@ type RenderCell = {
     rowData:UsageData, 
     value:string,
     header: HeaderType[]; 
+    rowUpdate: ((row: UsageData, title?: string) => void | undefined) | undefined
 }
 
 const headerDateNames = ["시작일", "종료일", "가입일", "추가일"]
 
-const renderTableCell = ({item, rowData, value, header}:RenderCell) => {
+const renderTableCell = ({item, rowData, value, header, rowUpdate}:RenderCell) => {
   const navigate = useNavigate();
 
     if (item.name == "시작시간" || item.name === "종료시간") {
@@ -90,6 +91,8 @@ const renderTableCell = ({item, rowData, value, header}:RenderCell) => {
                   {...(isUserName ? {onClick:()=>navigate('/user')} : {})}>
                     {value}
                 </p>
+      } else if (item.id==='connect' && rowUpdate){
+        return <button className="cursor-pointer rounded-[8px] text-danuri-500 border-danuri-500 border-1 text-[13px] px-[14px] py-[7px] " onClick={()=>rowUpdate(rowData, '기기연결')}>연결</button>
       }
       return <p>{value}</p>;
 }

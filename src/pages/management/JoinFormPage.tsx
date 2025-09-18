@@ -6,6 +6,8 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSo
 import { useState } from "react"
 import FormItem from "../../components/joinForm/FormItem"
 import CustomButton from "../../components/CustomButton"
+import { postJoinForm } from "../../api/FormAPI"
+import { toast } from "react-toastify"
 
 export type FormItemType = {
   id:number,
@@ -87,6 +89,16 @@ const JoinFormPage = () => {
     setFormItems(newFormItems);
   }
 
+  const onSubmitForm = async () => {
+    const res = await postJoinForm(formItems);
+    if(res.pass){
+      toast.success('저장되었습니다.');
+    }
+    else{
+      toast.error('가입폼 저장에 실패했습니다.')
+    }
+  }
+
   return(
     <div className="w-full min-w-[400px]">
     <MainHeader />
@@ -109,10 +121,12 @@ const JoinFormPage = () => {
             </SortableContext>
           </DndContext>
         </div>
-      </div>
+      <div className="w-[112px] justify-self-end mb-[50px]">
       {
-        formItems.length > 0 && (<CustomButton value="저장" onClick={ ()=>{}}/>)
+        formItems.length > 0 && (<CustomButton value="저장" onClick={onSubmitForm}/>)
       }
+      </div>
+      </div>
     </div>
   )
 }

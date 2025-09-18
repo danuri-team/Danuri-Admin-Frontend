@@ -11,6 +11,7 @@ import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { formatDatetoISOString } from "../../utils/format/dateFormat";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getJoinForm } from "../../api/FormAPI";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -120,6 +121,7 @@ const UserPage = () => {
   const [selectedRowId, setSelectedRowId] = useState<string>('');
   
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
+  const [isJoinForm, setIsJoinForm] = useState<boolean>(false);
   
   useEffect(() => {
     if (isModalOpen === true || modalTitle === '검색') return;
@@ -146,6 +148,21 @@ const UserPage = () => {
     })
     setFilterData(filterTableData)
   },[selectForm, tableData])
+
+  useEffect(()=>{
+    const getData = async () => {
+      const res = await getJoinForm();
+      if(res.pass){
+        if(res.data.schema===""){
+          setIsJoinForm(false)        
+        }
+        else {
+          setIsJoinForm(true);
+        }
+      }
+    }
+  getData();
+  },[])
 
   const changeSelectedRow = ({id}:{id:string}) => {
     setSelectedRowId(id);
@@ -242,7 +259,11 @@ const UserPage = () => {
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
             <TableButton value="검색" onClick={() => onClickTableButton({ value: "검색" })}/>
             <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode}/>
-            <TableButton value="가입 폼 관리" onClick={() => navigate('/joinForm')}/>
+          {
+            isJoinForm || (
+              <TableButton value="가입 폼 관리" onClick={() => navigate('/joinForm')}/>
+            )
+          }
           </div>
         </div>
         <CustomTable header={tableHeader} data={filterData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId} />

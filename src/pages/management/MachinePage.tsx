@@ -10,11 +10,12 @@ import { toast } from "react-toastify";
 
 export type modalState = Record<string, Date | string | number | null>;
 
-export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
+export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }> | void;
 
 const tableHeader = [
   { name: "ID", id: "id" },
   { name: "추가일", id: "created_at" },
+  { name: "행동", id: "connect" },
 ];
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean, disable?:boolean }[]> = {
@@ -28,7 +29,6 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
   ],
   기기연결: [
     { label: "", key: "QRCode" , type:'image', disable:true},
-    { label: "별칭", key: "alias", type:'text' },
   ],
 
 };
@@ -46,6 +46,8 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
       spaceId: form.spaceId as string,
       isActivate: form.isActivate==='true' ? true : false
     }),
+  기기연결: () => 
+    {},
 };
 
 const MachinePage = () => {

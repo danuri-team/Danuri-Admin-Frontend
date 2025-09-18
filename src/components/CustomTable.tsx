@@ -35,7 +35,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
       const value = getValue() as string;
       const rowData = row.original;
 
-      return renderTableCell({item, rowData, value, header});
+      return renderTableCell({item, rowData, value, header, rowUpdate});
     },
   }));
 

@@ -37,6 +37,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
   const [isFocus, setIsFocus] = useState<boolean>(false);
   
   const [qrSrc, setQrSrc] = useState<string>("");
+  const [qrCode, setQrCode] = useState<string>("");
 
 
   const options = selectStatusOption(location.pathname as string, label);
@@ -74,13 +75,15 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
         const res = await getDeviceQR({ deviceId: value as string });
         if (res.pass) {
           setQrSrc(res.data.qr_link);
+          setQrCode(res.data.code)
         } else {
           setQrSrc("");
+          setQrCode("");
         }
       }
     };
     getQR();
-  }, [type, value]);
+  }, [value]);
 
   const onClickSearchTerm = (id: string, name: string) => {
     if (type === "search") {
@@ -90,7 +93,20 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
   };
 
   if(type==="image"){
-    return <img src={qrSrc} alt="QRCode" />
+    return ( 
+      <div className="min-h-[250px] text-center  justify-self-center">
+        {
+          (qrSrc && qrCode) && (
+            <>
+            <div className="w-[250px] h-[250px] ">
+              <img src={qrSrc} alt="QRCode" width={'100%'} className="object-fill" />
+            </div>
+            <p className="text-[14px]">{qrCode}</p>
+            </>
+          )
+        }
+      </div>
+    )
   }
   
 
