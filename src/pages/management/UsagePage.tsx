@@ -240,11 +240,11 @@ const UsagePage = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <MainHeader />
       <BannerButton />
-      <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
-        <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
+      <div className="flex-1 max-w-360 justify-self-center mr-[50px] ml-[50px] text-nowrap  max-w-360 justify-self-center">
+        <div className="mr-[20px] ml-[20px]  mb-[30px] flex justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">이용 현황</h1>
             {filterSelects.map((item) => {

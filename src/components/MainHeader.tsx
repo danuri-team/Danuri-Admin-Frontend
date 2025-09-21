@@ -11,10 +11,12 @@ const navList = [
 
 const MainHeader = () => {
   return (
-    <nav className="flex items-center justify-between h-[72px] border-b-1 border-gray-200 pl-[60px] pr-[60px] text-nowrap sticky top-0 bg-white z-1"
+    <nav className=" h-[72px] flex items-center justify-center border-b-1 border-gray-200 pl-[60px] pr-[60px] text-nowrap sticky top-0 bg-white z-1"
       role="navigation"
       aria-label="네비게이션"
-    >
+      >
+      <div className="flex-1 w-full max-w-360 flex items-center justify-between ">
+
       <h1 className="text-2xl font-bold">다누리</h1>
       <div>
         {navList.map((item) => (
@@ -34,10 +36,11 @@ const MainHeader = () => {
         <Link
           className="flex border-1 border-gray-200 rounded-md p-[5px] w-[80px] justify-center"
           to={"/usage"}
-        >
+          >
           대시보드
         </Link>
       </div>
+          </div>
     </nav>
   );
 };

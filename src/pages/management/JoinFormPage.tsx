@@ -103,7 +103,7 @@ const JoinFormPage = () => {
     <div className="w-full min-w-[400px]">
     <MainHeader />
     <BannerButton />
-      <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
+      <div className="flex-1 max-w-360 justify-self-center mr-[50px] ml-[50px] text-nowrap">
         <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">가입 폼 관리</h1>

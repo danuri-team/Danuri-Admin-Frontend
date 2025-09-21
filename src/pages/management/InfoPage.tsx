@@ -80,7 +80,7 @@ const InfoPage = () => {
     <div className="w-full">
       <MainHeader />
       <BannerButton />
-      <div className="flex-1 mr-[50px] ml-[50px] text-nowrap">
+      <div className="flex-1 max-w-360 justify-self-center mr-[50px] ml-[50px] text-nowrap">
         <div className="mb-[30px] flex">
           <h1 className="text-xl font-bold">정보 관리</h1>
         </div>
