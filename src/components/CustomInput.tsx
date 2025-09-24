@@ -45,7 +45,8 @@ const CustomInput = (props: CustomInputType) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerms, setSearchTerms] = useState<{ name: string; id: string }[]>([]);
   const [isFocus, setIsFocus] = useState<boolean>(false);
-  const isValid = !isTimeInput(props) && props.value.length > 0;
+  const isValid = !isTimeInput(props) && (props.value ? props.value.length > 0 : false);
+  console.log(isValid)
 
   useEffect(() => {
     if (!isSearchInput(props)) return;
