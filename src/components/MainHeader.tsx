@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import { BsPersonFill } from "react-icons/bs";
+import { useState } from "react";
 
 const navList = [
-  { name: "이용 현황", path: "/usage" },
-  { name: "물품 관리", path: "/item" },
-  { name: "공간 관리", path: "/space" },
-  { name: "사용자 관리", path: "/user" },
-  { name: "대여 관리", path: "/rental" },
+  { name: "계정", menu: [{name: '유저', path: '/user'},{name: '관리자', path: '/admin'},]  },
+  { name: "자산", menu: [{name: '공간', path: '/space'},{name: '디바이스', path: '/machine'},{name: '아이템', path: '/item'},] },
+  { name: "내역", menu: [{name: '공간 이용', path: '/usage'},{name: '아이템 대여', path: '/rental'},]},
 ];
 
 const MainHeader = () => {
+  const [isNavMenuOpen, setIsNavMenuOpen] = useState<string|null>(null);
+
   return (
     <nav className=" h-[72px] flex items-center justify-center border-b-1 border-gray-200 pl-[60px] pr-[60px] text-nowrap sticky top-0 bg-white z-1"
       role="navigation"
@@ -18,11 +19,24 @@ const MainHeader = () => {
       <div className="flex-1 w-full max-w-360 flex items-center justify-between ">
 
       <h1 className="text-2xl font-bold">다누리</h1>
-      <div>
+      <div className="flex">
         {navList.map((item) => (
-          <Link key={item.name} className="text-base font-semibold m-[20px]" to={item.path}>
-            {item.name}
-          </Link>
+          <div className="relative" key={item.name}>
+          <p className="text-base font-semibold m-[20px] cursor-pointer" onBlur={()=>setIsNavMenuOpen(null)} onClick={()=>setIsNavMenuOpen(item.name)}>{item.name}</p>
+          {
+            isNavMenuOpen === item.name && (
+              <div className="absolute left-[-120px] top-[80px] flex flex-col bg-white px-[32px] py-[19px] shadow-[-2px_-2px_4px_-1px_rgba(0,0,0,0.1),2px_2px_4px_-1px_rgba(0,0,0,0.1)]/7 rounded-[20px]">
+                {
+                  item.menu.map(menuItem => (
+                    <Link key={menuItem.name} className="text-base font-semibold py-[11px] w-[240px]" to={menuItem.path}>
+                      {menuItem.name}
+                    </Link>
+                  ))
+                }
+              </div>
+            )
+          }
+          </div>
         ))}
       </div>
       <div className="flex items-center text-sm font-medium w-[120px] gap-[10px]">
