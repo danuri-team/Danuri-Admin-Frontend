@@ -71,6 +71,7 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
 
   useEffect(() => {
     const getQR = async () => {
+      if(qrCode)return;
       if (type === "image" && value) {
         const res = await getDeviceQR({ deviceId: value as string });
         if (res.pass) {
@@ -95,16 +96,24 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
   if(type==="image"){
     return ( 
       <div className="min-h-[250px] text-center  justify-self-center">
+        <div className="h-[303px]">
         {
-          (qrSrc && qrCode) && (
+          (qrSrc && qrCode) ? (
             <>
-            <div className="w-[250px] h-[250px] ">
-              <img src={qrSrc} alt="QRCode" width={'100%'} className="object-fill" />
-            </div>
-            <p className="text-[14px]">{qrCode}</p>
+              <div className="w-[290px] h-[270px] overflow-hidden object-cover flex items-center">
+                <img src={qrSrc} alt="QRCode" className="w-[400px] h-[400px] object-cover" />
+              </div>
+              <p className="text-[14px] mt-[12px]">{qrCode}</p>
             </>
-          )
-        }
+            ) : (
+              <>
+                <div className="animate-pulse w-[270px] h-[270px] bg-gray-200 rounded-[8px]"></div>
+                <p className="bg-gray-200 w-[80px] h-[14px] mt-[12px] rounded-[8px] justify-self-center"></p>
+              </>
+              
+              )
+            }
+          </div>
       </div>
     )
   }

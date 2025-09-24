@@ -92,7 +92,7 @@ const renderTableCell = ({item, rowData, value, header, rowUpdate}:RenderCell) =
                     {value}
                 </p>
       } else if (item.id==='connect' && rowUpdate){
-        return <button className="cursor-pointer rounded-[8px] text-danuri-500 border-danuri-500 border-1 text-[13px] px-[14px] py-[7px] " onClick={()=>rowUpdate(rowData, '기기연결')}>연결</button>
+      return <button className="cursor-pointer rounded-[8px] text-danuri-500 border-danuri-500 border-1 text-[13px] px-[14px] py-[7px] " onClick={(e)=>{e.stopPropagation();rowUpdate(rowData, '기기연결')}}>연결</button>
       }
       return <p>{value}</p>;
 }

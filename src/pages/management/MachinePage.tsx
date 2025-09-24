@@ -20,8 +20,7 @@ const tableHeader = [
 
 const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean, disable?:boolean }[]> = {
   추가: [
-    { label: "ID", key: "id", type: 'text' },
-    { label: "추가일", key: "created_at", type:'date' },
+    { label: "별칭", key: "name", type:'text' },
   ],
   수정: [
     { label: "ID", key: "id" , type:'text', disable:true},
@@ -37,8 +36,7 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
   추가: (form: modalState) =>
     postAddDevice({
-      deviceId: form.deviceId as string,
-      spaceId: form.spaceId as string,
+      deviceName: form.deviceName as string,
     }),
   수정: (form: modalState) => 
     putUpdateDevice({
