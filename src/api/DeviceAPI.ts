@@ -2,16 +2,13 @@ import { PrivateAxios } from "./PrivateAxios";
 
 //기기 추가
 export const postAddDevice = async ({
-  deviceId,
-  spaceId
+  deviceName
 }: {
-  deviceId:string,
-  spaceId:string
+  deviceName:string
 }) => {
   try {
     const res = await PrivateAxios.post("/admin/devices", {
-      device_id: deviceId,
-      space_id: spaceId,
+      name: deviceName,
     });
     return { data: res.data, pass: true };
   } catch (error) {

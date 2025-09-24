@@ -72,7 +72,9 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
             <tr 
               key={row.id} 
               className={`${rowUpdate ? 'cursor-pointer hover:bg-danuri-100' : undefined} border-b-1 border-gray-200`}
-              onClick={()=>{if(rowUpdate)rowUpdate(row.original)}}
+              onClick={()=>{
+                if(rowUpdate)rowUpdate(row.original, '수정')
+              }}
               >
               {
                 isDeleteMode && (
