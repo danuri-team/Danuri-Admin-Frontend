@@ -13,6 +13,7 @@ export type modalState = Record<string, Date | string | number | null>;
 export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }> | void;
 
 const tableHeader = [
+  { name: "별칭", id: "name" },
   { name: "ID", id: "id" },
   { name: "추가일", id: "created_at" },
   { name: "행동", id: "connect" },
@@ -24,7 +25,7 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
   ],
   수정: [
     { label: "ID", key: "id" , type:'text', disable:true},
-    { label: "별칭", key: "alias", type:'text' },
+    { label: "별칭", key: "name", type:'text' },
   ],
   기기연결: [
     { label: "", key: "QRCode" , type:'image', disable:true},
@@ -36,13 +37,12 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
   추가: (form: modalState) =>
     postAddDevice({
-      deviceName: form.deviceName as string,
+      name: form.name as string,
     }),
   수정: (form: modalState) => 
     putUpdateDevice({
-      deviceId: form.deviceId as string,
-      spaceId: form.spaceId as string,
-      isActivate: form.isActivate==='true' ? true : false
+      deviceId: form.id as string,
+      name: form.name as string,
     }),
   기기연결: () => 
     {},

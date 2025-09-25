@@ -47,7 +47,7 @@ export const postSignup = async ({
 export const PostToken = async ({ refreshToken }: { refreshToken: string }) => {
   try {
     //토큰 X
-    const res = await PublicAxios.post("/auth/common/refresh", {}, {
+    const res = await PublicAxios.get("/auth/common/refresh", {
       headers: {
         'Refresh-Token': refreshToken,
       }

@@ -118,7 +118,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   
 
   const onClickSubmitModal = async () => {
-    if(onSubmit(modalForm) instanceof Promise){
+    if(typeof onSubmit === "function" ){
       const res = await onSubmit(modalForm) as { data: string; pass: boolean; }
       if (res.pass) {
         toast.success(`${title}되었습니다.`);

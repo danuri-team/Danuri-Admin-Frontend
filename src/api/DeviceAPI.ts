@@ -2,13 +2,14 @@ import { PrivateAxios } from "./PrivateAxios";
 
 //기기 추가
 export const postAddDevice = async ({
-  deviceName
+  name
 }: {
-  deviceName:string
+  name:string
 }) => {
+  console.log('요청 몇번?')
   try {
     const res = await PrivateAxios.post("/admin/devices", {
-      name: deviceName,
+      name,
     });
     return { data: res.data, pass: true };
   } catch (error) {
@@ -19,17 +20,14 @@ export const postAddDevice = async ({
 //기기 수정
 export const putUpdateDevice = async ({
   deviceId,
-  spaceId,
-  isActivate
+  name,
 }: {
   deviceId: string;
-  spaceId: string;
-  isActivate: boolean;
+  name: string;
 }) => {
   try {
     const res = await PrivateAxios.put(`/admin/devices/${deviceId}`, {
-      space_id: spaceId,
-      is_activate: isActivate
+      name,
     });
     return { data: res.data, pass: true };
   } catch (error) {

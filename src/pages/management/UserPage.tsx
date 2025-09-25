@@ -39,7 +39,6 @@ const tableHeader = [
   { name: "ID", id: "id" },
   { name: "전화번호", id: "phone" },
   { name: "성별", id: "sex" },
-  { name: "나이", id: "age" },
   { name: "가입일", id: "created_at" },
 ];
 
@@ -56,20 +55,17 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
     { label: "이름", key: "name", type: "text" },
     { label: "전화번호", key: "phone", type: "text" },
     { label: "성별", key: "sex", type: "option" },
-    { label: "나이", key: "age", type: "option" },
   ],
   수정: [
     { label: "사용자 ID", key: "id", type: "text", hide:true },
     { label: "이름", key: "name", type: "text" },
     { label: "전화번호", key: "phone", type: "text" },
     { label: "성별", key: "sex", type: "option" },
-    { label: "나이", key: "age", type: "option" },
   ],
   검색: [
     { label: "이름", key: "name", type: "text" },
     { label: "전화번호", key: "phone", type: "text" },
     { label: "성별", key: "sex", type: "option" },
-    { label: "나이", key: "age", type: "option" },
   ],
 };
 
@@ -129,7 +125,7 @@ const UserPage = () => {
     const getTableData = async () => {
       const res = await getSearchCompanyUser();
       if (res.pass) {
-        setTableData(res.data);
+        setTableData(res.data.user_list);
       }
     };
 
@@ -137,7 +133,7 @@ const UserPage = () => {
   }, [isModalOpen, isDeleteMode, modalTitle]);
 
   useEffect(()=>{
-    if(!tableData)return
+    if(!tableData)return;
     const filterTableData = tableData.filter((item) => {
       const matchJoinDate = !selectForm.joinDate 
         || (item.created_at as string).substring(0,10)===formatDatetoISOString(selectForm.joinDate as Date).substring(0,10)
