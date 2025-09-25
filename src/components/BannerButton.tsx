@@ -1,4 +1,4 @@
-import announceIcon from "../assets/announce-icon.png";
+import announceIcon from "../assets/icons/announce-icon.png";
 
 const BannerButton = () => {
   return (

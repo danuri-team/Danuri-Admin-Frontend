@@ -1,8 +1,9 @@
+import { toast } from "react-toastify";
 import { getSearchCompanyItem } from "../api/ItemAPI";
 import { getSearchCompanySpace } from "../api/SpaceAPI";
 import { postUsageSearch } from "../api/UsageAPI";
 import { getSearchCompanyUser } from "../api/UserAPI";
-import { isFutureDate } from "./dateFormat";
+import { isFutureDate } from "./format/dateFormat";
 
 //물품/공간/유저/이용현황 검색어 찾기
 const searchFn = {
@@ -11,6 +12,7 @@ const searchFn = {
     postUsageSearch({ startDate: "2025-03-01T00:00:00", endDate: "", spaceId: null, userId: null }),
   공간: () => getSearchCompanySpace(),
   유저: () => getSearchCompanyUser(),
+  // 회사: () => 
 };
 
 export type SearchLabel = keyof typeof searchFn;
@@ -31,7 +33,7 @@ export const getSearchTerm = async (label: SearchLabel, value: string) => {
 
     return term;
   } else {
-    console.log("데이터 불러오기 실패");
+    toast.error('데이터를 불러오지 못했습니다.');
   }
 };
 
