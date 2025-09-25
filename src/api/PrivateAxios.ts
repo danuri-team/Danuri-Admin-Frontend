@@ -4,7 +4,7 @@ import { clearToken, refreshAccessToken } from "../redux/reducers/authSlice";
 
 //토큰 필요 O
 export const PrivateAxios = axios.create({
-  baseURL: import.meta.env.VITE_API_DEV_SERVER,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
