@@ -7,7 +7,7 @@ import Modal from "../../components/modal/Modal";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import {  putUpdateDevice } from "../../api/DeviceAPI";
 import { toast } from "react-toastify";
-import { getAllAdminInfo, deleteAdmin } from "../../api/AdminAPI";
+import { getAllAdminInfo, deleteAdmin, putAdminInfo } from "../../api/AdminAPI";
 
 //수정 필요: 관리자 계정 관리 API로 변경해야함
 
@@ -30,10 +30,11 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
 //모달 Submit 함수
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
   저장: (form: modalState) => 
-    putUpdateDevice({
-      deviceId: form.deviceId as string,
-      spaceId: form.spaceId as string,
-      isActivate: form.isActivate==='true' ? true : false
+    putAdminInfo({
+      id: '',
+    email: '',
+    phone: '',
+    role: '',
     }),
 };
 

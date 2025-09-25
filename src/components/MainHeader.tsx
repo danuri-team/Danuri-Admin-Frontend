@@ -3,7 +3,7 @@ import { BsPersonFill } from "react-icons/bs";
 import { useState } from "react";
 
 const navList = [
-  { name: "계정", menu: [{name: '유저', path: '/user'},{name: '관리자', path: '/admin'},]  },
+  { name: "계정", menu: [{name: '유저', path: '/user'},]  },
   { name: "자산", menu: [{name: '공간', path: '/space'},{name: '디바이스', path: '/machine'},{name: '아이템', path: '/item'},] },
   { name: "내역", menu: [{name: '공간 이용', path: '/usage'},{name: '아이템 대여', path: '/rental'},]},
 ];

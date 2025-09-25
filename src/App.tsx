@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import { LoginPage, SignupPage, FindPassword } from "./pages/auth";
-import { UsagePage, InfoPage, ItemPage, UserPage, RentalPage, SpacePage, MachinePage, CampaignPage, NotiTalkPage, JoinFormPage, AdminAccountPage } from "./pages/management";
+import { UsagePage, InfoPage, ItemPage, UserPage, RentalPage, SpacePage, MachinePage, JoinFormPage } from "./pages/management";
 import NotFoundPage from "./pages/NotFoundPage";
 
 import RequireLogin from "./components/guard/RequireLogin";
@@ -28,10 +28,10 @@ function App() {
           <Route path="/rental" element={<RentalPage />} />
           <Route path="/space" element={<SpacePage />} />
           <Route path="/machine" element={<MachinePage />} />
-          <Route path="/campaign" element={<CampaignPage />} />
-          <Route path="/talk" element={<NotiTalkPage />} />
+          {/* <Route path="/campaign" element={<CampaignPage />} /> */}
+          {/* <Route path="/talk" element={<NotiTalkPage />} /> */}
           <Route path="/joinForm" element={<JoinFormPage />} />
-          <Route path="/admin" element={<AdminAccountPage />} />
+          {/* <Route path="/admin" element={<AdminAccountPage />} /> */}
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
