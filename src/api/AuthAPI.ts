@@ -16,23 +16,26 @@ export const postLogin = async ({ email, password }: { email: string; password: 
 
 //관리자 인증 회원가입
 export const postSignup = async ({
-  company_id,
+  companyId,
   email,
-  password,
   phone,
+  password,
+  rePassword,
 }: {
-  company_id: string;
+  companyId:string;
   email: string;
+  phone:string;
   password: string;
-  phone: string;
+  rePassword: string;
 }) => {
   try {
     //토큰 X
     const res = await PublicAxios.post("/auth/admin/sign-up", {
-      company_id,
+      companyId,
       email,
-      password,
       phone,
+      password,
+      rePassword,
     });
     return { data: res.data, pass: true };
   } catch (error) {
@@ -44,8 +47,10 @@ export const postSignup = async ({
 export const PostToken = async ({ refreshToken }: { refreshToken: string }) => {
   try {
     //토큰 X
-    const res = await PublicAxios.post("/auth/admin/refresh", {
-      refresh_token: refreshToken,
+    const res = await PublicAxios.get("/auth/common/refresh", {
+      headers: {
+        'Refresh-Token': refreshToken,
+      }
     });
 
     return { data: res.data, pass: true };
@@ -53,3 +58,59 @@ export const PostToken = async ({ refreshToken }: { refreshToken: string }) => {
     return { data: error, pass: false };
   }
 };
+
+
+//비밀번호 변경
+export const updateAdminPassword = async ({
+  new_password,
+  confirm_password
+}: {
+  new_password:string,
+  confirm_password:string
+}) => {
+try {
+  const res = await PublicAxios.put(`/admin/management/password`, {
+      new_password,
+      confirm_password,
+  });
+  return { data: res.data, pass: true };
+} catch (error) {
+  return { data: error, pass: false };
+}
+};
+
+//비밀번호 변경 인증번호 발송
+export const postSendPasswordCode = async ({
+  phone
+}:{
+  phone:string
+}) => {
+  try {
+    const res = await PublicAxios.post(`/auth/admin/find-password`, {
+      phone
+    })
+    return {data:res.data, pass:true}
+  } catch (error){
+    return {data:error, pass:false}
+  }
+}
+
+//10분 리셋 토큰 발급
+export const postPasswordResetToken = async ({
+  phone,
+  code
+}:{
+  phone: string,
+  code: string
+}) => {
+  try{
+    const res = await PublicAxios.post(`/auth/admin/reset-token`, {
+      phone,
+      auth_code:code
+    })
+    return {data:res.data, pass:true}
+  }
+  catch(error){
+    return {data:error, pass:false}
+  }
+}

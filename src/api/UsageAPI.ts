@@ -63,7 +63,7 @@ export const postUsageExcel = async ({ startDate, endDate, spaceId, userId }: Us
       }
     );
 
-    const blob = new Blob([res.data]);
+    const blob = res.data;
 
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -74,7 +74,20 @@ export const postUsageExcel = async ({ startDate, endDate, spaceId, userId }: Us
     window.URL.revokeObjectURL(url);
     return { data: null, pass: true };
   } catch (error) {
-    console.log("다운로드 실패", error);
     return { data: null, pass: false };
   }
 };
+
+//강제 퇴실
+export const putForcedToLeave = async ({usageId,end_at}:{usageId:string, end_at:string}) => {
+  try{
+    const res = await PrivateAxios.put(`/admin/usage/${usageId}`,{
+      end_at
+    })
+    console.log(res.data);
+    return {data:res.data, pass:true}
+  }
+  catch(error){
+    return {data:error, pass:false}
+  }
+}
