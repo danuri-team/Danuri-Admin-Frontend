@@ -5,15 +5,16 @@ import {
   type ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
-import PageJump from "./pagination/PageJump";
-import PaginationButton from "./pagination/PaginationButton";
-import PageSizeSelector from "./pagination/PageSizeSelector";
+import StatusTag from "./StatusTag";
+import PageJump from "./PageJump";
+import PaginationButton from "./PaginationButton";
+import PageSizeSelector from "./PageSizeSelector";
+import { format, isAfter, isBefore, set } from "date-fns";
 import { IoIosCheckmark } from "react-icons/io";
-import renderTableCell from "../utils/table/renderTableCell";
 
 export type UsageData = Record<string, string | number | number[]>;
 
-export type HeaderType = {
+type HeaderType = {
   name: string;
   id: string;
 };
@@ -21,7 +22,7 @@ export type HeaderType = {
 type CustomTable = {
   header: HeaderType[]; 
   data: UsageData[] | null, 
-  rowUpdate?: (row:UsageData, title?:string) => void  | undefined 
+  rowUpdate?: (row:UsageData) => void  | undefined 
   isDeleteMode?: boolean,
   changeSelectedRow?: ({id}:{id:string}) => void,
   selectedRowId?: string
@@ -35,7 +36,74 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
       const value = getValue() as string;
       const rowData = row.original;
 
-      return renderTableCell({item, rowData, value, header, rowUpdate});
+      if (item.name == "시작시간" || item.name === "종료시간") {
+        const timeArray = rowData[item.id] as number[];
+        const time = format(
+          set(new Date(), {
+            hours: timeArray[0],
+            minutes: timeArray[1],
+            seconds: timeArray[2] || 0,
+          }),
+          "HH:mm:ss"
+        );
+        return <p>{time}</p>;
+      } else if (item.name === "시작일" || item.name === "종료일" || item.name === "가입일") {
+        if (!value) return <p></p>;
+        const date = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+        return <p>{date}</p>;
+      } else if (item.id === "status") {
+        //상태 값 있을 때
+        if (value) return <StatusTag value={value} />;
+
+        //상태 값 없을 때 시간 비교
+        if (header.some((h) => h.name === "시작일")) {
+          const start = rowData["start_at"] as number;
+          const end = rowData["end_at"] as number;
+          const now = new Date();
+
+          const statusValue =
+            isAfter(now, new Date(start)) && isBefore(now, new Date(end)) ? "USE" : "NOT_USE";
+          return <StatusTag value={statusValue} />;
+        } else {
+          const start = rowData["start_at"] as number[];
+          const end = rowData["end_at"] as number[];
+
+          const startTime = set(new Date(), {
+            hours: start[0],
+            minutes: start[1],
+            seconds: start[2] || 0,
+          });
+
+          const endTime = set(new Date(), {
+            hours: end[0],
+            minutes: end[1],
+            seconds: end[2] || 0,
+          });
+          const now = new Date();
+
+          const statusValue =
+            isAfter(now, new Date(startTime)) && isBefore(now, new Date(endTime))
+              ? "AVAILABLE"
+              : "NOT_AVAILABLE";
+          return <StatusTag value={statusValue} />;
+        }
+      } else if (item.id === "sex") {
+        const sex = value === "MALE" ? "남" : "여";
+        return <p>{sex}</p>;
+      } else if (item.id === "age") {
+        let age;
+
+        switch (value) {
+          case "MIDDLE":
+            age = "중학생";
+            break;
+          case "HIGH":
+            age = "고등학생";
+            break;
+        }
+        return <p>{age}</p>;
+      }
+      return <p>{value}</p>;
     },
   }));
 
@@ -58,7 +126,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
                 )
               }
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="text-sm font-medium p-[8px] pl-[20px]">
+                <th key={header.id} className="text-sm font-medium p-[10px]">
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -72,9 +140,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
             <tr 
               key={row.id} 
               className={`${rowUpdate ? 'cursor-pointer hover:bg-danuri-100' : undefined} border-b-1 border-gray-200`}
-              onClick={()=>{
-                if(rowUpdate)rowUpdate(row.original, '수정')
-              }}
+              onClick={()=>{if(rowUpdate)rowUpdate(row.original)}}
               >
               {
                 isDeleteMode && (
@@ -96,7 +162,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
                 )
               }
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-[16px] pl-[20px] text-sm text-wrap">
+                <td key={cell.id} className="p-[10px] text-sm text-wrap">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
