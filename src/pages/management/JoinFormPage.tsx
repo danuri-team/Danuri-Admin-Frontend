@@ -8,7 +8,7 @@ import FormItem from "../../components/joinForm/FormItem"
 import CustomButton from "../../components/CustomButton"
 import { getJoinForm, postJoinForm } from "../../api/FormAPI"
 import { toast } from "react-toastify"
-import { replace, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 export type FormItemType = {
   id:number,

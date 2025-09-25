@@ -5,7 +5,7 @@ import MainHeader from "../../components/MainHeader";
 import TableButton from "../../components/TableButton";
 import Modal from "../../components/modal/Modal";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import {  putUpdateDevice } from "../../api/DeviceAPI";
+// import {  putUpdateDevice } from "../../api/DeviceAPI";
 import { toast } from "react-toastify";
 import { getAllAdminInfo, deleteAdmin, putAdminInfo } from "../../api/AdminAPI";
 
@@ -29,7 +29,7 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
 
 //모달 Submit 함수
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  저장: (form: modalState) => 
+  저장: () => 
     putAdminInfo({
       id: '',
     email: '',
