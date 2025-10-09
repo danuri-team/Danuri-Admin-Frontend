@@ -16,6 +16,8 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@reduxjs/toolkit": "^2.8.2",
+    "@sentry/react": "^10.17.0",
+    "@sentry/vite-plugin": "^4.3.0",
     "@tailwindcss/vite": "^4.1.6",
     "@tanstack/react-table": "^8.21.3",
     "autoprefixer": "^10.4.21",
@@ -30,7 +32,8 @@
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
     "redux-persist": "^6.0.0",
-    "tailwindcss": "^4.1.6"
+    "tailwindcss": "^4.1.6",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
