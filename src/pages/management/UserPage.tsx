@@ -42,34 +42,6 @@ const filterSelects: filterSelectType[] = [
   { id: "sex", type: "select", options: ["성별", "남", "여"] },
 ];
 
-const inputOption: Record<
-  string,
-  {
-    label: string;
-    key: string;
-    type: ModalInputTypesType;
-    initial?: string | number | Date;
-    hide?: boolean;
-  }[]
-> = {
-  추가: [
-    { label: "이름", key: "name", type: "text" },
-    { label: "전화번호", key: "phone", type: "text" },
-    { label: "성별", key: "sex", type: "option" },
-  ],
-  수정: [
-    { label: "사용자 ID", key: "id", type: "text", hide: true },
-    { label: "이름", key: "name", type: "text" },
-    { label: "전화번호", key: "phone", type: "text" },
-    { label: "성별", key: "sex", type: "option" },
-  ],
-  검색: [
-    { label: "이름", key: "name", type: "text" },
-    { label: "전화번호", key: "phone", type: "text" },
-    { label: "성별", key: "sex", type: "option" },
-  ],
-};
-
 const selectReducer = (state: SelectState, action: SelectAction) => {
   switch (action.type) {
     case "CHANGE":
@@ -196,6 +168,30 @@ const UserPage = () => {
     getData();
   }, []);
 
+  const inputs = userTableHeader.map((header) => {
+    return { label: header.name, key: header.id, type: "text" } as {
+      label: string;
+      key: string;
+      type: ModalInputTypesType;
+      initial?: string | number | Date;
+      hide?: boolean;
+    };
+  });
+
+  const inputOption: Record<
+    string,
+    {
+      label: string;
+      key: string;
+      type: ModalInputTypesType;
+      initial?: string | number | Date;
+      hide?: boolean;
+    }[]
+  > = {
+    추가: [...inputs],
+    수정: [{ label: "사용자 ID", key: "id", type: "text", hide: true }, ...inputs],
+    검색: [...inputs],
+  };
   const changeSelectedRow = ({ id }: { id: string }) => {
     setSelectedRowId(id);
   };
