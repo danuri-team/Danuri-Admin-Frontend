@@ -35,13 +35,6 @@ const initialSelectForm: SelectState = {
   sex: "성별",
 };
 
-const tableHeader = [
-  { name: "ID", id: "id" },
-  { name: "전화번호", id: "phone" },
-  { name: "성별", id: "sex" },
-  { name: "가입일", id: "created_at" },
-];
-
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
   { id: "joinDate", type: "date", options: ["가입일"] },
