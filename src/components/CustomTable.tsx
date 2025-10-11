@@ -61,7 +61,11 @@ const CustomTable = ({
             <tr key={headerGroup.id} className="border-b-1 border-gray-200 bg-gray-100 text-left">
               {isDeleteMode && <th className="p-[10px]"></th>}
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="text-sm font-medium p-[8px] pl-[20px]">
+                <th
+                  key={header.id}
+                  className="text-sm font-medium p-[8px] pl-[20px] overflow-hidden text-ellipsis"
+                  style={{ width: `${100 / headerGroup.headers.length}%` }}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}

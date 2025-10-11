@@ -108,10 +108,19 @@ const UserPage = () => {
             usage_count: number;
           }) => {
             let str = user.sign_up_form_schema;
+            console.log("str", str);
+
+            if (!str)
+              return {
+                ...user,
+              };
             const arr = str.slice(1, str.length - 1).split(",");
             const schema = Object.fromEntries(
               arr.map((str) => {
                 const [key, value] = str.split(":");
+                if (key === "id") {
+                  return ["ID", value.trimStart()];
+                }
                 return [key.trim(), value.trimStart()];
               })
             );
@@ -122,11 +131,13 @@ const UserPage = () => {
           }
         );
         setTableData(users);
+        console.log(tableData);
         const headers = res.data.header_list.map((header: string) => ({
           name: header,
           id: header,
         }));
         setUserTableHeader([{ name: "ID", id: "id" }, ...headers]);
+        console.log(userTableHeader);
       }
     };
 
@@ -259,6 +270,7 @@ const UserPage = () => {
     setModalInputs(null);
   };
 
+  console.log(userTableHeader, filterData);
   return (
     <div className="w-full">
       <MainHeader />
@@ -295,7 +307,7 @@ const UserPage = () => {
             )}
           </div>
         </div>
-        {userTableHeader&&filterData ? (
+        {userTableHeader && filterData ? (
           <CustomTable
             header={userTableHeader}
             data={filterData}
