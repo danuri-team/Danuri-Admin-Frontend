@@ -192,8 +192,10 @@ const UserPage = () => {
     수정: [{ label: "사용자 ID", key: "id", type: "text", hide: true }, ...inputs],
     검색: [...inputs],
   };
-  const changeSelectedRow = ({ id }: { id: string }) => {
-    setSelectedRowId(id);
+  const changeSelectedRow = ({ id }: { id: string | null }) => {
+    if (id) {
+      setSelectedRowId(id);
+    } else setSelectedRowId("");
   };
 
   const searchTableData = (form: modalState) => {

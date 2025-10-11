@@ -19,15 +19,22 @@ export type HeaderType = {
 };
 
 type CustomTable = {
-  header: HeaderType[]; 
-  data: UsageData[] | null, 
-  rowUpdate?: (row:UsageData, title?:string) => void  | undefined 
-  isDeleteMode?: boolean,
-  changeSelectedRow?: ({id}:{id:string}) => void,
-  selectedRowId?: string
-}
+  header: HeaderType[];
+  data: UsageData[] | null;
+  rowUpdate?: (row: UsageData, title?: string) => void | undefined;
+  isDeleteMode?: boolean;
+  changeSelectedRow?: ({ id }: { id: string | null }) => void;
+  selectedRowId?: string;
+};
 
-const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow, selectedRowId }:CustomTable) => {
+const CustomTable = ({
+  header,
+  data,
+  rowUpdate,
+  isDeleteMode,
+  changeSelectedRow,
+  selectedRowId,
+}: CustomTable) => {
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
     header: item.name,
@@ -35,7 +42,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
       const value = getValue() as string;
       const rowData = row.original;
 
-      return renderTableCell({item, rowData, value, header, rowUpdate});
+      return renderTableCell({ item, rowData, value, header, rowUpdate });
     },
   }));
 
@@ -52,11 +59,7 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="border-b-1 border-gray-200 bg-gray-100 text-left">
-              {
-                isDeleteMode && (
-                  <th className="p-[10px]"></th>
-                )
-              }
+              {isDeleteMode && <th className="p-[10px]"></th>}
               {headerGroup.headers.map((header) => (
                 <th key={header.id} className="text-sm font-medium p-[8px] pl-[20px]">
                   {header.isPlaceholder
@@ -69,32 +72,49 @@ const CustomTable = ({ header, data, rowUpdate, isDeleteMode, changeSelectedRow,
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr 
-              key={row.id} 
-              className={`${rowUpdate ? 'cursor-pointer hover:bg-danuri-100' : undefined} border-b-1 border-gray-200`}
-              onClick={()=>{
-                if(rowUpdate)rowUpdate(row.original, '수정')
+            <tr
+              key={row.id}
+              className={`${rowUpdate ? "cursor-pointer hover:bg-danuri-100" : undefined} border-b-1 border-gray-200`}
+              onClick={() => {
+                if (rowUpdate) rowUpdate(row.original, "수정");
               }}
-              >
-              {
-                isDeleteMode && (
-                  <td className="p-[10px]">
-                    <label className="relative">
-                      <input 
-                        className="cursor-pointer appearance-none w-[15px] h-[15px] border-1 rounded-sm border-gray-300 checked:border-danuri-500 checked:bg-danuri-500" 
-                        type="radio" 
-                        checked={row.original.id===selectedRowId} 
-                        onClick={(e)=>e.stopPropagation()} 
-                        onChange={()=>changeSelectedRow?.({id:row.original.id as string})} />
-                        {
-                          row.original.id===selectedRowId && (
-                            <IoIosCheckmark className="absolute inset-0" color="white"/>
-                          )
+            >
+              {isDeleteMode && (
+                <td className="p-[10px]">
+                  <label className="relative" htmlFor="checkbox">
+                    <input
+                      name="checkbox"
+                      className="cursor-pointer appearance-none w-[15px] h-[15px] border-1 rounded-sm border-gray-300 checked:border-danuri-500 checked:bg-danuri-500"
+                      type="checkbox"
+                      checked={row.original.id === selectedRowId}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={() => {
+                        if (row.original.id === selectedRowId) {
+                          // 이미 선택되어 있으면 해제
+                          changeSelectedRow?.({ id: null });
+                        } else {
+                          // 아니면 선택
+                          changeSelectedRow?.({ id: row.original.id as string });
                         }
-                    </label>
-                  </td>
-                )
-              }
+                      }}
+                    />
+                    {row.original.id === selectedRowId && (
+                      <IoIosCheckmark
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (row.original.id === selectedRowId) {
+                            changeSelectedRow?.({ id: null });
+                          } else {
+                            changeSelectedRow?.({ id: row.original.id as string });
+                          }
+                        }}
+                        className="absolute inset-0 cursor-pointer"
+                        color="white"
+                      />
+                    )}
+                  </label>
+                </td>
+              )}
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="p-[16px] pl-[20px] text-sm text-wrap">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
