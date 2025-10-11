@@ -65,7 +65,6 @@ const AdminAccountPage = () => {
       const res = await getAllAdminInfo();
       if (res.pass) {
         setTableData(res.data);
-        console.log(res.data);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }

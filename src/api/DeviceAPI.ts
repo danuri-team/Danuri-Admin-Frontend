@@ -6,7 +6,6 @@ export const postAddDevice = async ({
 }: {
   name:string
 }) => {
-  console.log('요청 몇번?')
   try {
     const res = await PrivateAxios.post("/admin/devices", {
       name,

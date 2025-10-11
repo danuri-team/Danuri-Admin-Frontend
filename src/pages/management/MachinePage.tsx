@@ -129,10 +129,9 @@ const MachinePage = () => {
       }
       return {
         ...item,
-        initial: item.key === "itemId" ? row.id : row[item.key],
-      };
-    });
-    console.log(inputOption);
+        initial: item.key==='itemId' ? row.id : row[item.key]
+      }
+    })
     setModalInputs(addInitialInputs);
     setIsModalOpen(true);
   };

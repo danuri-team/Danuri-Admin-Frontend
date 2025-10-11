@@ -84,7 +84,6 @@ export const putForcedToLeave = async ({usageId,end_at}:{usageId:string, end_at:
     const res = await PrivateAxios.put(`/admin/usage/${usageId}`,{
       end_at
     })
-    console.log(res.data);
     return {data:res.data, pass:true}
   }
   catch(error){

@@ -24,7 +24,6 @@ export const postCreateItem = async ({
     });
     return { data: res.data, pass: true };
   } catch (error) {
-    console.log(error);
     return { data: error, pass: false };
   }
 };

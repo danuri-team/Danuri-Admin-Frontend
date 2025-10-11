@@ -28,7 +28,7 @@ const NotiTalkPage = () => {
                             isMust
                             label="캠페인 내용"
                             value=""
-                            onChange={()=>console.log('sdf')}/>
+                            onChange={()=>{}}/>
                     </div>
                 </div>
             </div>
