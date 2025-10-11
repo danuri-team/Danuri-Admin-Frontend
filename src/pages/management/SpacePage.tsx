@@ -5,7 +5,12 @@ import MainHeader from "../../components/MainHeader";
 import Modal from "../../components/modal/Modal";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import TableButton from "../../components/TableButton";
-import { deleteSpace, getSearchCompanySpace, postCreateSpace, putUpdateSpace } from "../../api/SpaceAPI";
+import {
+  deleteSpace,
+  getSearchCompanySpace,
+  postCreateSpace,
+  putUpdateSpace,
+} from "../../api/SpaceAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { formatDatetoTime, formatTimetoDate } from "../../utils/format/dateFormat";
 import { toast } from "react-toastify";
@@ -18,7 +23,16 @@ const tableHeader = [
   { name: "상태", id: "status" },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType,  initial?: string | number | Date, hide?: boolean }[]> = {
+const inputOption: Record<
+  string,
+  {
+    label: string;
+    key: string;
+    type: ModalInputTypesType;
+    initial?: string | number | Date;
+    hide?: boolean;
+  }[]
+> = {
   추가: [
     { label: "공간명", key: "name", type: "text" },
     { label: "시작시간", key: "startTime", type: "time" },
@@ -57,7 +71,7 @@ const SpacePage = () => {
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
-  const [selectedRowId, setSelectedRowId] = useState<string>('');
+  const [selectedRowId, setSelectedRowId] = useState<string>("");
 
   useEffect(() => {
     if (isModalOpen === true) return;
@@ -66,18 +80,20 @@ const SpacePage = () => {
       if (res.pass) {
         setTableData(res.data);
       } else {
-        toast.error('데이터를 불러오지 못했습니다.');
+        toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
   }, [isModalOpen, isDeleteMode]);
 
-  const changeSelectedRow = ({id}:{id:string}) => {
-    setSelectedRowId(id);
-  }
+  const changeSelectedRow = ({ id }: { id: string | null }) => {
+    if (id) {
+      setSelectedRowId(id);
+    } else setSelectedRowId("");
+  };
 
   const onClickTableButton = ({ value }: { value: string }) => {
-    if(value==='삭제'){
+    if (value === "삭제") {
       onClickDeleteButton();
       return;
     }
@@ -89,37 +105,42 @@ const SpacePage = () => {
   };
 
   const onClickDeleteButton = async () => {
-    if(!isDeleteMode){
+    if (!isDeleteMode) {
       setIsDeleteMode(true);
-    }
-    else {
-      if(!selectedRowId){
-        toast.error('선택된 공간이 없습니다.');
+    } else {
+      if (!selectedRowId) {
+        toast.error("선택된 공간이 없습니다.");
         setIsDeleteMode(false);
         return;
       }
-      const res = await deleteSpace({spaceId: selectedRowId});
-      if(res.pass){
-        toast.success('삭제되었습니다.');
+      const res = await deleteSpace({ spaceId: selectedRowId });
+      if (res.pass) {
+        toast.success("삭제되었습니다.");
         setIsDeleteMode(false);
-      }
-      else {
-        toast.error('삭제에 실패했습니다.');
+      } else {
+        toast.error("삭제에 실패했습니다.");
       }
     }
-  }
+  };
 
-  const onClickTableRow = (row:UsageData) => {
-    setModalTitle('수정');
-    const addInitialInputs = inputOption['수정'].map((item) => {
+  const onClickTableRow = (row: UsageData) => {
+    setModalTitle("수정");
+    const addInitialInputs = inputOption["수정"].map((item) => {
       return {
         ...item,
-        initial: item.key==='spaceId' ? row.id : item.key==='startTime' ? formatTimetoDate(row.start_at as number[]) : item.key==='endTime' ? formatTimetoDate(row.end_at as number[]) : row[item.key],
-      }
-    })
+        initial:
+          item.key === "spaceId"
+            ? row.id
+            : item.key === "startTime"
+              ? formatTimetoDate(row.start_at as number[])
+              : item.key === "endTime"
+                ? formatTimetoDate(row.end_at as number[])
+                : row[item.key],
+      };
+    });
     setModalInputs(addInitialInputs);
     setIsModalOpen(true);
-  }
+  };
 
   const onCloseModal = () => {
     setIsModalOpen(false);
@@ -138,10 +159,21 @@ const SpacePage = () => {
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode}/>
+            <TableButton
+              value="삭제"
+              onClick={() => onClickTableButton({ value: "삭제" })}
+              isDeleteMode={isDeleteMode}
+            />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={tableData} rowUpdate={onClickTableRow}isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
+        <CustomTable
+          header={tableHeader}
+          data={tableData}
+          rowUpdate={onClickTableRow}
+          isDeleteMode={isDeleteMode}
+          changeSelectedRow={changeSelectedRow}
+          selectedRowId={selectedRowId}
+        />
       </div>
       {isModalOpen && (
         <Modal

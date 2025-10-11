@@ -43,7 +43,16 @@ const filterSelects: filterSelectType[] = [
   { id: "order", type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
+const inputOption: Record<
+  string,
+  {
+    label: string;
+    key: string;
+    type: ModalInputTypesType;
+    initial?: string | number | Date;
+    hide?: boolean;
+  }[]
+> = {
   추가: [
     { label: "물품", key: "name", type: "text" },
     { label: "총 수량", key: "total_quantity", type: "number" },
@@ -68,10 +77,10 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
       availableQuantity: form.available_quantity as string,
       status: form.status as string,
     }),
-  수정: (form: modalState) => 
+  수정: (form: modalState) =>
     putUpdateItem({
-      itemId: form.itemId as string, 
-      name: form.name as string, 
+      itemId: form.itemId as string,
+      name: form.name as string,
       totalQuantity: form.total_quantity as string,
       availableQuantity: form.available_quantity as string,
       status: form.status as string,
@@ -99,25 +108,24 @@ const ItemPage = () => {
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
-  const [selectedRowId, setSelectedRowId] = useState<string>('');
+  const [selectedRowId, setSelectedRowId] = useState<string>("");
 
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
 
-  const sortTableData = useMemo(()=>{
-    if(!tableData)return null
-    return [...tableData].sort((a,b) => {
-    if(selectForm.order==='재고순'){
-      return (a.available_quantity as number) - (b.available_quantity as number);
-    }
-    else if(selectForm.order==='이름순'){
-      return (a.name as string).localeCompare(b.name as string);
-    }
-    else {
-      if(a.status==='AVAILABLE'&&b.status!=='AVAILABLE')return -1;
-      else if(a.status!=='AVAILABLE'&&b.status==='AVAILABLE')return 1;
-      else return 0;
-    }
-  })},[tableData, selectForm.order])
+  const sortTableData = useMemo(() => {
+    if (!tableData) return null;
+    return [...tableData].sort((a, b) => {
+      if (selectForm.order === "재고순") {
+        return (a.available_quantity as number) - (b.available_quantity as number);
+      } else if (selectForm.order === "이름순") {
+        return (a.name as string).localeCompare(b.name as string);
+      } else {
+        if (a.status === "AVAILABLE" && b.status !== "AVAILABLE") return -1;
+        else if (a.status !== "AVAILABLE" && b.status === "AVAILABLE") return 1;
+        else return 0;
+      }
+    });
+  }, [tableData, selectForm.order]);
 
   useEffect(() => {
     if (isModalOpen === true) return;
@@ -126,18 +134,20 @@ const ItemPage = () => {
       if (res.pass) {
         setTableData(res.data);
       } else {
-        toast.error('데이터를 불러오지 못했습니다.');
+        toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
   }, [isModalOpen, isDeleteMode]);
 
-  const changeSelectedRow = ({id}:{id:string}) => {
-    setSelectedRowId(id);
-  }
+  const changeSelectedRow = ({ id }: { id: string | null }) => {
+    if (id) {
+      setSelectedRowId(id);
+    } else setSelectedRowId("");
+  };
 
   const onClickTableButton = ({ value }: { value: string }) => {
-    if(value==='삭제'){
+    if (value === "삭제") {
       onClickDeleteButton();
       return;
     }
@@ -149,37 +159,35 @@ const ItemPage = () => {
   };
 
   const onClickDeleteButton = async () => {
-    if(!isDeleteMode){
+    if (!isDeleteMode) {
       setIsDeleteMode(true);
-    }
-    else {
-      if(!selectedRowId){
-        toast.error('선택된 물품이 없습니다.');
+    } else {
+      if (!selectedRowId) {
+        toast.error("선택된 물품이 없습니다.");
         setIsDeleteMode(false);
         return;
       }
-      const res = await deleteItem({itemId: selectedRowId});
-      if(res.pass){
-        toast.success('삭제되었습니다.');
+      const res = await deleteItem({ itemId: selectedRowId });
+      if (res.pass) {
+        toast.success("삭제되었습니다.");
         setIsDeleteMode(false);
-      }
-      else {
-        toast.error('삭제에 실패했습니다.');
+      } else {
+        toast.error("삭제에 실패했습니다.");
       }
     }
-  }
+  };
 
-  const onClickTableRow = (row:UsageData) => {
-    setModalTitle('수정');
-    const addInitialInputs = inputOption['수정'].map((item) => {
+  const onClickTableRow = (row: UsageData) => {
+    setModalTitle("수정");
+    const addInitialInputs = inputOption["수정"].map((item) => {
       return {
         ...item,
-        initial: item.key==='itemId' ? row.id : row[item.key]
-      }
-    })
+        initial: item.key === "itemId" ? row.id : row[item.key],
+      };
+    });
     setModalInputs(addInitialInputs);
     setIsModalOpen(true);
-  }
+  };
 
   const onCloseModal = () => {
     setIsModalOpen(false);
@@ -212,10 +220,21 @@ const ItemPage = () => {
           </div>
           <div className="flex gap-[10px]">
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="삭제" onClick={() => onClickTableButton({ value: "삭제" })} isDeleteMode={isDeleteMode} />
+            <TableButton
+              value="삭제"
+              onClick={() => onClickTableButton({ value: "삭제" })}
+              isDeleteMode={isDeleteMode}
+            />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={sortTableData} rowUpdate={onClickTableRow} isDeleteMode={isDeleteMode} changeSelectedRow={changeSelectedRow} selectedRowId={selectedRowId}/>
+        <CustomTable
+          header={tableHeader}
+          data={sortTableData}
+          rowUpdate={onClickTableRow}
+          isDeleteMode={isDeleteMode}
+          changeSelectedRow={changeSelectedRow}
+          selectedRowId={selectedRowId}
+        />
       </div>
       {isModalOpen && (
         <Modal

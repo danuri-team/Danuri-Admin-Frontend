@@ -18,7 +18,6 @@ const headerDateNames = ["시작일", "종료일", "가입일", "추가일"];
 
 const renderTableCell = ({ item, rowData, value, header, rowUpdate }: RenderCell) => {
   const navigate = useNavigate();
-  console.log(item.id, item.name, value);
 
   if (item.name == "시작시간" || item.name === "종료시간") {
     const timeArray = rowData[item.id] as number[];
