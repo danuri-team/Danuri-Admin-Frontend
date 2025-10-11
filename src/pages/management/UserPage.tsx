@@ -108,10 +108,17 @@ const UserPage = () => {
             usage_count: number;
           }) => {
             let str = user.sign_up_form_schema;
+            if (!str)
+              return {
+                ...user,
+              };
             const arr = str.slice(1, str.length - 1).split(",");
             const schema = Object.fromEntries(
               arr.map((str) => {
                 const [key, value] = str.split(":");
+                if (key === "id") {
+                  return ["ID", value.trimStart()];
+                }
                 return [key.trim(), value.trimStart()];
               })
             );
@@ -258,7 +265,6 @@ const UserPage = () => {
     setIsModalOpen(false);
     setModalInputs(null);
   };
-
   return (
     <div className="w-full">
       <MainHeader />
@@ -295,7 +301,7 @@ const UserPage = () => {
             )}
           </div>
         </div>
-        {userTableHeader&&filterData ? (
+        {userTableHeader && filterData ? (
           <CustomTable
             header={userTableHeader}
             data={filterData}
