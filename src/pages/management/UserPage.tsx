@@ -108,8 +108,6 @@ const UserPage = () => {
             usage_count: number;
           }) => {
             let str = user.sign_up_form_schema;
-            console.log("str", str);
-
             if (!str)
               return {
                 ...user,
@@ -131,13 +129,11 @@ const UserPage = () => {
           }
         );
         setTableData(users);
-        console.log(tableData);
         const headers = res.data.header_list.map((header: string) => ({
           name: header,
           id: header,
         }));
         setUserTableHeader([{ name: "ID", id: "id" }, ...headers]);
-        console.log(userTableHeader);
       }
     };
 
@@ -269,8 +265,6 @@ const UserPage = () => {
     setIsModalOpen(false);
     setModalInputs(null);
   };
-
-  console.log(userTableHeader, filterData);
   return (
     <div className="w-full">
       <MainHeader />
