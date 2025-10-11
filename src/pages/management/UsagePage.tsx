@@ -6,7 +6,12 @@ import TableButton from "../../components/TableButton";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import Modal from "../../components/modal/Modal";
-import { postCreateUsage, postUsageExcel, postUsageSearch, putForcedToLeave } from "../../api/UsageAPI";
+import {
+  postCreateUsage,
+  postUsageExcel,
+  postUsageSearch,
+  putForcedToLeave,
+} from "../../api/UsageAPI";
 import { formatDatetoISOString } from "../../utils/format/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { useNavigate } from "react-router-dom";
@@ -147,26 +152,30 @@ const UsagePage = () => {
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
-  const [selectedRowId, setSelectedRowId] = useState<string>('');
+  const [selectedRowId, setSelectedRowId] = useState<string>("");
 
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
   const [usageForm, usageDispatch] = useReducer(usageReducer, initialUsageForm);
 
-  const sortTableData = useMemo(()=>{
-    if(!tableData)return null
-    return [...tableData].sort((a,b) => {
-    if(selectForm.order==='이용일순'){
-      if(isBefore(new Date(a.start_at as string), new Date(b.start_at as string)))return -1;
-      else return 1;
-    }
-    else {
-      const aStatus = isBefore(new Date(a.start_at as string), new Date()) && isAfter(new Date(a.end_at as string), new Date());
-      const bStatus = isBefore(new Date(b.start_at as string), new Date()) && isAfter(new Date(b.end_at as string), new Date());
-      if(aStatus&&!bStatus)return -1;
-      else if(!aStatus&&bStatus)return 1;
-      else return 0;
-    }
-  })},[tableData, selectForm.order])
+  const sortTableData = useMemo(() => {
+    if (!tableData) return null;
+    return [...tableData].sort((a, b) => {
+      if (selectForm.order === "이용일순") {
+        if (isBefore(new Date(a.start_at as string), new Date(b.start_at as string))) return -1;
+        else return 1;
+      } else {
+        const aStatus =
+          isBefore(new Date(a.start_at as string), new Date()) &&
+          isAfter(new Date(a.end_at as string), new Date());
+        const bStatus =
+          isBefore(new Date(b.start_at as string), new Date()) &&
+          isAfter(new Date(b.end_at as string), new Date());
+        if (aStatus && !bStatus) return -1;
+        else if (!aStatus && bStatus) return 1;
+        else return 0;
+      }
+    });
+  }, [tableData, selectForm.order]);
 
   useEffect(() => {
     if (selectForm.useDate) {
@@ -189,18 +198,20 @@ const UsagePage = () => {
       if (res.pass) {
         setTableData(res.data);
       } else {
-        toast.error('데이터를 불러오지 못했습니다.');
+        toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
   }, [usageForm, isModalOpen, isDeleteMode]);
 
-  const changeSelectedRow = ({id}:{id:string}) => {
-    setSelectedRowId(id);
-  }
+  const changeSelectedRow = ({ id }: { id: string | null }) => {
+    if (id) {
+      setSelectedRowId(id);
+    } else setSelectedRowId("");
+  };
 
   const onClickTableButton = ({ value }: { value: string }) => {
-    if(value==='강제퇴실'){
+    if (value === "강제퇴실") {
       onClickDeleteButton();
       return;
     }
@@ -218,26 +229,24 @@ const UsagePage = () => {
   };
 
   const onClickDeleteButton = async () => {
-    if(!isDeleteMode){
+    if (!isDeleteMode) {
       setIsDeleteMode(true);
-    }
-    else {
-      if(!selectedRowId){
-        toast.error('선택된 이용이 없습니다.');
+    } else {
+      if (!selectedRowId) {
+        toast.error("선택된 이용이 없습니다.");
         setIsDeleteMode(false);
         return;
       }
       const currentTime = formatDatetoISOString(new Date());
-      const res = await putForcedToLeave({usageId: selectedRowId, end_at:currentTime});
-      if(res.pass){
-        toast.success('강제퇴실되었습니다.');
+      const res = await putForcedToLeave({ usageId: selectedRowId, end_at: currentTime });
+      if (res.pass) {
+        toast.success("강제퇴실되었습니다.");
         setIsDeleteMode(false);
-      }
-      else{
-        toast.error('강제퇴실에 실패했습니다.')
+      } else {
+        toast.error("강제퇴실에 실패했습니다.");
       }
     }
-  }
+  };
 
   return (
     <div className="w-full ">
@@ -288,12 +297,22 @@ const UsagePage = () => {
               value="다운로드"
               onClick={() => onClickTableButton({ value: "다운로드" })}
             />
-            <TableButton value="대여관리" onClick={()=>navigate('/rental') }/>
+            <TableButton value="대여관리" onClick={() => navigate("/rental")} />
             <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="강제퇴실" onClick={() => onClickTableButton({ value: "강제퇴실" })} isDeleteMode={isDeleteMode} />
+            <TableButton
+              value="강제퇴실"
+              onClick={() => onClickTableButton({ value: "강제퇴실" })}
+              isDeleteMode={isDeleteMode}
+            />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={sortTableData} changeSelectedRow={changeSelectedRow} isDeleteMode={isDeleteMode} selectedRowId={selectedRowId} />
+        <CustomTable
+          header={tableHeader}
+          data={sortTableData}
+          changeSelectedRow={changeSelectedRow}
+          isDeleteMode={isDeleteMode}
+          selectedRowId={selectedRowId}
+        />
       </div>
       {isModalOpen && (
         <Modal

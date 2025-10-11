@@ -70,7 +70,6 @@ const JoinFormPage = () => {
     }
     else {
       const target = formItems.find((item)=>item.id===id);
-      console.log(target, formItems.find((item)=>item.id===id));
       if(target){
         setFormItems((items)=> [...items, {
           id:newItemId,

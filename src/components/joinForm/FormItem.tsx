@@ -25,9 +25,6 @@ const FormItem = ({id, index, deleteFormItem, addFormItem, changeFormItem, label
     const { attributes, setNodeRef, listeners, transform, transition } = useSortable({id});
     //옵션 선택에 대한 데이터 전달 논의 필요
 
-
-    console.log(id, label);
-
     //label 길이 측정용 Ref
     const spanRef = useRef<HTMLSpanElement>(null);
     const [inputWidth, setInputWidth] = useState<number>(0);

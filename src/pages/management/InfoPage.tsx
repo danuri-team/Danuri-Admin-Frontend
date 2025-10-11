@@ -65,14 +65,12 @@ const InfoPage = () => {
 
   const onClickSubmitInfo = async () => {
     if(!isValidEmail(infoForm.email) || !isValidPhone(infoForm.phone)){
-      console.log('잘못된 입력');
       return;
     }
 
     const res = await putAdminInfo({id:infoForm.id as string, email: infoForm.email as string, phone: infoForm.phone, role: infoForm.role});
     if(res.pass){
       setIsChangeData(true);
-      console.log('변경');
     }
   };
 

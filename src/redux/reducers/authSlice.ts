@@ -38,7 +38,6 @@ export const login = createAsyncThunk<
       return { access_token, refresh_token };
     } else return rejectWithValue(res.data as string);
   } catch (error) {
-    console.log(error);
     return rejectWithValue("서버오류");
   }
 });
@@ -54,7 +53,6 @@ export const refreshAccessToken = createAsyncThunk<
     if (res.pass) return res.data as AuthResponse;
     else return rejectWithValue(res.data as string);
   } catch (error) {
-    console.log(error);
     return rejectWithValue("서버오류");
   }
 });
@@ -76,7 +74,6 @@ const authSlice = createSlice({
         state.refresh_token = null;
         state.isLoading = true;
         state.error = null;
-        console.log("pending");
       })
       .addCase(login.fulfilled, (state, action) => {
         state.access_token = action.payload.access_token;
@@ -86,7 +83,6 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        console.log("error");
       })
 
       //토큰 갱신
@@ -98,7 +94,6 @@ const authSlice = createSlice({
         state.access_token = action.payload.access_token;
         state.refresh_token = action.payload.refresh_token;
         state.isLoading = false;
-        console.log("토큰 갱신");
       })
       .addCase(refreshAccessToken.rejected, (state, action) => {
         state.access_token = null;
