@@ -295,7 +295,7 @@ const UserPage = () => {
             )}
           </div>
         </div>
-        {false ? (
+        {userTableHeader&&filterData ? (
           <CustomTable
             header={userTableHeader}
             data={filterData}
