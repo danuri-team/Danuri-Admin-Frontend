@@ -263,8 +263,8 @@ const UserPage = () => {
     <div className="w-full">
       <MainHeader />
       <BannerButton />
-      <div className="flex-1 max-w-360 justify-self-center mr-[50px] ml-[50px] text-nowrap">
-        <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
+      <div className="w-full flex-1 max-w-360 justify-self-center pr-[50px] pl-[50px] text-nowrap">
+        <div className="mr-[20px] ml-[20px] mb-[30px] flex flex-1 justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">사용자 관리</h1>
             {filterSelects.map((item) => (
@@ -295,14 +295,22 @@ const UserPage = () => {
             )}
           </div>
         </div>
-        <CustomTable
-          header={userTableHeader}
-          data={filterData}
-          rowUpdate={onClickTableRow}
-          isDeleteMode={isDeleteMode}
-          changeSelectedRow={changeSelectedRow}
-          selectedRowId={selectedRowId}
-        />
+        {false ? (
+          <CustomTable
+            header={userTableHeader}
+            data={filterData}
+            rowUpdate={onClickTableRow}
+            isDeleteMode={isDeleteMode}
+            changeSelectedRow={changeSelectedRow}
+            selectedRowId={selectedRowId}
+          />
+        ) : (
+          <div className="w-full flex h-40 text-center ">
+            <p className=" text-gray-300 flex-1 text-center my-auto">
+              가입 폼 등록 후 이용 가능합니다.
+            </p>
+          </div>
+        )}
       </div>
       {isModalOpen && (
         <Modal
