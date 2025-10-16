@@ -3,23 +3,14 @@ import { PrivateAxios } from "./PrivateAxios";
 //사용자 생성
 export const postCreateUser = async ({
   company_id,
-  name,
-  sex,
-  age,
   phone,
 }: {
   company_id: string;
-  name: string;
-  sex: string;
-  age: string;
   phone: string;
 }) => {
   try {
     const res = await PrivateAxios.post("/admin/users", {
       company_id,
-      name,
-      sex,
-      age,
       phone,
     });
     return { data: res.data, pass: true };
@@ -29,24 +20,9 @@ export const postCreateUser = async ({
 };
 
 //사용자 수정
-export const putUpdateUser = async ({
-  userId,
-  name,
-  sex,
-  age,
-  phone,
-}: {
-  userId: string;
-  name: string;
-  sex: string;
-  age: string;
-  phone: string;
-}) => {
+export const putUpdateUser = async ({ userId, phone }: { userId: string; phone: string }) => {
   try {
     const res = await PrivateAxios.put(`/admin/users/${userId}`, {
-      name,
-      sex,
-      age,
       phone,
     });
     return { data: res.data, pass: true };

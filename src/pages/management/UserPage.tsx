@@ -1,48 +1,139 @@
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import CustomTable, { type UsageData } from "../../components/CustomTable";
 import MainHeader from "../../components/MainHeader";
 import CustomSelect from "../../components/CustomSelect";
 import BannerButton from "../../components/BannerButton";
 import TableButton from "../../components/TableButton";
 import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import { useEffect, useReducer, useState } from "react";
 import Modal from "../../components/modal/Modal";
 import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from "../../api/UserAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { formatDatetoISOString } from "../../utils/format/dateFormat";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { getJoinForm } from "../../api/FormAPI";
 
-type filterSelectType = {
-  id: keyof SelectState;
-  type: "select" | "date";
-  options: string[];
-};
+// ============================================================================
+// Types
+// ============================================================================
 
-type SelectState = {
+interface TableHeader {
+  name: string;
+  id: string;
+}
+
+interface ModalInput {
+  label: string;
+  key: string;
+  type: ModalInputTypesType;
+  initial?: string | number | Date;
+  hide?: boolean;
+}
+
+interface UserApiResponse {
+  id: string;
+  phone: string;
+  sign_up_form_schema: string;
+  created_at: string;
+  updated_at: string;
+  usage_count: number;
+}
+
+interface SelectState {
   joinDate: Date | null;
   age: string;
   sex: string;
-};
+}
 
 type SelectAction =
   | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
   | { type: "RESET" };
 
-const initialSelectForm: SelectState = {
+interface FilterSelectConfig {
+  id: keyof SelectState;
+  type: "select" | "date";
+  options: string[];
+}
+
+// ============================================================================
+// Constants
+// ============================================================================
+
+const MODAL_TITLES = {
+  ADD: "추가",
+  EDIT: "수정",
+  SEARCH: "검색",
+  DELETE: "삭제",
+} as const;
+
+const FIXED_TABLE_HEADERS: TableHeader[] = [
+  { name: "ID", id: "id" },
+  { name: "전화번호", id: "phone" },
+  { name: "가입일", id: "created_at" },
+];
+
+const INITIAL_SELECT_FORM: SelectState = {
   joinDate: null,
   age: "나이대",
   sex: "성별",
 };
 
-//type = 'select' || 'date'
-const filterSelects: filterSelectType[] = [
+const FILTER_SELECTS: FilterSelectConfig[] = [
   { id: "joinDate", type: "date", options: ["가입일"] },
-  { id: "age", type: "select", options: ["나이대", "중학생", "고등학생"] },
-  { id: "sex", type: "select", options: ["성별", "남", "여"] },
 ];
 
-const selectReducer = (state: SelectState, action: SelectAction) => {
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+const parseSignUpFormSchema = (schemaString: string): Record<string, unknown> | null => {
+  if (!schemaString) return null;
+
+  try {
+    const schema = JSON.parse(schemaString);
+    delete schema.id;
+    return schema;
+  } catch (error) {
+    console.error("[다누리] 폼 응답 값 파싱에 실패했어요:", error);
+    return null;
+  }
+};
+
+const transformUserData = (user: UserApiResponse): UsageData => {
+  const schema = parseSignUpFormSchema(user.sign_up_form_schema);
+
+  return {
+    ...user,
+    ...(schema || {}),
+    ID: user.id,
+    phone: user.phone,
+    created_at: user.created_at,
+  };
+};
+
+const matchesFilter = (item: UsageData, selectForm: SelectState): boolean => {
+  const matchJoinDate =
+    !selectForm.joinDate ||
+    (item.created_at as string).substring(0, 10) ===
+      formatDatetoISOString(selectForm.joinDate).substring(0, 10);
+  return matchJoinDate;
+};
+
+const matchesSearchForm = (item: UsageData, form: modalState): boolean => {
+  const searchName = !form.name || form.name === item.name;
+  const searchPhone = !form.phone || form.phone === item.phone;
+  const searchSex = !form.sex || form.sex === item.sex;
+  const searchAge = !form.age || form.age === item.age;
+
+  return searchName && searchPhone && searchSex && searchAge;
+};
+
+// ============================================================================
+// Reducer
+// ============================================================================
+
+const selectReducer = (state: SelectState, action: SelectAction): SelectState => {
   switch (action.type) {
     case "CHANGE":
       return {
@@ -50,221 +141,210 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
         [action.payload.key]: action.payload.value,
       };
     case "RESET":
-      return initialSelectForm;
+      return INITIAL_SELECT_FORM;
   }
 };
 
-//company id는 임의 값
+// ============================================================================
+// Modal Submit Functions
+// ============================================================================
+
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form: modalState) =>
+  [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateUser({
       company_id: form.company_id as string,
-      name: form.name as string,
-      sex: form.sex as string,
-      age: form.age as string,
       phone: form.phone as string,
     }),
-  수정: (form: modalState) =>
+  [MODAL_TITLES.EDIT]: (form: modalState) =>
     putUpdateUser({
       userId: form.id as string,
-      name: form.name as string,
-      sex: form.sex as string,
-      age: form.age as string,
       phone: form.phone as string,
     }),
 };
+
+// ============================================================================
+// Component
+// ============================================================================
 
 const UserPage = () => {
   const navigate = useNavigate();
 
-  const [userTableHeader, setUserTableHeader] = useState<{ name: string; id: string }[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [modalInputs, setModalInputs] = useState<
-    { label: string; key: string; type: ModalInputTypesType }[] | null
-  >(null);
-  const [modalTitle, setModalTitle] = useState<string>("");
+  const [userTableHeader, setUserTableHeader] = useState<TableHeader[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInputs, setModalInputs] = useState<ModalInput[] | null>(null);
+  const [modalTitle, setModalTitle] = useState("");
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
   const [filterData, setFilterData] = useState<UsageData[] | null>(null);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState("");
+  const [selectForm, selectDispatch] = useReducer(selectReducer, INITIAL_SELECT_FORM);
+  const [isJoinForm, setIsJoinForm] = useState(false);
 
-  const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
-  const [selectedRowId, setSelectedRowId] = useState<string>("");
-
-  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
-  const [isJoinForm, setIsJoinForm] = useState<boolean>(false);
+  // ============================================================================
+  // Effects
+  // ============================================================================
 
   useEffect(() => {
-    if (isModalOpen === true || modalTitle === "검색") return;
-    setModalTitle("");
-    const getTableData = async () => {
-      const res = await getSearchCompanyUser();
+    const fetchJoinFormStatus = async () => {
+      const res = await getJoinForm();
       if (res.pass) {
-        const users = res.data.user_list.map(
-          (user: {
-            id: string;
-            phone: string;
-            sign_up_form_schema: string;
-            created_at: string;
-            updated_at: string;
-            usage_count: number;
-          }) => {
-            let str = user.sign_up_form_schema;
-            if (!str)
-              return {
-                ...user,
-              };
-            const arr = str.slice(1, str.length - 1).split(",");
-            const schema = Object.fromEntries(
-              arr.map((str) => {
-                const [key, value] = str.split(":");
-                if (key === "id") {
-                  return ["ID", value.trimStart()];
-                }
-                return [key.trim(), value.trimStart()];
-              })
-            );
-            return {
-              ...user,
-              ...schema,
-            };
-          }
-        );
-        setTableData(users);
-        const headers = res.data.header_list.map((header: string) => ({
-          name: header,
-          id: header,
-        }));
-        setUserTableHeader([{ name: "ID", id: "id" }, ...headers]);
+        setIsJoinForm(res.data.schema !== "");
       }
     };
+    fetchJoinFormStatus();
+  }, []);
 
-    getTableData();
+  useEffect(() => {
+    if (isModalOpen || modalTitle === MODAL_TITLES.SEARCH) return;
+
+    setModalTitle("");
+
+    const fetchUserData = async () => {
+      const res = await getSearchCompanyUser();
+      if (!res.pass) return;
+
+      const users = res.data.user_list.map(transformUserData);
+      setTableData(users);
+
+      const headers = res.data.header_list.map(
+        (header: string): TableHeader => ({
+          name: header,
+          id: header,
+        })
+      );
+      setUserTableHeader([...FIXED_TABLE_HEADERS, ...headers]);
+    };
+
+    fetchUserData();
   }, [isModalOpen, isDeleteMode, modalTitle]);
 
   useEffect(() => {
     if (!tableData) return;
-    const filterTableData = tableData.filter((item) => {
-      const matchJoinDate =
-        !selectForm.joinDate ||
-        (item.created_at as string).substring(0, 10) ===
-          formatDatetoISOString(selectForm.joinDate as Date).substring(0, 10);
-      const matchAge =
-        selectForm.age === "나이대" ||
-        (selectForm.age === "고등학생" && item.age === "HIGH") ||
-        (selectForm.age === "중학생" && item.age === "MIDDLE");
-      const matchSex =
-        selectForm.sex === "성별" ||
-        (selectForm.sex === "남" && item.sex === "MALE") ||
-        (selectForm.sex === "여" && item.sex === "FEMALE");
 
-      return matchJoinDate && matchAge && matchSex;
-    });
-    setFilterData(filterTableData);
+    const filtered = tableData.filter((item) => matchesFilter(item, selectForm));
+    setFilterData(filtered);
   }, [selectForm, tableData]);
 
-  useEffect(() => {
-    const getData = async () => {
-      const res = await getJoinForm();
-      if (res.pass) {
-        if (res.data.schema === "") {
-          setIsJoinForm(false);
-        } else {
-          setIsJoinForm(true);
-        }
-      }
-    };
-    getData();
-  }, []);
+  // ============================================================================
+  // Memoized Values
+  // ============================================================================
 
-  const inputs = userTableHeader.map((header) => {
-    return { label: header.name, key: header.id, type: "text" } as {
-      label: string;
-      key: string;
-      type: ModalInputTypesType;
-      initial?: string | number | Date;
-      hide?: boolean;
-    };
-  });
+  const inputs = useMemo<ModalInput[]>(
+    () =>
+      userTableHeader.map((header) => ({
+        label: header.name,
+        key: header.id,
+        type: "text" as ModalInputTypesType,
+      })),
+    [userTableHeader]
+  );
 
-  const inputOption: Record<
-    string,
-    {
-      label: string;
-      key: string;
-      type: ModalInputTypesType;
-      initial?: string | number | Date;
-      hide?: boolean;
-    }[]
-  > = {
-    추가: [...inputs],
-    수정: [{ label: "사용자 ID", key: "id", type: "text", hide: true }, ...inputs],
-    검색: [...inputs],
-  };
-  const changeSelectedRow = ({ id }: { id: string | null }) => {
-    if (id) {
-      setSelectedRowId(id);
-    } else setSelectedRowId("");
-  };
+  const inputOption = useMemo<Record<string, ModalInput[]>>(
+    () => ({
+      [MODAL_TITLES.ADD]: [...inputs],
+      [MODAL_TITLES.EDIT]: [
+        { label: "사용자 ID", key: "id", type: "text", hide: true },
+        { label: "전화번호", key: "phone", type: "text" },
+      ],
+      [MODAL_TITLES.SEARCH]: [...inputs],
+    }),
+    [inputs]
+  );
 
-  const searchTableData = (form: modalState) => {
-    if (!tableData) return;
-    const searchData = tableData.filter((item) => {
-      const searchName = !form.name || form.name === item.name;
-      const searchPhone = !form.phone || form.phone === item.phone;
-      const searchSex = !form.sex || form.sex === item.sex;
-      const searchAge = !form.age || form.age === item.age;
+  // ============================================================================
+  // Callbacks
+  // ============================================================================
 
-      return searchName && searchPhone && searchSex && searchAge;
-    });
-    setFilterData(searchData);
-  };
-
-  const onClickTableButton = ({ value }: { value: string }) => {
-    if (value === "삭제") {
-      onClickDeleteButton();
-      return;
-    }
-    setIsModalOpen(true);
-    setModalTitle(value);
-    if (inputOption[value]) {
-      setModalInputs(inputOption[value]);
-    }
-  };
-
-  const onClickDeleteButton = async () => {
-    if (!isDeleteMode) {
-      setIsDeleteMode(true);
-    } else {
-      if (!selectedRowId) {
-        toast.error("선택된 사용자가 없습니다.");
-        setIsDeleteMode(false);
-        return;
-      }
-      const res = await deleteUser({ userId: selectedRowId });
-      if (res.pass) {
-        toast.success("삭제되었습니다.");
-        setIsDeleteMode(false);
-      } else {
-        toast.error("삭제에 실패했습니다.");
-      }
-    }
-  };
-
-  const onClickTableRow = (row: UsageData) => {
-    setModalTitle("수정");
-    const addInitialInputs = inputOption["수정"].map((item) => {
-      return {
-        ...item,
-        initial: item.key === "itemId" ? row.id : row[item.key],
-      };
-    });
-    setModalInputs(addInitialInputs);
-    setIsModalOpen(true);
-  };
-
-  const onCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     setModalInputs(null);
-  };
+  }, []);
+
+  const handleChangeSelectedRow = useCallback(({ id }: { id: string | null }) => {
+    setSelectedRowId(id || "");
+  }, []);
+
+  const handleSearchTableData = useCallback(
+    (form: modalState) => {
+      if (!tableData) return;
+
+      const searchData = tableData.filter((item) => matchesSearchForm(item, form));
+      setFilterData(searchData);
+    },
+    [tableData]
+  );
+
+  const handleDeleteButton = useCallback(async () => {
+    if (!isDeleteMode) {
+      setIsDeleteMode(true);
+      return;
+    }
+
+    if (!selectedRowId) {
+      toast.error("선택된 사용자가 없습니다.");
+      setIsDeleteMode(false);
+      return;
+    }
+
+    const res = await deleteUser({ userId: selectedRowId });
+    if (res.pass) {
+      toast.success("삭제되었습니다.");
+      setIsDeleteMode(false);
+    } else {
+      toast.error("삭제에 실패했습니다.");
+    }
+  }, [isDeleteMode, selectedRowId]);
+
+  const handleTableButton = useCallback(
+    ({ value }: { value: string }) => {
+      if (value === MODAL_TITLES.DELETE) {
+        handleDeleteButton();
+        return;
+      }
+
+      setIsModalOpen(true);
+      setModalTitle(value);
+      if (inputOption[value]) {
+        setModalInputs(inputOption[value]);
+      }
+    },
+    [inputOption, handleDeleteButton]
+  );
+
+  const handleTableRowClick = useCallback(
+    (row: UsageData) => {
+      setModalTitle(MODAL_TITLES.EDIT);
+      const addInitialInputs = inputOption[MODAL_TITLES.EDIT].map((item) => {
+        const value = item.key === "itemId" ? row.id : row[item.key];
+        return {
+          ...item,
+          initial: typeof value === "object" && !(value instanceof Date) ? undefined : value,
+        };
+      });
+      setModalInputs(addInitialInputs);
+      setIsModalOpen(true);
+    },
+    [inputOption]
+  );
+
+  const handleModalSubmit = useCallback(
+    (form: modalState) => {
+      if (modalTitle === MODAL_TITLES.SEARCH) {
+        return handleSearchTableData(form);
+      }
+      return modalSubmitFn[modalTitle]?.(form);
+    },
+    [modalTitle, handleSearchTableData]
+  );
+
+  const handleResetFilter = useCallback(() => {
+    selectDispatch({ type: "RESET" });
+  }, []);
+
+  // ============================================================================
+  // Render
+  // ============================================================================
+
   return (
     <div className="w-full">
       <MainHeader />
@@ -273,7 +353,7 @@ const UserPage = () => {
         <div className="mr-[20px] ml-[20px] mb-[30px] flex flex-1 justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">사용자 관리</h1>
-            {filterSelects.map((item) => (
+            {FILTER_SELECTS.map((item) => (
               <CustomSelect
                 type={item.type}
                 key={item.id}
@@ -287,48 +367,58 @@ const UserPage = () => {
                 }
               />
             ))}
+            {selectForm.joinDate && (
+              <button
+                onClick={handleResetFilter}
+                className="ml-[10px] text-sm text-gray-500 hover:text-gray-700 underline"
+              >
+                초기화
+              </button>
+            )}
           </div>
           <div className="flex gap-[10px]">
-            <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
-            <TableButton value="검색" onClick={() => onClickTableButton({ value: "검색" })} />
             <TableButton
-              value="삭제"
-              onClick={() => onClickTableButton({ value: "삭제" })}
+              value={MODAL_TITLES.ADD}
+              onClick={() => handleTableButton({ value: MODAL_TITLES.ADD })}
+            />
+            <TableButton
+              value={MODAL_TITLES.SEARCH}
+              onClick={() => handleTableButton({ value: MODAL_TITLES.SEARCH })}
+            />
+            <TableButton
+              value={MODAL_TITLES.DELETE}
+              onClick={() => handleTableButton({ value: MODAL_TITLES.DELETE })}
               isDeleteMode={isDeleteMode}
             />
-            {isJoinForm || (
+            {!isJoinForm && (
               <TableButton value="가입 폼 관리" onClick={() => navigate("/joinForm")} />
             )}
           </div>
         </div>
-        {userTableHeader && filterData ? (
+        {userTableHeader.length > 0 && filterData ? (
           <CustomTable
             header={userTableHeader}
             data={filterData}
-            rowUpdate={onClickTableRow}
+            rowUpdate={handleTableRowClick}
             isDeleteMode={isDeleteMode}
-            changeSelectedRow={changeSelectedRow}
+            changeSelectedRow={handleChangeSelectedRow}
             selectedRowId={selectedRowId}
           />
         ) : (
-          <div className="w-full flex h-40 text-center ">
-            <p className=" text-gray-300 flex-1 text-center my-auto">
+          <div className="w-full flex h-40 text-center">
+            <p className="text-gray-300 flex-1 text-center my-auto">
               가입 폼 등록 후 이용 가능합니다.
             </p>
           </div>
         )}
       </div>
-      {isModalOpen && (
+      {isModalOpen && modalInputs && (
         <Modal
           isOpen={isModalOpen}
           title={modalTitle}
           inputs={modalInputs}
-          onClose={onCloseModal}
-          onSubmit={
-            modalTitle !== "검색"
-              ? modalSubmitFn[modalTitle]
-              : (form: modalState) => searchTableData(form)
-          }
+          onClose={handleCloseModal}
+          onSubmit={handleModalSubmit}
         />
       )}
     </div>
