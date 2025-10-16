@@ -133,9 +133,11 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   };
 
   const onClickSubmitModal = async () => {
-    if (title!=='기기연결') {
-      const res = (await onSubmit(modalForm)) as { data: string; pass: boolean };
-      if (res.pass) {
+    const result = await onSubmit(modalForm);
+
+    if (title !== "기기연결") {
+      const res = result as { data?: string; pass?: boolean };
+      if (res?.pass) {
         toast.success(`${title}되었습니다.`);
       } else {
         toast.error(`${title}에 실패했습니다.`);

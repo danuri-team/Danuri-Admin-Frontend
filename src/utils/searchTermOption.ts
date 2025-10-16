@@ -28,9 +28,10 @@ export const getSearchTerm = async (label: SearchLabel, value: string) => {
               return {
                 name: schema.이름,
                 id: item.id,
+                endDate: null,
               };
             })
-            .filter((item: { name: string; id: string; endDate: string }) =>
+            .filter((item: { name: string; id: string; endDate: string | null }) =>
               item.name.includes(value)
             )
         : res.data
