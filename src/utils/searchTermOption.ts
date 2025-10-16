@@ -12,7 +12,7 @@ const searchFn = {
     postUsageSearch({ startDate: "2025-03-01T00:00:00", endDate: "", spaceId: null, userId: null }),
   공간: () => getSearchCompanySpace(),
   유저: () => getSearchCompanyUser(),
-  // 회사: () => 
+  // 회사: () =>
 };
 
 export type SearchLabel = keyof typeof searchFn;
@@ -20,33 +20,46 @@ export type SearchLabel = keyof typeof searchFn;
 export const getSearchTerm = async (label: SearchLabel, value: string) => {
   const res = await searchFn[label]();
   if (res.pass) {
-    const term = res.data
-      .map((item: Record<string, string | number>) => ({
-        name: label !== "공간사용" ? item.name : item.space_name,
-        id: item.id,
-        endDate: label !== "공간사용" ? null : item.end_at,
-      }))
-      .filter(
-        (item: { name: string; id: string; endDate: string }) =>
-          item.name.includes(value) && (label !== "공간사용" || isFutureDate(item.endDate))
-      );
+    const term =
+      label === "유저"
+        ? res.data.user_list
+            .map((item: Record<string, string | number>) => {
+              const schema = JSON.parse(item.sign_up_form_schema as string);
+              return {
+                name: schema.이름,
+                id: item.id,
+                endDate: null,
+              };
+            })
+            .filter((item: { name: string; id: string; endDate: string | null }) =>
+              item.name.includes(value)
+            )
+        : res.data
+            .map((item: Record<string, string | number>) => ({
+              name: label !== "공간사용" ? item.name : item.space_name,
+              id: item.id,
+              endDate: label !== "공간사용" ? null : item.end_at,
+            }))
+            .filter(
+              (item: { name: string; id: string; endDate: string }) =>
+                item.name.includes(value) && (label !== "공간사용" || isFutureDate(item.endDate))
+            );
 
     return term;
   } else {
-    toast.error('데이터를 불러오지 못했습니다.');
+    toast.error("데이터를 불러오지 못했습니다.");
   }
 };
 
-export const selectTermAvailableCount = async (itemId:string) => {
+export const selectTermAvailableCount = async (itemId: string) => {
   const res = await getSearchCompanyItem();
-  if(res.pass){
-    const selectItem = res.data.find((item: Record<string, string|number>) => item.id === itemId)
-    if(selectItem && selectItem.available_quantity !== undefined) {
+  if (res.pass) {
+    const selectItem = res.data.find((item: Record<string, string | number>) => item.id === itemId);
+    if (selectItem && selectItem.available_quantity !== undefined) {
       return Number(selectItem.available_quantity);
     }
     return 0;
+  } else {
+    return 0;
   }
-  else {
-    return 0
-  }
-}
+};

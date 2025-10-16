@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../redux/reducers/authSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 type LoginState = {
   email: string;
@@ -44,28 +44,32 @@ const LoginPage = () => {
   ];
 
   const onclickLogin = async () => {
-    if (Object.values(loginForm).includes("")){
-      toast.error('모든 항목을 입력해주세요.');
+    if (Object.values(loginForm).includes("")) {
+      toast.error("모든 항목을 입력해주세요.");
       return;
     }
-    try{
+    try {
       await dispatch(login({ email: loginForm.email, password: loginForm.password })).unwrap();
-      
-      toast.success('로그인되었습니다.')
+
+      toast.success("로그인되었습니다.");
       loginDispatch({ type: "RESET" });
 
       navigate("/usage");
-    }
-    catch {
-      toast.error('로그인에 실패했습니다.')
+    } catch {
+      toast.error("로그인에 실패했습니다.");
     }
   };
 
   return (
     <div className="w-full h-screen flex">
-      <div className="m-auto w-[50%] min-w-xs max-w-lg">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+        className="m-auto w-[50%] min-w-xs max-w-lg"
+      >
         <h1 className="justify-self-center text-4xl font-bold mb-[50px]">다누리</h1>
-        <div className="flex flex-col gap-[24px]"> 
+        <div className="flex flex-col gap-[24px]">
           {loginInputs.map((item) => (
             <CustomInput
               label={item.label}
@@ -81,11 +85,15 @@ const LoginPage = () => {
           <CustomButton value="로그인" onClick={onclickLogin} />
         </div>
         <div className="w-[200px] flex items-center justify-between justify-self-center mt-[30px]">
-          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/password"}>비밀번호 찾기</Link>
+          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/password"}>
+            비밀번호 찾기
+          </Link>
           <div className="w-[1px] h-[20px] border-l-1 border-gray-300"></div>
-          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/signup"}>회원가입</Link>
+          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/signup"}>
+            회원가입
+          </Link>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

@@ -12,9 +12,18 @@ import { toast } from "react-toastify";
 type ModalType = {
   isOpen: boolean;
   title: string;
-  inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean, disable?:boolean }[] | null;
-  onClose: () => void; 
-  onSubmit: ModalSubmitFn | ((form:modalState) => void);
+  inputs:
+    | {
+        label: string;
+        key: string;
+        type: ModalInputTypesType;
+        initial?: string | number | Date;
+        hide?: boolean;
+        disable?: boolean;
+      }[]
+    | null;
+  onClose: () => void;
+  onSubmit: ModalSubmitFn | ((form: modalState) => void);
 };
 
 type modalAction =
@@ -28,17 +37,21 @@ type modalState = Record<string, Date | string | number | null>;
 const modalReducer = (state: modalState, action: modalAction) => {
   switch (action.type) {
     case "CHANGE":
-      if(action.payload.key==='available_quantity' && (state.total_quantity as number) < (action.payload.value as number)){
-        return {...state};
-      }
-      else if(action.payload.key==='returned_quantity' && (state.quantity as number) < (action.payload.value as number)){
-        return {...state};
-      }
-      else if(action.payload.key==='phone'){
+      if (
+        action.payload.key === "available_quantity" &&
+        (state.total_quantity as number) < (action.payload.value as number)
+      ) {
+        return { ...state };
+      } else if (
+        action.payload.key === "returned_quantity" &&
+        (state.quantity as number) < (action.payload.value as number)
+      ) {
+        return { ...state };
+      } else if (action.payload.key === "phone") {
         return {
           ...state,
-          [action.payload.key]:replacePhone(String(action.payload.value))
-        }
+          [action.payload.key]: replacePhone(String(action.payload.value)),
+        };
       }
       return {
         ...state,
@@ -65,23 +78,23 @@ const modalReducer = (state: modalState, action: modalAction) => {
 };
 
 const getInitialModalForm = (
-  inputs: { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date  }[] | null
+  inputs:
+    | { label: string; key: string; type: ModalInputTypesType; initial?: string | number | Date }[]
+    | null
 ): modalState => {
   if (!inputs) return {};
 
   const initialState: modalState = {};
   inputs.forEach((input) => {
-    if(!input.initial){
+    if (!input.initial) {
       initialState[input.key] =
-          input.type === "date" || input.type === "time" ? null : input.type === "number" ? 0 : "";
-    }
-    else {
+        input.type === "date" || input.type === "time" ? null : input.type === "number" ? 0 : "";
+    } else {
       initialState[input.key] = input.initial;
     }
   });
   return initialState;
 };
-
 
 const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const location = useLocation();
@@ -89,7 +102,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const [availableCount, setAvailableCount] = useState<number>(0);
 
   useEffect(() => {
-    if (isOpen){
+    if (isOpen) {
       document.body.style.overflow = "hidden";
     }
     return () => {
@@ -97,36 +110,38 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
     };
   }, [isOpen]);
 
-  useEffect(()=>{
+  useEffect(() => {
     //가능한 대여 개수 계산
-    if(location.pathname !== '/rental')return;
-    if((title==='추가' && !modalForm.itemId) || (title==='수정' && !modalForm.rentalId))return;
+    if (location.pathname !== "/rental") return;
+    if ((title === "추가" && !modalForm.itemId) || (title === "수정" && !modalForm.rentalId))
+      return;
     const getCount = async () => {
-      const count = await selectTermAvailableCount(title==='추가' ? modalForm.itemId as string : modalForm.rentalId as string);
-      if(!isNaN(Number(count)))setAvailableCount(Number(count));
+      const count = await selectTermAvailableCount(
+        title === "추가" ? (modalForm.itemId as string) : (modalForm.rentalId as string)
+      );
+      if (!isNaN(Number(count))) setAvailableCount(Number(count));
       else setAvailableCount(0);
-    } 
+    };
     getCount();
-  },[modalForm.itemId, modalForm.rentalId, title, location]);
+  }, [modalForm.itemId, modalForm.rentalId, title, location]);
 
   const getMyCompanyId = async () => {
     const res = await getMyInfo();
-    if(res.pass){
-      modalDispatch({type:'CHANGE', payload:{key:'company_id', value: res.data.company_id}});
+    if (res.pass) {
+      modalDispatch({ type: "CHANGE", payload: { key: "company_id", value: res.data.company_id } });
     }
-  }
-  
+  };
 
   const onClickSubmitModal = async () => {
-    if(typeof onSubmit === "function" ){
-      const res = await onSubmit(modalForm) as { data: string; pass: boolean; }
-      if (res.pass) {
+    const result = await onSubmit(modalForm);
+
+    if (title !== "기기연결") {
+      const res = result as { data?: string; pass?: boolean };
+      if (res?.pass) {
         toast.success(`${title}되었습니다.`);
-      }
-      else {
+      } else {
         toast.error(`${title}에 실패했습니다.`);
       }
-
     }
     onClose();
   };
@@ -140,15 +155,17 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
             <button className="absolute right-[25px]" onClick={onClose}>
               <IoCloseOutline size={25} />
             </button>
-            <h2 className="text-lg font-semibold w-[240px] text-center whitespace-nowrap truncate">{title==='저장' ? String(modalForm['id'])  : title}</h2>
+            <h2 className="text-lg font-semibold w-[240px] text-center whitespace-nowrap truncate">
+              {title === "저장" ? String(modalForm["id"]) : title}
+            </h2>
           </div>
           <div className="p-[10px] mb-[15px]">
-            {inputs?.map((item) =>{
-              if(item.key==='company_id'){
+            {inputs?.map((item) => {
+              if (item.key === "company_id") {
                 getMyCompanyId();
               }
-              if(item.hide)return;
-              
+              if (item.hide) return;
+
               return item.type === "date" || item.type === "time" ? (
                 <ModalInput
                   disable={item.disable}
@@ -187,10 +204,20 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                     })
                   }
                 />
-              )
+              );
             })}
           </div>
-          <CustomButton value={title} onClick={title==='검색' ? ()=> {onSubmit(modalForm); onClose()} : (() => onClickSubmitModal()) as ()=>void} />
+          <CustomButton
+            value={title}
+            onClick={
+              title === "검색"
+                ? () => {
+                    onSubmit(modalForm);
+                    onClose();
+                  }
+                : ((() => onClickSubmitModal()) as () => void)
+            }
+          />
         </div>
       )}
     </div>

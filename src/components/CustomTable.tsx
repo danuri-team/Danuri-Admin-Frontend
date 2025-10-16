@@ -63,8 +63,8 @@ const CustomTable = ({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="text-sm font-medium p-[8px] pl-[20px] overflow-hidden text-ellipsis"
-                  style={{ width: `${100 / headerGroup.headers.length}%` }}
+                  className="text-sm font-medium p-[8px] px-4 overflow-hidden text-ellipsis"
+                  // style={{ width: `${100 / headerGroup.headers.length}%` }}
                 >
                   {header.isPlaceholder
                     ? null
@@ -84,7 +84,7 @@ const CustomTable = ({
               }}
             >
               {isDeleteMode && (
-                <td className="p-[10px]">
+                <td className="p-[10px] pl-4">
                   <label className="relative" htmlFor="checkbox">
                     <input
                       name="checkbox"
@@ -129,7 +129,7 @@ const CustomTable = ({
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={header.length}>
+            <td colSpan={isDeleteMode ? header.length + 1 : header.length}>
               <div className="flex justify-between items-center p-[10px]">
                 <PageSizeSelector table={table} />
                 <PaginationButton table={table} />
