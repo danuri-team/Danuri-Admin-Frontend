@@ -39,17 +39,26 @@ const tableHeader = [
 
 //type = 'select' || 'date'
 const filterSelects: filterSelectType[] = [
-  { id: "order", type: "select", options: ["처리 여부", "미확인", '반납됨', '이용중'] },
+  { id: "order", type: "select", options: ["처리 여부", "미확인", "반납됨", "이용중"] },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType, initial?: string | number | Date, hide?: boolean }[]> = {
+const inputOption: Record<
+  string,
+  {
+    label: string;
+    key: string;
+    type: ModalInputTypesType;
+    initial?: string | number | Date;
+    hide?: boolean;
+  }[]
+> = {
   추가: [
     { label: "물품", key: "itemId", type: "search" },
     { label: "공간사용", key: "usageId", type: "search" },
     { label: "대여 개수", key: "quantity", type: "number" },
   ],
   수정: [
-    { label: "대여 ID", key: "rentalId", type: "text", hide: true},
+    { label: "대여 ID", key: "rentalId", type: "text", hide: true },
     { label: "대여 개수", key: "quantity", type: "number" },
     { label: "반납 개수", key: "returned_quantity", type: "number" },
     { label: "상태", key: "status", type: "option" },
@@ -102,22 +111,24 @@ const RentalPage = () => {
       if (res.pass) {
         setTableData(res.data);
       } else {
-        toast.error('데이터를 불러오지 못했습니다.');
+        toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
   }, [isModalOpen]);
 
-  useEffect(()=>{
-    if(!tableData)return
+  useEffect(() => {
+    if (!tableData) return;
     const filterTableData = tableData.filter((item) => {
-      return selectForm.order==='처리 여부' 
-        || (selectForm.order==='미확인' && item.status==='NOT_CONFIRMED')
-        || (selectForm.order==='반납됨' && item.status==='RETURNED')
-        || (selectForm.order==='이용중' && item.status==='IN_USE')
-    })
-    setFilterData(filterTableData)
-  },[selectForm, tableData])
+      return (
+        selectForm.order === "처리 여부" ||
+        (selectForm.order === "미확인" && item.status === "NOT_CONFIRMED") ||
+        (selectForm.order === "반납됨" && item.status === "RETURNED") ||
+        (selectForm.order === "이용중" && item.status === "IN_USE")
+      );
+    });
+    setFilterData(filterTableData);
+  }, [selectForm, tableData]);
 
   const onClickTableButton = ({ value }: { value: string }) => {
     setIsModalOpen(true);
@@ -127,17 +138,17 @@ const RentalPage = () => {
     }
   };
 
-  const onClickTableRow = (row:UsageData) => {
-    setModalTitle('수정');
-    const addInitialInputs = inputOption['수정'].map((item) => {
+  const onClickTableRow = (row: UsageData) => {
+    setModalTitle("수정");
+    const addInitialInputs = inputOption["수정"].map((item) => {
       return {
         ...item,
-        initial: item.key==='rentalId' ? row.rental_id : row[item.key]
-      }
-    })
+        initial: item.key === "rentalId" ? row.rental_id : row[item.key],
+      };
+    });
     setModalInputs(addInitialInputs);
     setIsModalOpen(true);
-  }
+  };
 
   const onCloseModal = () => {
     setIsModalOpen(false);

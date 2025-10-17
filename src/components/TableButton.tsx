@@ -11,7 +11,7 @@ import type { JSX } from "react";
 type TableButtonType = {
   value: ButtonLabel;
   onClick?: () => void;
-  isDeleteMode?: boolean
+  isDeleteMode?: boolean;
 };
 
 type ButtonLabel = "다운로드" | "추가" | "삭제" | "검색" | "대여관리" | "가입 폼 관리" | "강제퇴실";
@@ -23,16 +23,15 @@ const buttonIcon: Record<ButtonLabel, JSX.Element> = {
   검색: <SearchIcon />,
   삭제: <DeleteIcon />,
   강제퇴실: <LeaveIcon />,
-  "가입 폼 관리": <PenIcon />
+  "가입 폼 관리": <PenIcon />,
 };
 
 const TableButton = ({ value, onClick, isDeleteMode }: TableButtonType) => {
   const handleStyle = () => {
-    if(isDeleteMode){
-      return "text-white bg-red-500"
-    }
-    else return "text-danuri-gray bg-gray-100"
-  }
+    if (isDeleteMode) {
+      return "text-white bg-red-500";
+    } else return "text-danuri-gray bg-gray-100";
+  };
 
   return (
     <button

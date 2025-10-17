@@ -11,7 +11,7 @@ export const getMyInfo = async () => {
 };
 
 //특정 관리자 정보 조회
-export const getAdminInfo = async ({adminId}:{adminId: string}) => {
+export const getAdminInfo = async ({ adminId }: { adminId: string }) => {
   try {
     const res = await PrivateAxios.get(`/admin/management/${adminId}`);
     return { data: res.data, pass: true };
@@ -32,22 +32,22 @@ export const getAllAdminInfo = async () => {
 
 //관리자 정보 수정
 export const putAdminInfo = async ({
-    id,
-    email,
-    phone,
-    role,
+  id,
+  email,
+  phone,
+  role,
 }: {
-    id: string;
+  id: string;
   email: string;
-  phone: string,
+  phone: string;
   role: string;
 }) => {
   try {
     const res = await PrivateAxios.put(`/admin/management`, {
-        id,
-        email,
-        phone,
-        role,
+      id,
+      email,
+      phone,
+      role,
     });
     return { data: res.data, pass: true };
   } catch (error) {

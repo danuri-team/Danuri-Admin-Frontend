@@ -7,7 +7,14 @@ import { useLocation } from "react-router-dom";
 import { changeEnumtoText, selectStatusOption } from "../../utils/StatusSelectOption";
 import { getDeviceQR } from "../../api/DeviceAPI";
 
-export type ModalInputTypesType = "search" | "date" | "time" | "text" | "number" | "option" | "image";
+export type ModalInputTypesType =
+  | "search"
+  | "date"
+  | "time"
+  | "text"
+  | "number"
+  | "option"
+  | "image";
 
 type ModalInputType =
   | {
@@ -16,8 +23,8 @@ type ModalInputType =
       value: Date | null;
       resetValue?: () => void;
       onChange: (date: Date | null) => void;
-      availableCount?:number;
-      disable?:boolean;
+      availableCount?: number;
+      disable?: boolean;
     }
   | {
       label: string;
@@ -25,30 +32,37 @@ type ModalInputType =
       value: string | number;
       resetValue?: () => void;
       onChange: (value: string | number) => void;
-      availableCount?:number;
-      disable?:boolean;
+      availableCount?: number;
+      disable?: boolean;
     };
 
-const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, disable }: ModalInputType) => {
+const ModalInput = ({
+  label,
+  value,
+  type,
+  onChange,
+  resetValue,
+  availableCount,
+  disable,
+}: ModalInputType) => {
   const location = useLocation();
 
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerms, setSearchTerms] = useState<{ name: string; id: string }[]>([]);
   const [isFocus, setIsFocus] = useState<boolean>(false);
-  
+
   const [qrSrc, setQrSrc] = useState<string>("");
   const [qrCode, setQrCode] = useState<string>("");
 
-
   const options = selectStatusOption(location.pathname as string, label);
 
-  useEffect(()=>{
-    if(type === 'option' && options){
-      if(!value){
+  useEffect(() => {
+    if (type === "option" && options) {
+      if (!value) {
         onChange(options[0].value);
       }
     }
-  }, [value, options])
+  }, [value, options]);
 
   useEffect(() => {
     if (type !== "search") return;
@@ -71,12 +85,12 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
 
   useEffect(() => {
     const getQR = async () => {
-      if(qrCode)return;
+      if (qrCode) return;
       if (type === "image" && value) {
         const res = await getDeviceQR({ deviceId: value as string });
         if (res.pass) {
           setQrSrc(res.data.qr_link);
-          setQrCode(res.data.code)
+          setQrCode(res.data.code);
         } else {
           setQrSrc("");
           setQrCode("");
@@ -93,31 +107,27 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
     }
   };
 
-  if(type==="image"){
-    return ( 
+  if (type === "image") {
+    return (
       <div className="min-h-[250px] text-center  justify-self-center">
         <div className="h-[303px]">
-        {
-          (qrSrc && qrCode) ? (
+          {qrSrc && qrCode ? (
             <>
               <div className="w-[290px] h-[270px] overflow-hidden object-cover flex items-center">
                 <img src={qrSrc} alt="QRCode" className="w-[400px] h-[400px] object-cover" />
               </div>
               <p className="text-[14px] mt-[12px]">{qrCode}</p>
             </>
-            ) : (
-              <>
-                <div className="animate-pulse w-[270px] h-[270px] bg-gray-200 rounded-[8px]"></div>
-                <p className="bg-gray-200 w-[80px] h-[14px] mt-[12px] rounded-[8px] justify-self-center"></p>
-              </>
-              
-              )
-            }
-          </div>
+          ) : (
+            <>
+              <div className="animate-pulse w-[270px] h-[270px] bg-gray-200 rounded-[8px]"></div>
+              <p className="bg-gray-200 w-[80px] h-[14px] mt-[12px] rounded-[8px] justify-self-center"></p>
+            </>
+          )}
+        </div>
       </div>
-    )
+    );
   }
-  
 
   return (
     <div className="text-sm mb-[15px]">
@@ -160,31 +170,32 @@ const ModalInput = ({ label, value, type, onChange, resetValue, availableCount, 
             )
           }
         </div>
-      ) : type==='option' ? (
+      ) : type === "option" ? (
         <div className="relative">
-          <button 
+          <button
             className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[12px] cursor-pointer`}
-            onClick={()=>setIsFocus(true)}
-            onBlur={()=>setIsFocus(false)}
-            >{options && (value ? changeEnumtoText(value as string, location.pathname) || (label as string) : options[0].name)}</button>
-          {
-            isFocus && options && (
+            onClick={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+          >
+            {options &&
+              (value
+                ? changeEnumtoText(value as string, location.pathname) || (label as string)
+                : options[0].name)}
+          </button>
+          {isFocus && options && (
             <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[8px] bg-white mt-[10px] z-1">
-            {
-              options.map((option)=>(
+              {options.map((option) => (
                 <li
-                    className={`cursor-pointer hover:bg-gray-100 p-[12px] rounded-sm`}
-                    onMouseDown={()=>onChange(option.value)}
-                    key={option.value}
-                  >
-                    {option.name}
-                  </li>
-              ))
-            }
+                  className={`cursor-pointer hover:bg-gray-100 p-[12px] rounded-sm`}
+                  onMouseDown={() => onChange(option.value)}
+                  key={option.value}
+                >
+                  {option.name}
+                </li>
+              ))}
             </ul>
-            )}
+          )}
         </div>
-
       ) : type === "date" || type === "time" ? (
         <DatePicker
           className={`${isFocus ? "border-blue-400" : "border-gray-200"} w-full border-1 rounded-xl p-[12px] outline-none`}
