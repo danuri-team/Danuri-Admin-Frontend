@@ -31,8 +31,9 @@ const MainHeader = () => {
       aria-label="네비게이션"
     >
       <div className="flex-1 w-full max-w-360 flex items-center justify-between ">
-
+        <Link to={"/usage"} aria-label="홈으로 이동">
           <h1 className="text-2xl font-bold">다누리</h1>
+        </Link>
         <div className="flex">
           {navList.map((item) => (
             <div className="relative" key={item.name}>
