@@ -1,5 +1,10 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import type { InternalAxiosRequestConfig } from "axios";
 import { PublicAxios } from "./PublicAxios";
+
+interface RetryAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 export const PrivateAxios = axios.create({
   baseURL: import.meta.env.VITE_API_DEV_SERVER,
@@ -29,12 +34,20 @@ const processQueue = (error: unknown = null) => {
 
 PrivateAxios.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: unknown) => {
+    if (!axios.isAxiosError(error)) {
+      return Promise.reject(error);
+    }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const axiosError = error as AxiosError;
+    const originalRequest = axiosError.config as RetryAxiosRequestConfig | undefined;
+
+    if (!originalRequest || originalRequest.url?.includes("/auth/common/refresh")) {
+      return Promise.reject(error);
+    }
+
+    if (axiosError.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        // 이미 토큰 재발급 중이면 대기열에 추가
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -64,7 +77,7 @@ PrivateAxios.interceptors.response.use(
         isRefreshing = false;
 
         if (!window.location.pathname.includes("/auth/login")) {
-          window.location.href = "/auth/login";
+          window.location.replace("/auth/login");
         }
         return Promise.reject(refreshError);
       }
