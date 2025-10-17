@@ -2,7 +2,7 @@
 import { useReducer } from "react";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { login } from "../../redux/reducers/authSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
@@ -37,11 +37,6 @@ const LoginPage = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [loginForm, loginDispatch] = useReducer(loginReducer, initialLoginForm);
-
-  const loginInputs = [
-    { label: "이메일", key: "email", value: loginForm.email },
-    { label: "비밀번호", key: "password", value: loginForm.password },
-  ];
 
   const onclickLogin = async () => {
     if (Object.values(loginForm).includes("")) {
