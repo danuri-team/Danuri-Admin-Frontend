@@ -129,9 +129,9 @@ const MachinePage = () => {
       }
       return {
         ...item,
-        initial: item.key==='itemId' ? row.id : row[item.key]
-      }
-    })
+        initial: item.key === "itemId" ? row.id : row[item.key],
+      };
+    });
     setModalInputs(addInitialInputs);
     setIsModalOpen(true);
   };

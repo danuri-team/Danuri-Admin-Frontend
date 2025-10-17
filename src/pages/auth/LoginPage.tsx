@@ -2,7 +2,7 @@
 import { useReducer } from "react";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { login } from "../../redux/reducers/authSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
@@ -38,11 +38,6 @@ const LoginPage = () => {
 
   const [loginForm, loginDispatch] = useReducer(loginReducer, initialLoginForm);
 
-  const loginInputs = [
-    { label: "이메일", key: "email", value: loginForm.email },
-    { label: "비밀번호", key: "password", value: loginForm.password },
-  ];
-
   const onclickLogin = async () => {
     if (Object.values(loginForm).includes("")) {
       toast.error("모든 항목을 입력해주세요.");
@@ -65,33 +60,42 @@ const LoginPage = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          onclickLogin();
         }}
         className="m-auto w-[50%] min-w-xs max-w-lg"
       >
         <h1 className="justify-self-center text-4xl font-bold mb-[50px]">다누리</h1>
         <div className="flex flex-col gap-[24px]">
-          {loginInputs.map((item) => (
-            <CustomInput
-              label={item.label}
-              key={item.key}
-              value={item.value}
-              onChange={(e) =>
-                loginDispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
-              }
-            />
-          ))}
+          <CustomInput
+            label="이메일"
+            key="email"
+            value={loginForm.email}
+            onChange={(e) =>
+              loginDispatch({ type: "CHANGE", payload: { key: "email", value: e.target.value } })
+            }
+            autoComplete="email"
+          />
+          <CustomInput
+            label="비밀번호"
+            key="password"
+            value={loginForm.password}
+            onChange={(e) =>
+              loginDispatch({ type: "CHANGE", payload: { key: "password", value: e.target.value } })
+            }
+            autoComplete="current-password"
+          />
         </div>
         <div className="mt-[60px]">
-          <CustomButton value="로그인" onClick={onclickLogin} />
+          <CustomButton value="로그인" onClick={() => {}} type="submit" />
         </div>
         <div className="w-[200px] flex items-center justify-between justify-self-center mt-[30px]">
-          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/password"}>
+          {/* <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/password"}>
             비밀번호 찾기
           </Link>
           <div className="w-[1px] h-[20px] border-l-1 border-gray-300"></div>
           <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/signup"}>
             회원가입
-          </Link>
+          </Link> */}
         </div>
       </form>
     </div>

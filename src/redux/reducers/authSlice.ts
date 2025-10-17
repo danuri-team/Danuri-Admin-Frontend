@@ -1,109 +1,90 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postLogin, PostToken } from "../../api/AuthAPI";
-
-interface Token {
-  token: string;
-  expired_at: number;
-}
-
-interface AuthResponse {
-  access_token: Token;
-  refresh_token: Token;
-}
+import { postLogin } from "../../api/AuthAPI";
+import { PrivateAxios } from "../../api/PrivateAxios";
 
 interface AuthState {
-  access_token: Token | null;
-  refresh_token: Token | null;
+  isAuthenticated: boolean;
   isLoading: boolean;
+  isInitialized: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
-  access_token: null,
-  refresh_token: null,
+  isAuthenticated: false,
   isLoading: false,
+  isInitialized: false,
   error: null,
 };
 
-// 로그인 thunk (email, password -> 토큰 저장)
 export const login = createAsyncThunk<
-  AuthResponse,
+  void,
   { email: string; password: string },
   { rejectValue: string }
 >("/auth/login", async (payload, { rejectWithValue }) => {
   try {
     const res = await postLogin(payload);
     if (res.pass) {
-      const { access_token, refresh_token }: AuthResponse = res.data;
-      return { access_token, refresh_token };
+      return;
     } else return rejectWithValue(res.data as string);
   } catch (error) {
     return rejectWithValue("서버오류");
   }
 });
 
-//리프레시 토큰으로 토큰 갱신 thunk
-export const refreshAccessToken = createAsyncThunk<
-  AuthResponse,
-  { refreshToken: string },
-  { rejectValue: string }
->("auth/refreshToken", async (payload, { rejectWithValue }) => {
-  try {
-    const res = await PostToken(payload);
-    if (res.pass) return res.data as AuthResponse;
-    else return rejectWithValue(res.data as string);
-  } catch (error) {
-    return rejectWithValue("서버오류");
+export const checkAuth = createAsyncThunk<void, void, { rejectValue: string }>(
+  "/auth/check",
+  async (_, { rejectWithValue }) => {
+    try {
+      await PrivateAxios.get("/admin/management/me");
+      return;
+    } catch {
+      return rejectWithValue("인증 실패");
+    }
   }
-});
+);
 
 const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
   reducers: {
-    clearToken: (state) => {
-      state.access_token = null;
-      state.refresh_token = null;
+    logout: (state) => {
+      state.isAuthenticated = false;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      //로그인
       .addCase(login.pending, (state) => {
-        state.access_token = null;
-        state.refresh_token = null;
+        state.isAuthenticated = false;
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        state.access_token = action.payload.access_token;
-        state.refresh_token = action.payload.refresh_token;
+      .addCase(login.fulfilled, (state) => {
+        state.isAuthenticated = true;
         state.isLoading = false;
+        state.isInitialized = true;
       })
       .addCase(login.rejected, (state, action) => {
+        state.isAuthenticated = false;
         state.isLoading = false;
         state.error = action.payload as string;
       })
-
-      //토큰 갱신
-      .addCase(refreshAccessToken.pending, (state) => {
+      .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
-        state.error = null;
       })
-      .addCase(refreshAccessToken.fulfilled, (state, action) => {
-        state.access_token = action.payload.access_token;
-        state.refresh_token = action.payload.refresh_token;
+      .addCase(checkAuth.fulfilled, (state) => {
+        state.isAuthenticated = true;
         state.isLoading = false;
+        state.isInitialized = true;
       })
-      .addCase(refreshAccessToken.rejected, (state, action) => {
-        state.access_token = null;
-        state.refresh_token = null;
+      .addCase(checkAuth.rejected, (state) => {
+        state.isAuthenticated = false;
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.isInitialized = true;
       });
   },
 });
 
-export const { clearToken } = authSlice.actions;
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;

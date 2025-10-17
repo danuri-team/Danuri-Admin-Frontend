@@ -6,42 +6,43 @@ import { FaCircleExclamation } from "react-icons/fa6";
 import { getSearchTerm, type SearchLabel } from "../utils/searchTermOption";
 
 type BaseProps = {
-  isMust?:boolean;
+  isMust?: boolean;
   label: string;
   valid?: boolean;
-  disabled?:boolean;
-}
+  disabled?: boolean;
+};
 
 type textProps = BaseProps & {
-  type?: Exclude<string, 'time' | 'search'>;
+  type?: Exclude<string, "time" | "search">;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+  autoComplete?: string;
+};
 
 type timeProps = BaseProps & {
-  type: 'time';
+  type: "time";
   value: Date | null;
   onChange: (date: Date | null) => void;
-}
+};
 
 type searchProps = BaseProps & {
-  type: 'search';
+  type: "search";
   value: string;
   onChange: (value: string | null) => void;
-}
+};
 
-type CustomInputType = textProps | timeProps | searchProps
+type CustomInputType = textProps | timeProps | searchProps;
 
-const isTimeInput = (props:CustomInputType): props is timeProps => {
-  return props.type === 'time';
-}
+const isTimeInput = (props: CustomInputType): props is timeProps => {
+  return props.type === "time";
+};
 
-const isSearchInput = (props:CustomInputType): props is searchProps => {
+const isSearchInput = (props: CustomInputType): props is searchProps => {
   return props.type === "search";
-}
+};
 
 const CustomInput = (props: CustomInputType) => {
-  const {label, disabled, valid, isMust} = props;
+  const { label, disabled, valid, isMust } = props;
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTerms, setSearchTerms] = useState<{ name: string; id: string }[]>([]);
   const [isFocus, setIsFocus] = useState<boolean>(false);
@@ -69,55 +70,56 @@ const CustomInput = (props: CustomInputType) => {
 
   return (
     <div>
-      <p className="text-danuri-text mb-[7px] font-semibold text-sm">{label!=='placeholder' && label}{isMust && <span className="text-red-400"> *</span>}</p>
+      <p className="text-danuri-text mb-[7px] font-semibold text-sm">
+        {label !== "placeholder" && label}
+        {isMust && <span className="text-red-400"> *</span>}
+      </p>
       <div
         className={`${isValid && valid === false ? "border-red-400" : isFocus ? "border-blue-400" : "border-gray-200"}  flex border  rounded-xl p-[12px] w-full min-w-2xs`}
       >
-        {
-          isTimeInput(props) ? (
-            <DatePicker
-              className={`w-full outline-none placeholder:text-gray-300`}
-              calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
-              placeholderText={`${label}을 선택해주세요.`}
-              selected={props.value}
-              onFocus={() => setIsFocus(true)}
-              onBlur={() => setIsFocus(false)}
-              locale={ko}
-              onChange={props.onChange}
-              dateFormat={`${"HH:mm"}`}
-              showTimeSelect
-              showTimeSelectOnly={true}
-            />
-          ) 
-          : isSearchInput(props) ? (
-            <input
-              disabled={disabled}
-              className="outline-none w-full placeholder:text-gray-300"
-              type="text"
-              placeholder={`${label}를 검색해주세요`}
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              onFocus={() => setIsFocus(true)}
-              onBlur={() => setIsFocus(false)}
-            />
-          )
-          : (
-            <input
-              disabled={disabled}
-              className={`${label==='placeholder' ? 'text-gray-300' : undefined} outline-none w-full placeholder:text-gray-300`}
-              type={label === "비밀번호" ? "password" : "text"}
-              placeholder={`${label!=='placeholder' ? `${label}를 입력해주세요` : ''}`}
-              value={props.value}
-              onChange={props.onChange}
-              onFocus={() => setIsFocus(true)}
-              onBlur={() => setIsFocus(false)}
-            />
-          )
-        }
+        {isTimeInput(props) ? (
+          <DatePicker
+            className={`w-full outline-none placeholder:text-gray-300`}
+            calendarClassName="border-gray-100 bg-blue-100 rounded-xl"
+            placeholderText={`${label}을 선택해주세요.`}
+            selected={props.value}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            locale={ko}
+            onChange={props.onChange}
+            dateFormat={`${"HH:mm"}`}
+            showTimeSelect
+            showTimeSelectOnly={true}
+          />
+        ) : isSearchInput(props) ? (
+          <input
+            disabled={disabled}
+            className="outline-none w-full placeholder:text-gray-300"
+            type="text"
+            placeholder={`${label}를 검색해주세요`}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+          />
+        ) : (
+          <input
+            disabled={disabled}
+            className={`${label === "placeholder" ? "text-gray-300" : undefined} outline-none w-full placeholder:text-gray-300`}
+            type={label === "비밀번호" ? "password" : "text"}
+            placeholder={`${label !== "placeholder" ? `${label}를 입력해주세요` : ""}`}
+            value={props.value}
+            onChange={props.onChange}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            autoComplete={
+              !isTimeInput(props) && !isSearchInput(props) ? props.autoComplete : undefined
+            }
+            name={label === "이메일" ? "email" : label === "비밀번호" ? "password" : undefined}
+          />
+        )}
         {isValid && (valid === true || valid === false) && (
-          <button
-            className={`${isValid && valid === true ? "text-danuri-500" : "text-red-400"}`}
-          >
+          <button className={`${isValid && valid === true ? "text-danuri-500" : "text-red-400"}`}>
             {valid === false ? <FaCircleExclamation /> : valid === true && <FaCircleCheck />}
           </button>
         )}

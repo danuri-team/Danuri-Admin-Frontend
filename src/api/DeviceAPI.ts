@@ -1,11 +1,7 @@
 import { PrivateAxios } from "./PrivateAxios";
 
 //기기 추가
-export const postAddDevice = async ({
-  name
-}: {
-  name:string
-}) => {
+export const postAddDevice = async ({ name }: { name: string }) => {
   try {
     const res = await PrivateAxios.post("/admin/devices", {
       name,
@@ -17,13 +13,7 @@ export const postAddDevice = async ({
 };
 
 //기기 수정
-export const putUpdateDevice = async ({
-  deviceId,
-  name,
-}: {
-  deviceId: string;
-  name: string;
-}) => {
+export const putUpdateDevice = async ({ deviceId, name }: { deviceId: string; name: string }) => {
   try {
     const res = await PrivateAxios.put(`/admin/devices/${deviceId}`, {
       name,
@@ -64,14 +54,12 @@ export const getSearchCompanyDevice = async () => {
   }
 };
 
-
 //기기 로그인 QR 발급
-export const getDeviceQR = async ({deviceId}:{deviceId:string}) => {
-  try{
+export const getDeviceQR = async ({ deviceId }: { deviceId: string }) => {
+  try {
     const res = await PrivateAxios.get(`/admin/devices/${deviceId}/sign-in`);
-    return {data:res.data, pass:true}
+    return { data: res.data, pass: true };
+  } catch (error) {
+    return { data: error, pass: false };
   }
-  catch (error){
-    return {data:error, pass:false};
-  }
-}
+};

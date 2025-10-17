@@ -15,7 +15,7 @@ type InfoState = {
   company_name: string;
   email: string;
   phone: string;
-  role: string
+  role: string;
 };
 
 const initialInfoForm: InfoState = {
@@ -23,7 +23,7 @@ const initialInfoForm: InfoState = {
   company_name: "",
   email: "",
   phone: "",
-  role: "ROLE_ADMIN"
+  role: "ROLE_ADMIN",
 };
 
 const infoReducer = (state: InfoState, action: InfoAction) => {
@@ -49,27 +49,35 @@ const InfoPage = () => {
   const [isChangeData, setIsChangeData] = useState<boolean>(false);
   const [infoForm, infoDispatch] = useReducer(infoReducer, initialInfoForm);
 
-  useEffect(()=>{
-    if(isChangeData)setIsChangeData(false);
+  useEffect(() => {
+    if (isChangeData) setIsChangeData(false);
     const getInfoData = async () => {
       const res = await getMyInfo();
-      if(res.pass){
-        infoDispatch({type:'CHANGE', payload:{key:'id', value: res.data.id}})
-        infoDispatch({type:'CHANGE', payload:{key:'company_name', value: res.data.company_name}})
-        infoDispatch({type:'CHANGE', payload:{key:'email', value: res.data.email}})
-        infoDispatch({type:'CHANGE', payload:{key:'phone', value: res.data.phone}})
+      if (res.pass) {
+        infoDispatch({ type: "CHANGE", payload: { key: "id", value: res.data.id } });
+        infoDispatch({
+          type: "CHANGE",
+          payload: { key: "company_name", value: res.data.company_name },
+        });
+        infoDispatch({ type: "CHANGE", payload: { key: "email", value: res.data.email } });
+        infoDispatch({ type: "CHANGE", payload: { key: "phone", value: res.data.phone } });
       }
-    }
+    };
     getInfoData();
-  },[isChangeData]);
+  }, [isChangeData]);
 
   const onClickSubmitInfo = async () => {
-    if(!isValidEmail(infoForm.email) || !isValidPhone(infoForm.phone)){
+    if (!isValidEmail(infoForm.email) || !isValidPhone(infoForm.phone)) {
       return;
     }
 
-    const res = await putAdminInfo({id:infoForm.id as string, email: infoForm.email as string, phone: infoForm.phone, role: infoForm.role});
-    if(res.pass){
+    const res = await putAdminInfo({
+      id: infoForm.id as string,
+      email: infoForm.email as string,
+      phone: infoForm.phone,
+      role: infoForm.role,
+    });
+    if (res.pass) {
       setIsChangeData(true);
     }
   };
@@ -87,7 +95,10 @@ const InfoPage = () => {
             label="회사"
             value={infoForm.company_name}
             onChange={(e) =>
-              infoDispatch({ type: "CHANGE", payload: { key: "company_name", value: e.target.value } })
+              infoDispatch({
+                type: "CHANGE",
+                payload: { key: "company_name", value: e.target.value },
+              })
             }
             disabled={true}
           />

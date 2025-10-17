@@ -10,9 +10,9 @@ import { GoChevronLeft } from "react-icons/go";
 import { toast } from "react-toastify";
 
 type SignupState = {
-  companyId: string,
+  companyId: string;
   email: string;
-  phone:string;
+  phone: string;
   password: string;
   rePassword: string;
 };
@@ -50,7 +50,7 @@ const SignupPage = () => {
   const [signupForm, dispatch] = useReducer(signupReducer, initialSignupForm);
 
   const loginInputs = [
-    { label: "회사", key: "companyId", type:'search', value: signupForm.companyId },
+    { label: "회사", key: "companyId", type: "search", value: signupForm.companyId },
     { label: "이메일", key: "email", value: signupForm.email },
     { label: "전화번호", key: "email", value: signupForm.phone },
     { label: "비밀번호", key: "password", value: signupForm.password },
@@ -58,12 +58,12 @@ const SignupPage = () => {
   ];
 
   const onclickSignup = async () => {
-    if (Object.values(signupForm).includes("")){
-      toast.error('모든 항목을 입력해주세요.');
+    if (Object.values(signupForm).includes("")) {
+      toast.error("모든 항목을 입력해주세요.");
       return;
-    } 
-    if (!isValidEmail(signupForm.email)){
-      toast.error('이메일이 형식에 맞지않습니다.');
+    }
+    if (!isValidEmail(signupForm.email)) {
+      toast.error("이메일이 형식에 맞지않습니다.");
       return;
     }
 
@@ -76,31 +76,29 @@ const SignupPage = () => {
     });
 
     if (res.pass) {
-      toast.success('회원가입되었습니다.');
+      toast.success("회원가입되었습니다.");
       dispatch({ type: "RESET" });
       navigate("/auth/login");
     } else {
-        toast.error('회원가입에 실패했습니다.');
+      toast.error("회원가입에 실패했습니다.");
     }
   };
 
   return (
     <div className="w-full h-screen flex">
       <div className="m-auto w-[50%] min-w-xs max-w-lg pt-[50px] pb-[50px]">
-        <Link to={'/auth/login'}><GoChevronLeft size={30} /></Link>
+        <Link to={"/auth/login"}>
+          <GoChevronLeft size={30} />
+        </Link>
         <h1 className="justify-self-center text-4xl font-bold mb-[50px] mt-[36px]">회원가입</h1>
-        <div className="flex flex-col gap-[24px]"> 
+        <div className="flex flex-col gap-[24px]">
           {loginInputs.map((item) => (
             <CustomInput
               type={item.type}
               label={item.label}
               key={item.key}
               value={item.value}
-              valid={
-                item.key === "email"
-                  ? isValidEmail(signupForm.email)
-                  : undefined
-              }
+              valid={item.key === "email" ? isValidEmail(signupForm.email) : undefined}
               onChange={(e) =>
                 dispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
               }
