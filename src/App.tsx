@@ -61,7 +61,7 @@ function App() {
         theme="dark"
         hideProgressBar
         toastStyle={{
-          backgroundColor: "rgb(0, 0, 0, 0.6)",
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
           borderRadius: "10px",
           fontSize: "15px",
           minHeight: "50px",
