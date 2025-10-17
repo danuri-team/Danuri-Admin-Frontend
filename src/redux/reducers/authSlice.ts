@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postLogin } from "../../api/AuthAPI";
+import { postLogin, PostToken } from "../../api/AuthAPI";
 import { PrivateAxios } from "../../api/PrivateAxios";
 
 interface AuthState {
@@ -35,6 +35,10 @@ export const checkAuth = createAsyncThunk<void, void, { rejectValue: string }>(
   "/auth/check",
   async (_, { rejectWithValue }) => {
     try {
+      const tokenRes = await PostToken();
+      if (!tokenRes.pass) {
+        return rejectWithValue("인증 실패");
+      }
       await PrivateAxios.get("/admin/management/me");
       return;
     } catch {

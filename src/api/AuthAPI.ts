@@ -2,10 +2,16 @@ import { PublicAxios } from "./PublicAxios";
 
 export const postLogin = async ({ email, password }: { email: string; password: string }) => {
   try {
-    const res = await PublicAxios.post("/auth/admin/sign-in", {
-      email,
-      password,
-    });
+    const res = await PublicAxios.post(
+      "/auth/admin/sign-in",
+      {
+        email,
+        password,
+      },
+      {
+        withCredentials: false,
+      }
+    );
     return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };
