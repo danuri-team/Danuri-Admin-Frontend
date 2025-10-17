@@ -86,7 +86,7 @@ const LoginPage = () => {
           />
         </div>
         <div className="mt-[60px]">
-          <CustomButton value="로그인" onClick={onclickLogin} />
+          <CustomButton value="로그인" onClick={() => {}} type="submit" />
         </div>
         <div className="w-[200px] flex items-center justify-between justify-self-center mt-[30px]">
           {/* <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/password"}>
