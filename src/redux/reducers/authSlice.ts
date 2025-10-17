@@ -37,7 +37,7 @@ export const checkAuth = createAsyncThunk<void, void, { rejectValue: string }>(
     try {
       await PrivateAxios.get("/admin/management/me");
       return;
-    } catch (error) {
+    } catch {
       return rejectWithValue("인증 실패");
     }
   }
