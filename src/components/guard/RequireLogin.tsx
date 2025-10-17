@@ -4,14 +4,15 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const RequireLogin = () => {
   const authState = useSelector((state: RootState) => state.auth);
-  const accessToken = authState.access_token;
-  const isLoading = authState.isLoading;
+  const isAuthenticated = authState.isAuthenticated;
+  const isInitialized = authState.isInitialized;
 
-  if (isLoading) {
+  // 초기 인증 확인 중
+  if (!isInitialized) {
     return <div className="flex justify-center items-center min-h-screen">로딩 중...</div>;
   }
 
-  return accessToken ? <Outlet /> : <Navigate to={"auth/login"} replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to={"auth/login"} replace />;
 };
 
 export default RequireLogin;
