@@ -16,6 +16,7 @@ type textProps = BaseProps & {
   type?: Exclude<string, 'time' | 'search'>;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  autoComplete?: string;
 }
 
 type timeProps = BaseProps & {
@@ -111,6 +112,8 @@ const CustomInput = (props: CustomInputType) => {
               onChange={props.onChange}
               onFocus={() => setIsFocus(true)}
               onBlur={() => setIsFocus(false)}
+              autoComplete={!isTimeInput(props) && !isSearchInput(props) ? props.autoComplete : undefined}
+              name={label === "이메일" ? "email" : label === "비밀번호" ? "password" : undefined}
             />
           )
         }

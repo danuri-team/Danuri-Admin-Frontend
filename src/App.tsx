@@ -1,14 +1,33 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "./redux/store";
+import { checkAuth } from "./redux/reducers/authSlice";
 
 import { LoginPage, SignupPage, FindPassword } from "./pages/auth";
-import { UsagePage, InfoPage, ItemPage, UserPage, RentalPage, SpacePage, MachinePage, JoinFormPage } from "./pages/management";
+import {
+  UsagePage,
+  InfoPage,
+  ItemPage,
+  UserPage,
+  RentalPage,
+  SpacePage,
+  MachinePage,
+  JoinFormPage,
+} from "./pages/management";
 import NotFoundPage from "./pages/NotFoundPage";
 
 import RequireLogin from "./components/guard/RequireLogin";
 import GuestGuard from "./components/guard/GuestGuard";
 
 function App() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
   return (
     <>
       <Routes>
@@ -41,11 +60,15 @@ function App() {
         position="top-right"
         theme="dark"
         hideProgressBar
-        toastStyle={{backgroundColor: 'rgb(0, 0, 0, 0.6)', borderRadius: '10px', fontSize: '15px', minHeight: '50px'}}
+        toastStyle={{
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          borderRadius: "10px",
+          fontSize: "15px",
+          minHeight: "50px",
+        }}
         closeButton={false}
       />
     </>
-
   );
 }
 

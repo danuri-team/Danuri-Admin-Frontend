@@ -1,50 +1,88 @@
-import axios from "axios";
-import { store } from "../redux/store";
-import { clearToken, refreshAccessToken } from "../redux/reducers/authSlice";
+import axios, { AxiosError } from "axios";
+import type { InternalAxiosRequestConfig } from "axios";
+import { PublicAxios } from "./PublicAxios";
 
-//토큰 필요 O
+interface RetryAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
 export const PrivateAxios = axios.create({
   baseURL: import.meta.env.VITE_API_DEV_SERVER,
   timeout: 5000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-PrivateAxios.interceptors.request.use(
-  async (config) => {
-    const state = store.getState();
-    let accessToken = state.auth.access_token;
-    let refreshToken = state.auth.refresh_token;
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: unknown) => void;
+  reject: (reason?: unknown) => void;
+}> = [];
 
-    const now = Date.now();
-
-    if (accessToken) {
-      if (now > accessToken.expired_at) {
-        try {
-          const res = await store.dispatch(
-            refreshAccessToken({ refreshToken: refreshToken?.token as string })
-          );
-          if (res.meta.requestStatus === "fulfilled") {
-            //리프레시 토큰이 유효
-            const newState = store.getState();
-            accessToken = newState.auth.access_token;
-            refreshToken = newState.auth.refresh_token;
-          } else {
-            //리프레시 토큰 또한 만료
-            store.dispatch(clearToken());
-            return Promise.reject(new Error("로그인 세션이 만료되었습니다"));
-          }
-        } catch (error) {
-          store.dispatch(clearToken());
-          return Promise.reject(error);
-        }
-      }
-      config.headers.Authorization = `Bearer ${accessToken?.token}`;
+const processQueue = (error: unknown = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
     }
-    return config;
-  },
-  (error) => {
+  });
+  failedQueue = [];
+};
+
+PrivateAxios.interceptors.response.use(
+  (response) => response,
+  async (error: unknown) => {
+    if (!axios.isAxiosError(error)) {
+      return Promise.reject(error);
+    }
+
+    const axiosError = error as AxiosError;
+    const originalRequest = axiosError.config as RetryAxiosRequestConfig | undefined;
+
+    if (!originalRequest || originalRequest.url?.includes("/auth/common/refresh")) {
+      return Promise.reject(error);
+    }
+
+    if (axiosError.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => {
+            return PrivateAxios(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        // 쿠키의 refresh token으로 토큰 재발급
+        await PublicAxios.get("/auth/common/refresh");
+
+        processQueue(null);
+        isRefreshing = false;
+
+        // 원래 요청 재시도
+        return PrivateAxios(originalRequest);
+      } catch (refreshError) {
+        // 토큰 재발급 실패 시 로그인 페이지로
+        processQueue(refreshError);
+        isRefreshing = false;
+
+        if (!window.location.pathname.includes("/auth/login")) {
+          window.location.replace("/auth/login");
+        }
+        return Promise.reject(refreshError);
+      }
+    }
+
     return Promise.reject(error);
   }
 );
