@@ -46,7 +46,7 @@ PrivateAxios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (axiosError.response?.status === 401 && !originalRequest._retry) {
+    if ((axiosError.response?.status === 500 || 401) && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -75,6 +75,8 @@ PrivateAxios.interceptors.response.use(
         // 토큰 재발급 실패 시 로그인 페이지로
         processQueue(refreshError);
         isRefreshing = false;
+
+        PublicAxios.get("/auth/common/sign-out");
 
         if (!window.location.pathname.includes("/auth/login")) {
           window.location.replace("/auth/login");
