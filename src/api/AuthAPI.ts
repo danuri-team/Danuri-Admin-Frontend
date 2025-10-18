@@ -39,15 +39,6 @@ export const postSignup = async ({
   }
 };
 
-export const PostToken = async () => {
-  try {
-    const res = await PublicAxios.get("/auth/common/refresh");
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
-  }
-};
-
 export const updateAdminPassword = async ({
   new_password,
   confirm_password,
