@@ -46,7 +46,8 @@ PrivateAxios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if ((axiosError.response?.status === 500 || 401) && !originalRequest._retry) {
+    const status = axiosError.response?.status;
+    if (typeof status === "number" && [401, 500].includes(status) && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
