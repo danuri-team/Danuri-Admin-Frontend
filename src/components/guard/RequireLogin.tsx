@@ -1,3 +1,5 @@
+// 로그인 되어있는 사용자만 접근
+
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { Navigate, Outlet } from "react-router-dom";

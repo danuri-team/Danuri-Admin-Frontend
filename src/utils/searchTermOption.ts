@@ -5,7 +5,7 @@ import { postUsageSearch } from "@/services/api/UsageAPI";
 import { getSearchCompanyUser } from "@/services/api/UserAPI";
 import { isFutureDate } from "./format/dateFormat";
 
-//물품/공간/유저/이용현황 검색어 찾기
+//물품,공간,유저,이용현황 검색어 찾기
 const searchFn = {
   물품: () => getSearchCompanyItem(),
   공간사용: () =>

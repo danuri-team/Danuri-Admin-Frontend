@@ -1,3 +1,5 @@
+// 가입 폼 아이템
+
 import {
   useSortable,
   SortableContext,
@@ -38,6 +40,21 @@ type FormItemProps = FormItemType & {
   ) => void;
 };
 
+/**
+ *
+ * @param id - dnd 라이브러리애 사용되는 아이디
+ * @param index - 전체 폼 기준 순서
+ * @param deleteFormItem - 삭제 핸들러
+ * @param addFormItem - 복제 핸들러
+ * @param changeFormItem - 폼 아이템 내용 변경 핸들러
+ * @param label - 아이템 라벨
+ * @param options - 객관식 문항
+ * @param placeHolder
+ * @param isMultiSelect - 복수 선택 여부 (객관식)
+ * @param isRequired - 필수 입력 여부
+ * @param type - 폼 아이템 타입 (객관식|전화번호|주관식)
+ * @returns
+ */
 const FormItem = ({
   id,
   index,
@@ -51,13 +68,14 @@ const FormItem = ({
   isRequired,
   type,
 }: FormItemProps) => {
+  // dnd 구현에 사용되는 반환 값
   const { attributes, setNodeRef, listeners, transform, transition } = useSortable({ id });
-  //옵션 선택에 대한 데이터 전달 논의 필요
 
-  //label 길이 측정용 Ref
+  // label 길이 측정용 Ref
   const spanRef = useRef<HTMLSpanElement>(null);
   const [inputWidth, setInputWidth] = useState<number>(0);
 
+  // label 값 변경 시 글자 길이 추적
   useEffect(() => {
     if (spanRef.current) {
       const spanWidth = spanRef.current.offsetWidth;
@@ -65,11 +83,13 @@ const FormItem = ({
     }
   }, [label]);
 
+  // dnd 구현에 사용되는 style
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
 
+  // dnd 구현에 사용되는 sensor
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(KeyboardSensor, {
@@ -77,6 +97,7 @@ const FormItem = ({
     })
   );
 
+  // 객관식 문항 드래그 이벤트 종료 핸들러
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!options) return;
@@ -84,6 +105,7 @@ const FormItem = ({
       const preIndex = options?.findIndex((item) => item.id === Number(active.id));
       const newIndex = options?.findIndex((item) => item.id === Number(over.id));
 
+      // 활성화된 문항을 움직인 위치의 인덱스로 이동
       const changeOptions = arrayMove(options, preIndex, newIndex);
 
       changeFormItem(id, "options", changeOptions);
@@ -120,6 +142,7 @@ const FormItem = ({
     changeFormItem(id, "type", option);
   };
 
+  // 복수 선택, 필수 입력 토글 핸들러
   const handleToggle = (type: string, state: boolean) => {
     if (type === "essential") {
       changeFormItem(id, "isRequired", state);
@@ -158,6 +181,7 @@ const FormItem = ({
         {isRequired && <span className="text-red-500">*</span>}
       </div>
       <div>
+        {/* 폼 아이템 타입이 CHECK (객관식) 인 경우, 객관식 문항 dnd 컴포넌트 표시 */}
         {type === "CHECK" ? (
           <div className="flex flex-col w-full">
             <DndContext
@@ -185,6 +209,7 @@ const FormItem = ({
             </button>
           </div>
         ) : (
+          // 폼 아이템 타입이 전화번호 또는 주관식인 경우, 입력 박스 표시
           <div>
             <CustomInput
               label="placeholder"
@@ -206,6 +231,7 @@ const FormItem = ({
             <p className="text-[15px]">필수 입력</p>
             <ToggleButton handleToggle={handleToggle} isActive={isRequired} type={"essential"} />
           </div>
+          {/* 폼 아이템 타입이 CHECK (객관식) 인 경우, 복수 선택 토글 표시 */}
           {type === "CHECK" && (
             <div className="flex items-center gap-[16px] ml-[24px]">
               <p className="text-[15px]">복수 선택</p>
@@ -218,12 +244,14 @@ const FormItem = ({
           )}
         </div>
         <div className="flex gap-[50px]">
+          {/* 복제 버튼 */}
           <button
             className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm"
             onClick={() => addFormItem(id)}
           >
             <PasteIcon />
           </button>
+          {/* 삭제 버튼 */}
           <button
             className="text-gray-500 cursor-pointer hover:bg-gray-100 p-[5px] rounded-sm"
             onClick={() => deleteFormItem(id)}
