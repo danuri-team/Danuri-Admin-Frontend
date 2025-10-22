@@ -1,4 +1,4 @@
-import { PrivateAxios } from "./PrivateAxios";
+import { PrivateAxios } from "../PrivateAxios";
 
 type UsageSearchType = {
   startDate: string;
