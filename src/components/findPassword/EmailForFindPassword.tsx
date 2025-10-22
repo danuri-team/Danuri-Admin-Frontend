@@ -1,4 +1,4 @@
-import { isValidEmail } from "../../utils/infoValidation";
+import { isValidEmail } from "@/utils/infoValidation";
 import CustomButton from "../CustomButton";
 import CustomInput from "../CustomInput";
 

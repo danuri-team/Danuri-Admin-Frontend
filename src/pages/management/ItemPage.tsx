@@ -1,12 +1,17 @@
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import TableButton from "../../components/TableButton";
-import MainHeader from "../../components/MainHeader";
-import BannerButton from "../../components/BannerButton";
-import CustomSelect from "../../components/CustomSelect";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import TableButton from "@/components/TableButton";
+import MainHeader from "@/components/MainHeader";
+import BannerButton from "@/components/BannerButton";
+import CustomSelect from "@/components/CustomSelect";
 import { useEffect, useMemo, useReducer, useState } from "react";
-import Modal from "../../components/modal/Modal";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import { deleteItem, getSearchCompanyItem, postCreateItem, putUpdateItem } from "../../api/ItemAPI";
+import Modal from "@/components/modal/Modal";
+import type { ModalInputTypesType } from "@/components/modal/ModalInput";
+import {
+  deleteItem,
+  getSearchCompanyItem,
+  postCreateItem,
+  putUpdateItem,
+} from "@/services/api/ItemAPI";
 import { toast } from "react-toastify";
 
 type filterSelectType = {

@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import BannerButton from "../../components/BannerButton";
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import Modal from "../../components/modal/Modal";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import TableButton from "../../components/TableButton";
+import BannerButton from "@/components/BannerButton";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import Modal from "@/components/modal/Modal";
+import type { ModalInputTypesType } from "@/components/modal/ModalInput";
+import TableButton from "@/components/TableButton";
 import {
   deleteSpace,
   getSearchCompanySpace,
   postCreateSpace,
   putUpdateSpace,
-} from "../../api/SpaceAPI";
+} from "@/services/api/SpaceAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
-import { formatDatetoTime, formatTimetoDate } from "../../utils/format/dateFormat";
+import { formatDatetoTime, formatTimetoDate } from "@/utils/format/dateFormat";
 import { toast } from "react-toastify";
 
 const tableHeader = [

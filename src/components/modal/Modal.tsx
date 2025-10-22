@@ -2,11 +2,11 @@ import { useEffect, useReducer, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput, { type ModalInputTypesType } from "./ModalInput";
 import CustomButton from "../CustomButton";
-import type { ModalSubmitFn } from "../../pages/management/ItemPage";
-import { getMyInfo } from "../../api/AdminAPI";
+import type { ModalSubmitFn } from "@/pages/management/ItemPage";
+import { getMyInfo } from "@/services/api/AdminAPI";
 import { useLocation } from "react-router-dom";
-import { selectTermAvailableCount } from "../../utils/searchTermOption";
-import { replacePhone } from "../../utils/format/infoFormat";
+import { selectTermAvailableCount } from "@/utils/searchTermOption";
+import { replacePhone } from "@/utils/format/infoFormat";
 import { toast } from "react-toastify";
 
 type ModalType = {

@@ -7,10 +7,10 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import DeleteIcon from "../../assets/icons/delete-icon.svg?react";
-import GripIcon from "../../assets/icons/grip-icon.svg?react";
-import PasteIcon from "../../assets/icons/paste-icon.svg?react";
-import PlusIcon from "../../assets/icons/plus-icon.svg?react";
+import DeleteIcon from "@/assets/icons/delete-icon.svg?react";
+import GripIcon from "@/assets/icons/grip-icon.svg?react";
+import PasteIcon from "@/assets/icons/paste-icon.svg?react";
+import PlusIcon from "@/assets/icons/plus-icon.svg?react";
 import FieldOptions from "./FieldOptions";
 import ToggleButton from "./ToggleButton";
 import { useEffect, useRef, useState } from "react";
@@ -25,7 +25,7 @@ import {
 } from "@dnd-kit/core";
 import MultipleChoiceItem from "./MultipleChoiceItem";
 import CustomInput from "../CustomInput";
-import type { FormItemType } from "../../pages/management/JoinFormPage";
+import type { FormItemType } from "@/pages/management/JoinFormPage";
 
 type FormItemProps = FormItemType & {
   index: number;

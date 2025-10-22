@@ -1,4 +1,4 @@
-import { PrivateAxios } from "./PrivateAxios";
+import { PrivateAxios } from "../PrivateAxios";
 
 //기기 추가
 export const postAddDevice = async ({ name }: { name: string }) => {

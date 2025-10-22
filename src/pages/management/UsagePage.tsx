@@ -1,18 +1,18 @@
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import BannerButton from "../../components/BannerButton";
-import CustomSelect from "../../components/CustomSelect";
-import TableButton from "../../components/TableButton";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import BannerButton from "@/components/BannerButton";
+import CustomSelect from "@/components/CustomSelect";
+import TableButton from "@/components/TableButton";
+import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import { useEffect, useMemo, useReducer, useState } from "react";
-import Modal from "../../components/modal/Modal";
+import Modal from "@/components/modal/Modal";
 import {
   postCreateUsage,
   postUsageExcel,
   postUsageSearch,
   putForcedToLeave,
-} from "../../api/UsageAPI";
-import { formatDatetoISOString } from "../../utils/format/dateFormat";
+} from "@/services/api/UsageAPI";
+import { formatDatetoISOString } from "@/utils/format/dateFormat";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { useNavigate } from "react-router-dom";
 import { isAfter, isBefore } from "date-fns";

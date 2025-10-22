@@ -1,8 +1,8 @@
-import PhoneIcon from "../../assets/icons/phone-icon.svg?react";
-import TextIcon from "../../assets/icons/text-icon.svg?react";
-import CheckBoxIcon from "../../assets/icons/checkbox-icon.svg?react";
-import ChevronDown from "../../assets/icons/chevron-down.svg?react";
-import ChevronUp from "../../assets/icons/chevron-up.svg?react";
+import PhoneIcon from "@/assets/icons/phone-icon.svg?react";
+import TextIcon from "@/assets/icons/text-icon.svg?react";
+import CheckBoxIcon from "@/assets/icons/checkbox-icon.svg?react";
+import ChevronDown from "@/assets/icons/chevron-down.svg?react";
+import ChevronUp from "@/assets/icons/chevron-up.svg?react";
 import { useState, type JSX } from "react";
 
 type FieldOptions = {

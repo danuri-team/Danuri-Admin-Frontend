@@ -2,17 +2,22 @@ import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import CustomSelect from "../../components/CustomSelect";
-import BannerButton from "../../components/BannerButton";
-import TableButton from "../../components/TableButton";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import Modal from "../../components/modal/Modal";
-import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from "../../api/UserAPI";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import CustomSelect from "@/components/CustomSelect";
+import BannerButton from "@/components/BannerButton";
+import TableButton from "@/components/TableButton";
+import type { ModalInputTypesType } from "@/components/modal/ModalInput";
+import Modal from "@/components/modal/Modal";
+import {
+  deleteUser,
+  getSearchCompanyUser,
+  postCreateUser,
+  putUpdateUser,
+} from "@/services/api/UserAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
-import { formatDatetoISOString } from "../../utils/format/dateFormat";
-import { getJoinForm } from "../../api/FormAPI";
+import { formatDatetoISOString } from "@/utils/format/dateFormat";
+import { getJoinForm } from "@/services/api/FormAPI";
 
 // ============================================================================
 // Types

@@ -1,4 +1,4 @@
-import { PublicAxios } from "./PublicAxios";
+import { PublicAxios } from "../PublicAxios";
 
 export const postLogin = async ({ email, password }: { email: string; password: string }) => {
   try {

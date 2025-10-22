@@ -1,12 +1,12 @@
 import { useEffect, useReducer, useState } from "react";
-import BannerButton from "../../components/BannerButton";
-import CustomSelect from "../../components/CustomSelect";
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import Modal from "../../components/modal/Modal";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import TableButton from "../../components/TableButton";
-import { getSearchCompanyRental, postCreateRental, putUpdateRental } from "../../api/RentalAPI";
+import BannerButton from "@/components/BannerButton";
+import CustomSelect from "@/components/CustomSelect";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import Modal from "@/components/modal/Modal";
+import type { ModalInputTypesType } from "@/components/modal/ModalInput";
+import TableButton from "@/components/TableButton";
+import { getSearchCompanyRental, postCreateRental, putUpdateRental } from "@/services/api/RentalAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { toast } from "react-toastify";
 

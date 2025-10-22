@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postLogin } from "../../api/AuthAPI";
-import { PrivateAxios } from "../../api/PrivateAxios";
+import { postLogin } from "@/services/api/AuthAPI";
+import { PrivateAxios } from "@/services/PrivateAxios";
 
 interface AuthState {
   isAuthenticated: boolean;

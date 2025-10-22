@@ -1,6 +1,6 @@
-import type { HeaderType, UsageData } from "../../components/CustomTable";
+import type { HeaderType, UsageData } from "@/components/CustomTable";
 import { format, isAfter, isBefore, set } from "date-fns";
-import StatusTag from "../../components/StatusTag";
+import StatusTag from "@/components/StatusTag";
 import { useNavigate } from "react-router-dom";
 
 type RenderCell = {

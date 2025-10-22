@@ -7,9 +7,9 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import BannerButton from "../../components/BannerButton";
-import MainHeader from "../../components/MainHeader";
-import TableButton from "../../components/TableButton";
+import BannerButton from "@/components/BannerButton";
+import MainHeader from "@/components/MainHeader";
+import TableButton from "@/components/TableButton";
 import {
   SortableContext,
   arrayMove,
@@ -17,9 +17,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
-import FormItem from "../../components/joinForm/FormItem";
-import CustomButton from "../../components/CustomButton";
-import { getJoinForm, postJoinForm } from "../../api/FormAPI";
+import FormItem from "@/components/joinForm/FormItem";
+import CustomButton from "@/components/CustomButton";
+import { getJoinForm, postJoinForm } from "@/services/api/FormAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 

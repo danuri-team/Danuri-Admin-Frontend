@@ -1,12 +1,12 @@
 //import CustomInput from "../components/CustomInput";
 import { useEffect, useReducer, useState } from "react";
-import BannerButton from "../../components/BannerButton";
-import CustomInput from "../../components/CustomInput";
-import MainHeader from "../../components/MainHeader";
-import { isValidEmail, isValidPhone } from "../../utils/infoValidation";
-import CustomButton from "../../components/CustomButton";
-import { replacePhone } from "../../utils/format/infoFormat";
-import { getMyInfo, putAdminInfo } from "../../api/AdminAPI";
+import BannerButton from "@/components/BannerButton";
+import CustomInput from "@/components/CustomInput";
+import MainHeader from "@/components/MainHeader";
+import { isValidEmail, isValidPhone } from "@/utils/infoValidation";
+import CustomButton from "@/components/CustomButton";
+import { replacePhone } from "@/utils/format/infoFormat";
+import { getMyInfo, putAdminInfo } from "@/services/api/AdminAPI";
 
 type InfoAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 

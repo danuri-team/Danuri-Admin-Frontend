@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
-import HandleIcon from "../../assets/icons/handle-icon.svg?react";
-import XIcon from "../../assets/icons/x-icon.svg?react";
+import HandleIcon from "@/assets/icons/handle-icon.svg?react";
+import XIcon from "@/assets/icons/x-icon.svg?react";
 import { CSS } from "@dnd-kit/utilities";
 
 const MultipleChoiceItem = ({

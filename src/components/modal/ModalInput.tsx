@@ -2,10 +2,10 @@ import { ko } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { IoCloseCircleSharp } from "react-icons/io5";
-import { getSearchTerm, type SearchLabel } from "../../utils/searchTermOption";
+import { getSearchTerm, type SearchLabel } from "@/utils/searchTermOption";
 import { useLocation } from "react-router-dom";
-import { changeEnumtoText, selectStatusOption } from "../../utils/StatusSelectOption";
-import { getDeviceQR } from "../../api/DeviceAPI";
+import { changeEnumtoText, selectStatusOption } from "@/utils/StatusSelectOption";
+import { getDeviceQR } from "@/services/api/DeviceAPI";
 
 export type ModalInputTypesType =
   | "search"

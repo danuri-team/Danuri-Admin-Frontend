@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
-import { getSearchCompanyItem } from "../api/ItemAPI";
-import { getSearchCompanySpace } from "../api/SpaceAPI";
-import { postUsageSearch } from "../api/UsageAPI";
-import { getSearchCompanyUser } from "../api/UserAPI";
+import { getSearchCompanyItem } from "@/services/api/ItemAPI";
+import { getSearchCompanySpace } from "@/services/api/SpaceAPI";
+import { postUsageSearch } from "@/services/api/UsageAPI";
+import { getSearchCompanyUser } from "@/services/api/UserAPI";
 import { isFutureDate } from "./format/dateFormat";
 
 //물품/공간/유저/이용현황 검색어 찾기

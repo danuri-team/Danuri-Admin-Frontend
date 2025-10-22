@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import BannerButton from "../../components/BannerButton";
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import TableButton from "../../components/TableButton";
-import Modal from "../../components/modal/Modal";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
+import BannerButton from "@/components/BannerButton";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import TableButton from "@/components/TableButton";
+import Modal from "@/components/modal/Modal";
+import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import {
   getSearchCompanyDevice,
   postAddDevice,
   putUpdateDevice,
   deleteDevice,
-} from "../../api/DeviceAPI";
+} from "@/services/api/DeviceAPI";
 import { toast } from "react-toastify";
 
 export type modalState = Record<string, Date | string | number | null>;
