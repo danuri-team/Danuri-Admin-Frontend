@@ -18,12 +18,14 @@ import { useNavigate } from "react-router-dom";
 import { isAfter, isBefore } from "date-fns";
 import { toast } from "react-toastify";
 
-type filterSelectType = {
+// 필터 선택 타입
+type FilterSelectType = {
   id: keyof SelectState;
   type: "select" | "date" | "rangeDate";
   options: string[];
 };
 
+// 필터 상태 (정렬 및 날짜 범위)
 type SelectState = {
   order: string;
   useDate: { startDate: Date | null; endDate: Date | null };
@@ -31,18 +33,21 @@ type SelectState = {
   sex: string;
 };
 
+// 사용 기록 검색 상태
 type UsageState = {
-  startDate: string;
-  endDate: string;
+  startDate: string | null;
+  endDate: string | null;
   spaceId: string | null;
   userId: string | null;
 };
 
+// 필터 액션
 type SelectAction =
   | { type: "CHANGE"; payload: { key: string; value: string } }
   | { type: "CHANGE_RANGE"; payload: { key: string; value: SelectState["useDate"] } }
   | { type: "RESET" };
 
+// 사용 기록 액션
 type UsageAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
 const initialSelectForm: SelectState = {
@@ -56,12 +61,13 @@ const initialSelectForm: SelectState = {
 };
 
 const initialUsageForm: UsageState = {
-  startDate: "2025-03-01T00:00:00",
-  endDate: "",
+  startDate: null,
+  endDate: null,
   spaceId: null,
   userId: null,
 };
 
+// 테이블 헤더 정의
 const tableHeader = [
   { name: "사용 ID", id: "id" },
   { name: "공간", id: "space_name" },
@@ -71,13 +77,17 @@ const tableHeader = [
   { name: "상태", id: "status" },
 ];
 
-//type = 'select' || 'date'
-const filterSelects: filterSelectType[] = [
+// 필터 선택 옵션
+const filterSelects: FilterSelectType[] = [
   { id: "order", type: "select", options: ["이용일순", "상태순"] },
   { id: "useDate", type: "rangeDate", options: ["이용일"] },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
+// 모달 입력 필드 설정
+const modalInputFields: Record<
+  string,
+  { label: string; key: string; type: ModalInputTypesType }[]
+> = {
   추가: [
     { label: "공간", key: "spaceId", type: "search" },
     { label: "시작일", key: "startDate", type: "date" },
@@ -92,7 +102,8 @@ const inputOption: Record<string, { label: string; key: string; type: ModalInput
   ],
 };
 
-const selectReducer = (state: SelectState, action: SelectAction) => {
+// 필터 상태 리듀서
+const selectReducer = (state: SelectState, action: SelectAction): SelectState => {
   switch (action.type) {
     case "CHANGE":
       return {
@@ -102,17 +113,15 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
     case "CHANGE_RANGE":
       return {
         ...state,
-        useDate: {
-          startDate: action.payload.value.startDate,
-          endDate: action.payload.value.endDate,
-        },
+        useDate: action.payload.value,
       };
     case "RESET":
       return initialSelectForm;
   }
 };
 
-const usageReducer = (state: UsageState, action: UsageAction) => {
+// 사용 기록 검색 상태 리듀서
+const usageReducer = (state: UsageState, action: UsageAction): UsageState => {
   switch (action.type) {
     case "CHANGE":
       return {
@@ -124,135 +133,166 @@ const usageReducer = (state: UsageState, action: UsageAction) => {
   }
 };
 
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
+// 모달 제출 함수 매핑
+const createModalSubmitFn = (): Record<string, ModalSubmitFn> => ({
   추가: (form: modalState) =>
     postCreateUsage({
       userId: form.userId as string,
       spaceId: form.spaceId as string,
-      startDate: formatDatetoISOString(form.startDate as Date),
-      endDate: formatDatetoISOString(form.endDate as Date),
+      startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
+      endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
     }),
   다운로드: (form: modalState) =>
     postUsageExcel({
       userId: form.userId as string,
       spaceId: form.spaceId as string,
-      startDate: formatDatetoISOString(form.startDate as Date),
-      endDate: formatDatetoISOString(form.endDate as Date),
+      startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
+      endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
     }),
-};
+});
 
 const UsagePage = () => {
   const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  // 모달 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
-  const [modalTitle, setModalTitle] = useState<string>("");
+  const [modalTitle, setModalTitle] = useState("");
+
+  // 테이블 상태
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState("");
 
-  const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
-  const [selectedRowId, setSelectedRowId] = useState<string>("");
-
+  // 폼 상태
   const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
   const [usageForm, usageDispatch] = useReducer(usageReducer, initialUsageForm);
 
+  // 모달 제출 함수
+  const modalSubmitFn = useMemo(() => createModalSubmitFn(), []);
+
+  // 테이블 데이터 정렬
   const sortTableData = useMemo(() => {
     if (!tableData) return null;
+
     return [...tableData].sort((a, b) => {
+      // 이용일순 정렬
       if (selectForm.order === "이용일순") {
-        if (isBefore(new Date(a.start_at as string), new Date(b.start_at as string))) return -1;
-        else return 1;
-      } else {
-        const aStatus =
-          isBefore(new Date(a.start_at as string), new Date()) &&
-          isAfter(new Date(a.end_at as string), new Date());
-        const bStatus =
-          isBefore(new Date(b.start_at as string), new Date()) &&
-          isAfter(new Date(b.end_at as string), new Date());
-        if (aStatus && !bStatus) return -1;
-        else if (!aStatus && bStatus) return 1;
-        else return 0;
+        return isBefore(new Date(a.start_at as string), new Date(b.start_at as string)) ? -1 : 1;
       }
+
+      // 상태순 정렬 (사용 중인 것이 먼저)
+      const isAActive =
+        isBefore(new Date(a.start_at as string), new Date()) &&
+        isAfter(new Date(a.end_at as string), new Date());
+      const isBActive =
+        isBefore(new Date(b.start_at as string), new Date()) &&
+        isAfter(new Date(b.end_at as string), new Date());
+
+      if (isAActive && !isBActive) return -1;
+      if (!isAActive && isBActive) return 1;
+      return 0;
     });
   }, [tableData, selectForm.order]);
 
+  // 날짜 범위 변경 시 검색 조건 업데이트
   useEffect(() => {
-    if (selectForm.useDate) {
-      if (selectForm.useDate.startDate) {
-        const formatStartDate = formatDatetoISOString(selectForm.useDate.startDate as Date);
-        usageDispatch({ type: "CHANGE", payload: { key: "startDate", value: formatStartDate } });
-      }
-      if (selectForm.useDate.endDate) {
-        const formatEndDate = formatDatetoISOString(selectForm.useDate.endDate as Date);
-        usageDispatch({ type: "CHANGE", payload: { key: "endDate", value: formatEndDate } });
-      }
+    const { startDate, endDate } = selectForm.useDate;
+
+    if (startDate) {
+      usageDispatch({
+        type: "CHANGE",
+        payload: { key: "startDate", value: formatDatetoISOString(startDate) },
+      });
+    }
+
+    if (endDate) {
+      usageDispatch({
+        type: "CHANGE",
+        payload: { key: "endDate", value: formatDatetoISOString(endDate) },
+      });
     }
   }, [selectForm.useDate]);
 
-  //테이블 값
+  // 테이블 데이터 로드
   useEffect(() => {
-    if (isModalOpen === true) return;
-    const getTableData = async () => {
+    // 모달이 열려있으면 데이터 로드 스킵
+    if (isModalOpen) return;
+
+    const fetchTableData = async () => {
       const res = await postUsageSearch(usageForm);
+
       if (res.pass) {
-        setTableData(res.data);
+        setTableData(res.data as UsageData[]);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
     };
-    getTableData();
+
+    fetchTableData();
   }, [usageForm, isModalOpen, isDeleteMode]);
 
+  // 선택된 행 변경
   const changeSelectedRow = ({ id }: { id: string | null }) => {
-    if (id) {
-      setSelectedRowId(id);
-    } else setSelectedRowId("");
+    setSelectedRowId(id || "");
   };
 
+  // 테이블 버튼 클릭 핸들러
   const onClickTableButton = ({ value }: { value: string }) => {
+    // 강제퇴실 버튼은 별도 처리
     if (value === "강제퇴실") {
-      onClickDeleteButton();
+      handleForceLeave();
       return;
     }
+
+    // 모달 열기
     setModalTitle(value);
-    if (inputOption[value]) {
-      setModalInputs(inputOption[value]);
-    }
+    setModalInputs(modalInputFields[value] || null);
     setIsModalOpen(true);
   };
 
+  // 모달 닫기
   const onCloseModal = () => {
     setIsModalOpen(false);
     setModalTitle("");
     setModalInputs(null);
   };
 
-  const onClickDeleteButton = async () => {
+  // 강제퇴실 처리
+  const handleForceLeave = async () => {
+    // 삭제 모드 토글
     if (!isDeleteMode) {
       setIsDeleteMode(true);
-    } else {
-      if (!selectedRowId) {
-        toast.error("선택된 이용이 없습니다.");
-        setIsDeleteMode(false);
-        return;
-      }
-      const currentTime = formatDatetoISOString(new Date());
-      const res = await putForcedToLeave({ usageId: selectedRowId, end_at: currentTime });
-      if (res.pass) {
-        toast.success("강제퇴실되었습니다.");
-        setIsDeleteMode(false);
-      } else {
-        toast.error("강제퇴실에 실패했습니다.");
-      }
+      return;
     }
+
+    // 선택된 행 확인
+    if (!selectedRowId) {
+      toast.error("선택된 이용이 없습니다.");
+      setIsDeleteMode(false);
+      return;
+    }
+
+    // 강제퇴실 API 호출
+    const currentTime = formatDatetoISOString(new Date());
+    const res = await putForcedToLeave({ usageId: selectedRowId, end_at: currentTime });
+
+    if (res.pass) {
+      toast.success("강제퇴실되었습니다.");
+    } else {
+      toast.error("강제퇴실에 실패했습니다.");
+    }
+
+    setIsDeleteMode(false);
   };
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <MainHeader />
       <BannerButton />
-      <div className="flex-1 max-w-360 justify-self-center mr-[50px] ml-[50px] text-nowrap  max-w-360 justify-self-center">
+      <div className="flex-1 max-w-360 justify-self-center mr-[50px] ml-[50px] text-nowrap">
         <div className="mr-[20px] ml-[20px]  mb-[30px] flex justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">이용 현황</h1>
