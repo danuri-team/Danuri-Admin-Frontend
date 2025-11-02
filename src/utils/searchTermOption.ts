@@ -5,61 +5,99 @@ import { postUsageSearch } from "../api/UsageAPI";
 import { getSearchCompanyUser } from "../api/UserAPI";
 import { isFutureDate } from "./format/dateFormat";
 
-//물품/공간/유저/이용현황 검색어 찾기
+// 검색 결과 타입
+export type SearchTerm = {
+  name: string;
+  id: string;
+  endDate: string | null;
+};
+
+// 검색 함수 맵
 const searchFn = {
   물품: () => getSearchCompanyItem(),
   공간사용: () =>
-    postUsageSearch({ startDate: "2025-03-01T00:00:00", endDate: "", spaceId: null, userId: null }),
+    postUsageSearch({ startDate: null, endDate: null, spaceId: null, userId: null }),
   공간: () => getSearchCompanySpace(),
   유저: () => getSearchCompanyUser(),
-  // 회사: () =>
 };
 
 export type SearchLabel = keyof typeof searchFn;
 
-export const getSearchTerm = async (label: SearchLabel, value: string) => {
-  const res = await searchFn[label]();
-  if (res.pass) {
-    const term =
-      label === "유저"
-        ? res.data.user_list
-            .map((item: Record<string, string | number>) => {
-              const schema = JSON.parse(item.sign_up_form_schema as string);
-              return {
-                name: schema.이름,
-                id: item.id,
-                endDate: null,
-              };
-            })
-            .filter((item: { name: string; id: string; endDate: string | null }) =>
-              item.name.includes(value)
-            )
-        : res.data
-            .map((item: Record<string, string | number>) => ({
-              name: label !== "공간사용" ? item.name : item.space_name,
-              id: item.id,
-              endDate: label !== "공간사용" ? null : item.end_at,
-            }))
-            .filter(
-              (item: { name: string; id: string; endDate: string }) =>
-                item.name.includes(value) && (label !== "공간사용" || isFutureDate(item.endDate))
-            );
-
-    return term;
-  } else {
-    toast.error("데이터를 불러오지 못했습니다.");
+// 유저 스키마에서 이름을 안전하게 추출
+const extractUserName = (signUpFormSchema: string | number): string => {
+  try {
+    if (!signUpFormSchema || typeof signUpFormSchema !== "string") {
+      return "이름 없음";
+    }
+    const schema = JSON.parse(signUpFormSchema);
+    return schema?.이름 || "이름 없음";
+  } catch {
+    return "이름 없음";
   }
 };
 
-export const selectTermAvailableCount = async (itemId: string) => {
+// 검색어 목록 가져오기
+export const getSearchTerm = async (
+  label: SearchLabel,
+  searchValue: string
+): Promise<SearchTerm[]> => {
+  const res = await searchFn[label]();
+
+  if (!res.pass) {
+    toast.error("데이터를 불러오지 못했습니다.");
+    return [];
+  }
+
+  // 유저 검색
+  if (label === "유저") {
+    return res.data.user_list
+      .map((item: Record<string, string | number>) => ({
+        name: extractUserName(item.sign_up_form_schema),
+        id: String(item.id),
+        endDate: null,
+      }))
+      .filter((item: SearchTerm) => item.name.includes(searchValue));
+  }
+
+  // 공간사용 검색
+  if (label === "공간사용") {
+    return res.data
+      .map((item: Record<string, string | number>) => ({
+        name: String(item.space_name || ""),
+        id: String(item.id),
+        endDate: String(item.end_at || ""),
+      }))
+      .filter(
+        (item: SearchTerm) =>
+          item.name.includes(searchValue) && item.endDate && isFutureDate(item.endDate)
+      );
+  }
+
+  // 물품, 공간 검색
+  return res.data
+    .map((item: Record<string, string | number>) => ({
+      name: String(item.name || ""),
+      id: String(item.id),
+      endDate: null,
+    }))
+    .filter((item: SearchTerm) => item.name.includes(searchValue));
+};
+
+// 물품의 이용 가능 수량 조회
+export const selectTermAvailableCount = async (itemId: string): Promise<number> => {
   const res = await getSearchCompanyItem();
-  if (res.pass) {
-    const selectItem = res.data.find((item: Record<string, string | number>) => item.id === itemId);
-    if (selectItem && selectItem.available_quantity !== undefined) {
-      return Number(selectItem.available_quantity);
-    }
-    return 0;
-  } else {
+
+  if (!res.pass) {
     return 0;
   }
+
+  const selectedItem = res.data.find(
+    (item: Record<string, string | number>) => String(item.id) === itemId
+  );
+
+  if (selectedItem?.available_quantity !== undefined) {
+    return Number(selectedItem.available_quantity);
+  }
+
+  return 0;
 };
