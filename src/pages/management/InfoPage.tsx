@@ -44,7 +44,6 @@ const infoReducer = (state: InfoState, action: InfoAction) => {
   }
 };
 
-//수정사항: 로그아웃 추가, API 연결
 const InfoPage = () => {
   const [isChangeData, setIsChangeData] = useState<boolean>(false);
   const [infoForm, infoDispatch] = useReducer(infoReducer, initialInfoForm);

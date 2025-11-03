@@ -17,6 +17,7 @@ import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { useNavigate } from "react-router-dom";
 import { isAfter, isBefore } from "date-fns";
 import { toast } from "react-toastify";
+import { MODAL_TITLES } from "@/constants/modals";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -45,7 +46,7 @@ type SelectAction =
 
 type UsageAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
-const initialSelectForm: SelectState = {
+const INITIAL_SELECT_FORM: SelectState = {
   order: "이용일순",
   useDate: {
     startDate: null,
@@ -55,14 +56,14 @@ const initialSelectForm: SelectState = {
   sex: "성별",
 };
 
-const initialUsageForm: UsageState = {
+const INITIAL_USAGE_FORM: UsageState = {
   startDate: "2025-03-01T00:00:00",
   endDate: "",
   spaceId: null,
   userId: null,
 };
 
-const tableHeader = [
+const FIXED_TABLE_HEADERS = [
   { name: "사용 ID", id: "id" },
   { name: "공간", id: "space_name" },
   { name: "시작일", id: "start_at" },
@@ -72,25 +73,35 @@ const tableHeader = [
 ];
 
 //type = 'select' || 'date'
-const filterSelects: filterSelectType[] = [
+const FILTER_SELECTS: filterSelectType[] = [
   { id: "order", type: "select", options: ["이용일순", "상태순"] },
   { id: "useDate", type: "rangeDate", options: ["이용일"] },
 ];
 
-const inputOption: Record<string, { label: string; key: string; type: ModalInputTypesType }[]> = {
-  추가: [
-    { label: "공간", key: "spaceId", type: "search" },
-    { label: "시작일", key: "startDate", type: "date" },
-    { label: "종료일", key: "endDate", type: "date" },
-    { label: "유저", key: "userId", type: "search" },
-  ],
-  다운로드: [
-    { label: "공간", key: "spaceId", type: "search" },
-    { label: "시작일", key: "startDate", type: "date" },
-    { label: "종료일", key: "endDate", type: "date" },
-    { label: "유저", key: "userId", type: "search" },
-  ],
-};
+const inputOption = useMemo<
+  Partial<
+    Record<
+      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+      { label: string; key: string; type: ModalInputTypesType }[]
+    >
+  >
+>(
+  () => ({
+    [MODAL_TITLES.ADD]: [
+      { label: "공간", key: "spaceId", type: "search" },
+      { label: "시작일", key: "startDate", type: "date" },
+      { label: "종료일", key: "endDate", type: "date" },
+      { label: "유저", key: "userId", type: "search" },
+    ],
+    [MODAL_TITLES.DOWNLOAD]: [
+      { label: "공간", key: "spaceId", type: "search" },
+      { label: "시작일", key: "startDate", type: "date" },
+      { label: "종료일", key: "endDate", type: "date" },
+      { label: "유저", key: "userId", type: "search" },
+    ],
+  }),
+  []
+);
 
 const selectReducer = (state: SelectState, action: SelectAction) => {
   switch (action.type) {
@@ -108,7 +119,7 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
         },
       };
     case "RESET":
-      return initialSelectForm;
+      return INITIAL_SELECT_FORM;
   }
 };
 
@@ -120,19 +131,19 @@ const usageReducer = (state: UsageState, action: UsageAction) => {
         [action.payload.key]: action.payload.value,
       };
     case "RESET":
-      return initialUsageForm;
+      return INITIAL_USAGE_FORM;
   }
 };
 
 const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form: modalState) =>
+  add: (form: modalState) =>
     postCreateUsage({
       userId: form.userId as string,
       spaceId: form.spaceId as string,
       startDate: formatDatetoISOString(form.startDate as Date),
       endDate: formatDatetoISOString(form.endDate as Date),
     }),
-  다운로드: (form: modalState) =>
+  download: (form: modalState) =>
     postUsageExcel({
       userId: form.userId as string,
       spaceId: form.spaceId as string,
@@ -148,14 +159,16 @@ const UsagePage = () => {
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
-  const [modalTitle, setModalTitle] = useState<string>("");
+  const [modalTitle, setModalTitle] = useState<
+    (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
+  >(null);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
   const [selectedRowId, setSelectedRowId] = useState<string>("");
 
-  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
-  const [usageForm, usageDispatch] = useReducer(usageReducer, initialUsageForm);
+  const [selectForm, selectDispatch] = useReducer(selectReducer, INITIAL_SELECT_FORM);
+  const [usageForm, usageDispatch] = useReducer(usageReducer, INITIAL_USAGE_FORM);
 
   const sortTableData = useMemo(() => {
     if (!tableData) return null;
@@ -210,8 +223,12 @@ const UsagePage = () => {
     } else setSelectedRowId("");
   };
 
-  const onClickTableButton = ({ value }: { value: string }) => {
-    if (value === "강제퇴실") {
+  const onClickTableButton = ({
+    value,
+  }: {
+    value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES];
+  }) => {
+    if (value === MODAL_TITLES.FORCED) {
       onClickDeleteButton();
       return;
     }
@@ -224,7 +241,7 @@ const UsagePage = () => {
 
   const onCloseModal = () => {
     setIsModalOpen(false);
-    setModalTitle("");
+    setModalTitle(null);
     setModalInputs(null);
   };
 
@@ -256,7 +273,7 @@ const UsagePage = () => {
         <div className="mr-[20px] ml-[20px]  mb-[30px] flex justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">이용 현황</h1>
-            {filterSelects.map((item) => {
+            {FILTER_SELECTS.map((item) => {
               if (item.type === "rangeDate")
                 return (
                   <CustomSelect
@@ -295,26 +312,29 @@ const UsagePage = () => {
           <div className="flex gap-[10px]">
             <TableButton
               value="다운로드"
-              onClick={() => onClickTableButton({ value: "다운로드" })}
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.DOWNLOAD })}
             />
             <TableButton value="대여관리" onClick={() => navigate("/rental")} />
-            <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
+            <TableButton
+              value="추가"
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.ADD })}
+            />
             <TableButton
               value="강제퇴실"
-              onClick={() => onClickTableButton({ value: "강제퇴실" })}
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.FORCED })}
               isDeleteMode={isDeleteMode}
             />
           </div>
         </div>
         <CustomTable
-          header={tableHeader}
+          header={FIXED_TABLE_HEADERS}
           data={sortTableData}
           changeSelectedRow={changeSelectedRow}
           isDeleteMode={isDeleteMode}
           selectedRowId={selectedRowId}
         />
       </div>
-      {isModalOpen && (
+      {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
         <Modal
           isOpen={isModalOpen}
           title={modalTitle}

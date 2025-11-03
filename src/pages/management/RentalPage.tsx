@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import BannerButton from "@/components/BannerButton";
 import CustomSelect from "@/components/CustomSelect";
 import CustomTable, { type UsageData } from "@/components/CustomTable";
@@ -6,9 +6,14 @@ import MainHeader from "@/components/MainHeader";
 import Modal from "@/components/modal/Modal";
 import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import TableButton from "@/components/TableButton";
-import { getSearchCompanyRental, postCreateRental, putUpdateRental } from "@/services/api/RentalAPI";
+import {
+  getSearchCompanyRental,
+  postCreateRental,
+  putUpdateRental,
+} from "@/services/api/RentalAPI";
 import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { toast } from "react-toastify";
+import { MODAL_TITLES } from "@/constants/modals";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -24,11 +29,11 @@ type SelectAction =
   | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
   | { type: "RESET" };
 
-const initialSelectForm: SelectState = {
+const INITIAL_SELECT_FORM: SelectState = {
   order: "처리 여부",
 };
 
-const tableHeader = [
+const FIXED_TABLE_HEADERS = [
   { name: "물품", id: "item_name" },
   { name: "유저", id: "user_id" },
   { name: "이용 ID", id: "rental_id" },
@@ -38,32 +43,39 @@ const tableHeader = [
 ];
 
 //type = 'select' || 'date'
-const filterSelects: filterSelectType[] = [
+const FILTER_SELECTS: filterSelectType[] = [
   { id: "order", type: "select", options: ["처리 여부", "미확인", "반납됨", "이용중"] },
 ];
 
-const inputOption: Record<
-  string,
-  {
-    label: string;
-    key: string;
-    type: ModalInputTypesType;
-    initial?: string | number | Date;
-    hide?: boolean;
-  }[]
-> = {
-  추가: [
-    { label: "물품", key: "itemId", type: "search" },
-    { label: "공간사용", key: "usageId", type: "search" },
-    { label: "대여 개수", key: "quantity", type: "number" },
-  ],
-  수정: [
-    { label: "대여 ID", key: "rentalId", type: "text", hide: true },
-    { label: "대여 개수", key: "quantity", type: "number" },
-    { label: "반납 개수", key: "returned_quantity", type: "number" },
-    { label: "상태", key: "status", type: "option" },
-  ],
-};
+const inputOption = useMemo<
+  Partial<
+    Record<
+      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+      {
+        label: string;
+        key: string;
+        type: ModalInputTypesType;
+        initial?: string | number | Date;
+        hide?: boolean;
+      }[]
+    >
+  >
+>(
+  () => ({
+    [MODAL_TITLES.ADD]: [
+      { label: "물품", key: "itemId", type: "search" },
+      { label: "공간사용", key: "usageId", type: "search" },
+      { label: "대여 개수", key: "quantity", type: "number" },
+    ],
+    [MODAL_TITLES.EDIT]: [
+      { label: "대여 ID", key: "rentalId", type: "text", hide: true },
+      { label: "대여 개수", key: "quantity", type: "number" },
+      { label: "반납 개수", key: "returned_quantity", type: "number" },
+      { label: "상태", key: "status", type: "option" },
+    ],
+  }),
+  []
+);
 
 const selectReducer = (state: SelectState, action: SelectAction) => {
   switch (action.type) {
@@ -73,18 +85,20 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
         [action.payload.key]: action.payload.value,
       };
     case "RESET":
-      return initialSelectForm;
+      return INITIAL_SELECT_FORM;
   }
 };
 
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form: modalState) =>
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFn>
+> = {
+  [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateRental({
       itemId: form.itemId as string,
       quantity: form.quantity as number,
       usageId: form.usageId as string,
     }),
-  수정: (form: modalState) =>
+  [MODAL_TITLES.EDIT]: (form: modalState) =>
     putUpdateRental({
       rentalId: form.rentalId as string,
       quantity: form.quantity as number,
@@ -98,11 +112,13 @@ const RentalPage = () => {
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
-  const [modalTitle, setModalTitle] = useState<string>("");
+  const [modalTitle, setModalTitle] = useState<
+    (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
+  >(null);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
   const [filterData, setFilterData] = useState<UsageData[] | null>(null);
 
-  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
+  const [selectForm, selectDispatch] = useReducer(selectReducer, INITIAL_SELECT_FORM);
 
   useEffect(() => {
     if (isModalOpen === true) return;
@@ -130,29 +146,32 @@ const RentalPage = () => {
     setFilterData(filterTableData);
   }, [selectForm, tableData]);
 
-  const onClickTableButton = ({ value }: { value: string }) => {
-    setIsModalOpen(true);
-    setModalTitle(value);
-    if (inputOption[value]) {
-      setModalInputs(inputOption[value]);
-    }
-  };
+  const onClickTableButton = useCallback(
+    ({ value }: { value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] }) => {
+      setIsModalOpen(true);
+      setModalTitle(value);
+      if (inputOption[value]) {
+        setModalInputs(inputOption[value]);
+      }
+    },
+    [inputOption]
+  );
 
   const onClickTableRow = (row: UsageData) => {
-    setModalTitle("수정");
-    const addInitialInputs = inputOption["수정"].map((item) => {
+    setModalTitle(MODAL_TITLES.EDIT);
+    const addInitialInputs = inputOption[MODAL_TITLES.EDIT]?.map((item) => {
       return {
         ...item,
         initial: item.key === "rentalId" ? row.rental_id : row[item.key],
       };
     });
-    setModalInputs(addInitialInputs);
+    addInitialInputs && setModalInputs(addInitialInputs);
     setIsModalOpen(true);
   };
 
   const onCloseModal = () => {
     setIsModalOpen(false);
-    setModalTitle("");
+    setModalTitle(null);
     setModalInputs(null);
   };
 
@@ -164,7 +183,7 @@ const RentalPage = () => {
         <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">대여 관리</h1>
-            {filterSelects.map((item) => (
+            {FILTER_SELECTS.map((item) => (
               <CustomSelect
                 key={item.id}
                 type={item.type}
@@ -180,12 +199,15 @@ const RentalPage = () => {
             ))}
           </div>
           <div className="flex gap-[10px]">
-            <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
+            <TableButton
+              value="추가"
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.ADD })}
+            />
           </div>
         </div>
-        <CustomTable header={tableHeader} data={filterData} rowUpdate={onClickTableRow} />
+        <CustomTable header={FIXED_TABLE_HEADERS} data={filterData} rowUpdate={onClickTableRow} />
       </div>
-      {isModalOpen && (
+      {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
         <Modal
           isOpen={isModalOpen}
           title={modalTitle}

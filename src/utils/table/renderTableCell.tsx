@@ -2,6 +2,7 @@ import type { HeaderType, UsageData } from "@/components/CustomTable";
 import { format, isAfter, isBefore, set } from "date-fns";
 import StatusTag from "@/components/StatusTag";
 import { useNavigate } from "react-router-dom";
+import type { MODAL_TITLES } from "@/constants/modals";
 
 type RenderCell = {
   item: {
@@ -11,7 +12,7 @@ type RenderCell = {
   rowData: UsageData;
   value: string;
   header: HeaderType[];
-  rowUpdate: ((row: UsageData, title?: string) => void | undefined) | undefined;
+  rowUpdate: ((row: UsageData, title?: typeof MODAL_TITLES[keyof typeof MODAL_TITLES]) => void | undefined) | undefined;
 };
 
 const headerDateNames = ["시작일", "종료일", "가입일", "추가일"];

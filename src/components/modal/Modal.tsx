@@ -8,10 +8,11 @@ import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "@/utils/searchTermOption";
 import { replacePhone } from "@/utils/format/infoFormat";
 import { toast } from "react-toastify";
+import type { MODAL_TITLES } from "@/constants/modals";
 
 type ModalType = {
   isOpen: boolean;
-  title: string;
+  title: typeof MODAL_TITLES[keyof typeof MODAL_TITLES];
   inputs:
     | {
         label: string;
