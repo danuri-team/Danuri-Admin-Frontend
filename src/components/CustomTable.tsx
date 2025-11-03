@@ -11,6 +11,8 @@ import PageSizeSelector from "./pagination/PageSizeSelector";
 import { IoIosCheckmark } from "react-icons/io";
 import renderTableCell from "../utils/table/renderTableCell";
 import type { MODAL_TITLES } from "@/constants/modals";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export type UsageData = Record<string, string | number | number[]>;
 
@@ -29,6 +31,7 @@ type CustomTable = {
   isDeleteMode?: boolean;
   changeSelectedRow?: ({ id }: { id: string | null }) => void;
   selectedRowId?: string;
+  totalPages: number;
 };
 
 const CustomTable = ({
@@ -38,6 +41,7 @@ const CustomTable = ({
   isDeleteMode,
   changeSelectedRow,
   selectedRowId,
+  totalPages,
 }: CustomTable) => {
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
@@ -135,9 +139,9 @@ const CustomTable = ({
           <tr>
             <td colSpan={isDeleteMode ? header.length + 1 : header.length}>
               <div className="flex justify-between items-center p-[10px]">
-                <PageSizeSelector table={table} />
-                <PaginationButton table={table} />
-                <PageJump table={table} />
+                <PageSizeSelector />
+                <PaginationButton totalPages={totalPages} />
+                <PageJump totalPages={totalPages} />
               </div>
             </td>
           </tr>

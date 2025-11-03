@@ -1,31 +1,31 @@
-import type { Table } from "@tanstack/react-table";
-import type { UsageData } from "../CustomTable";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-const PageJump = ({ table }: { table: Table<UsageData> }) => {
-  const [currentPage, setCurrentPage] = useState<string>(
-    (table.getState().pagination.pageIndex + 1).toString()
+const PageJump = ({ totalPages }: { totalPages: number }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState<number>(
+    Number(searchParams.get("page") || "0") + 1
   );
 
   useEffect(() => {
     //pagination 에서 페이지 변경 됐을 때 감지
-    setCurrentPage((table.getState().pagination.pageIndex + 1).toString());
-  }, [table]);
+    setCurrentPage(Number(searchParams.get("page") || "0") + 1);
+  }, [searchParams.get("page")]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const page = e.target.value;
-    setCurrentPage(page);
+    setCurrentPage(Number(page));
   };
 
   const handleBlur = () => {
     //input 포커스에서 벗어났을 때 페이지 적용
-    const index = Number(currentPage) - 1;
-    if (!isNaN(index) && index >= 0 && index < table.getPageCount()) {
+    if (currentPage > 0 && currentPage <= totalPages) {
       //실제 페이지 인덱스 업데이트
-      table.setPageIndex(index);
+      searchParams.set("page", String(currentPage - 1));
+      setSearchParams(searchParams);
     } else {
       //페이지 인덱스 그대로 유지
-      setCurrentPage((table.getState().pagination.pageIndex + 1).toString());
+      setCurrentPage(Number(searchParams.get("page")) + 1);
     }
   };
 
@@ -37,7 +37,7 @@ const PageJump = ({ table }: { table: Table<UsageData> }) => {
         type="number"
         value={currentPage}
         min={1}
-        max={table.getPageCount()}
+        max={totalPages}
         onChange={handleChange}
         onBlur={handleBlur}
       />

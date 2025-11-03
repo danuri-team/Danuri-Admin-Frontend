@@ -34,9 +34,17 @@ export const postCreateUsage = async (usageForm: UsageSearchType): Promise<ApiRe
 };
 
 // 사용 기록 검색
-export const postUsageSearch = async (usageForm: UsageSearchType): Promise<ApiResponse> => {
+export const postUsageSearch = async ({
+  usageForm,
+  page,
+  size,
+}: {
+  usageForm: UsageSearchType;
+  page: number;
+  size: number;
+}): Promise<ApiResponse> => {
   try {
-    const res = await PrivateAxios.post("/admin/usage/search", {
+    const res = await PrivateAxios.post(`/admin/usage/search?page=${page}&size=${size}`, {
       user_id: normalizeValue(usageForm.userId),
       space_id: normalizeValue(usageForm.spaceId),
       start_date: usageForm.startDate || null,

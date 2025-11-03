@@ -1,11 +1,11 @@
-import type { Table } from "@tanstack/react-table";
 import { useState } from "react";
-import type { UsageData } from "../CustomTable";
 import { IoCaretDownOutline } from "react-icons/io5";
+import { useSearchParams } from "react-router-dom";
 
 const pageSizeOptions = [{ value: 10 }, { value: 50 }, { value: 100 }];
 
-const PageSizeSelector = ({ table }: { table: Table<UsageData> }) => {
+const PageSizeSelector = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isopenPageSize, setIsOpenPageSize] = useState<boolean>(false);
 
   return (
@@ -16,7 +16,7 @@ const PageSizeSelector = ({ table }: { table: Table<UsageData> }) => {
           onClick={() => setIsOpenPageSize(!isopenPageSize)}
           onBlur={() => setIsOpenPageSize(false)}
         >
-          {table.getState().pagination.pageSize}
+          {searchParams.get("size") || 10}
           <IoCaretDownOutline size={10} />
         </button>
         <span className="text-gray-500 text-xs">씩 보기</span>
@@ -27,7 +27,10 @@ const PageSizeSelector = ({ table }: { table: Table<UsageData> }) => {
             <li
               className="cursor-pointer hover:bg-gray-200 rounded-sm p-[2px]"
               key={option.value}
-              onMouseDown={() => table.setPageSize(option.value)}
+              onMouseDown={() => {
+                searchParams.set("size", String(option.value));
+                setSearchParams(searchParams);
+              }}
             >
               {option.value}
             </li>

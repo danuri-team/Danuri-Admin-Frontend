@@ -12,7 +12,7 @@ import {
   putForcedToLeave,
 } from "@/services/api/UsageAPI";
 import { formatDatetoISOString } from "@/utils/format/dateFormat";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { isAfter, isBefore } from "date-fns";
 import { toast } from "react-toastify";
 import { MODAL_TITLES } from "@/constants/modals";
@@ -133,6 +133,7 @@ const modalSubmitFn: Partial<
 };
 const UsagePage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   // 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -143,6 +144,7 @@ const UsagePage = () => {
     (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
   >(null);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState("");
 
@@ -152,8 +154,6 @@ const UsagePage = () => {
   // 테이블 데이터 정렬
   const sortTableData = useMemo(() => {
     if (!tableData) return null;
-
-    console.log(tableData);
 
     return [...tableData].sort((a, b) => {
       // 이용일순 정렬
@@ -200,17 +200,22 @@ const UsagePage = () => {
     if (isModalOpen) return;
 
     const fetchTableData = async () => {
-      const res = await postUsageSearch(usageForm);
+      const res = await postUsageSearch({
+        usageForm,
+        page: Number(searchParams.get("page")) || 0,
+        size: Number(searchParams.get("size")) || 10,
+      });
 
       if (res.pass) {
         setTableData((res.data as any).content as UsageData[]);
+        setTotalPages((res.data as any).total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
     };
 
     fetchTableData();
-  }, [usageForm, isModalOpen, isDeleteMode]);
+  }, [usageForm, isModalOpen, isDeleteMode, searchParams.get("page"), searchParams.get("size")]);
 
   const inputOption = useMemo<
     Partial<
@@ -360,6 +365,7 @@ const UsagePage = () => {
           changeSelectedRow={changeSelectedRow}
           isDeleteMode={isDeleteMode}
           selectedRowId={selectedRowId}
+          totalPages={totalPages}
         />
       </div>
       {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
