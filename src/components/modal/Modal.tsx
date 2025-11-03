@@ -1,39 +1,15 @@
 import { useEffect, useReducer, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
-import ModalInput, { type ModalInputTypesType } from "./ModalInput";
+import ModalInput from "./ModalInput";
 import CustomButton from "../CustomButton";
-import type { ModalSubmitFn } from "@/pages/management/ItemPage";
 import { getMyInfo } from "@/services/api/AdminAPI";
 import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "@/utils/searchTermOption";
 import { replacePhone } from "@/utils/format/infoFormat";
 import { toast } from "react-toastify";
-import type { MODAL_TITLES } from "@/constants/modals";
+import type { modalAction, ModalInputTypesType, modalState, ModalType } from "@/types/modal"
 
-type ModalType = {
-  isOpen: boolean;
-  title: typeof MODAL_TITLES[keyof typeof MODAL_TITLES];
-  inputs:
-    | {
-        label: string;
-        key: string;
-        type: ModalInputTypesType;
-        initial?: string | number | Date;
-        hide?: boolean;
-        disable?: boolean;
-      }[]
-    | null;
-  onClose: () => void;
-  onSubmit: ModalSubmitFn | ((form: modalState) => void);
-};
 
-type modalAction =
-  | { type: "CHANGE"; payload: { key: string; value: string | number } }
-  | { type: "CHANGE_DATE"; payload: { key: string; value: Date | null } }
-  | { type: "RESET_ITEM"; payload: { key: string; type: ModalInputTypesType } }
-  | { type: "RESET"; payload: { initailModalForm: modalState } };
-
-type modalState = Record<string, Date | string | number | null>;
 
 const modalReducer = (state: modalState, action: modalAction) => {
   switch (action.type) {

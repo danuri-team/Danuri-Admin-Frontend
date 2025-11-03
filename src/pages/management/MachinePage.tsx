@@ -4,7 +4,6 @@ import CustomTable, { type UsageData } from "@/components/CustomTable";
 import MainHeader from "@/components/MainHeader";
 import TableButton from "@/components/TableButton";
 import Modal from "@/components/modal/Modal";
-import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import {
   getSearchCompanyDevice,
   postAddDevice,
@@ -13,15 +12,8 @@ import {
 } from "@/services/api/DeviceAPI";
 import { toast } from "react-toastify";
 import { MODAL_TITLES } from "@/constants/modals";
-
-interface TableHeader {
-  name: string;
-  id: string;
-}
-
-export type modalState = Record<string, Date | string | number | null>;
-
-export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }> | void;
+import type { TableHeader } from "@/types/table";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 
 const tableHeader: TableHeader[] = [
   { name: "별칭", id: "name" },
@@ -57,17 +49,18 @@ const inputOption = useMemo<
 );
 
 //모달 Submit 함수
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  add: (form: modalState) =>
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
+> = {
+  [MODAL_TITLES.ADD]: (form: modalState) =>
     postAddDevice({
       name: form.name as string,
     }),
-  edit: (form: modalState) =>
+  [MODAL_TITLES.SAVE]: (form: modalState) =>
     putUpdateDevice({
       deviceId: form.id as string,
       name: form.name as string,
     }),
-  connect: () => {},
 };
 
 const MachinePage = () => {

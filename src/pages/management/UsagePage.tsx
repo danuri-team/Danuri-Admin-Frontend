@@ -3,7 +3,6 @@ import MainHeader from "@/components/MainHeader";
 import BannerButton from "@/components/BannerButton";
 import CustomSelect from "@/components/CustomSelect";
 import TableButton from "@/components/TableButton";
-import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import Modal from "@/components/modal/Modal";
 import {
@@ -13,11 +12,11 @@ import {
   putForcedToLeave,
 } from "@/services/api/UsageAPI";
 import { formatDatetoISOString } from "@/utils/format/dateFormat";
-import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { useNavigate } from "react-router-dom";
 import { isAfter, isBefore } from "date-fns";
 import { toast } from "react-toastify";
 import { MODAL_TITLES } from "@/constants/modals";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -135,15 +134,17 @@ const usageReducer = (state: UsageState, action: UsageAction) => {
   }
 };
 
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  add: (form: modalState) =>
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
+> = {
+  [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateUsage({
       userId: form.userId as string,
       spaceId: form.spaceId as string,
       startDate: formatDatetoISOString(form.startDate as Date),
       endDate: formatDatetoISOString(form.endDate as Date),
     }),
-  download: (form: modalState) =>
+  [MODAL_TITLES.DOWNLOAD]: (form: modalState) =>
     postUsageExcel({
       userId: form.userId as string,
       spaceId: form.spaceId as string,

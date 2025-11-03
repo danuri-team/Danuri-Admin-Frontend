@@ -7,14 +7,7 @@ import { useLocation } from "react-router-dom";
 import { changeEnumtoText, selectStatusOption } from "@/utils/StatusSelectOption";
 import { getDeviceQR } from "@/services/api/DeviceAPI";
 
-export type ModalInputTypesType =
-  | "search"
-  | "date"
-  | "time"
-  | "text"
-  | "number"
-  | "option"
-  | "image";
+
 
 type ModalInputType =
   | {

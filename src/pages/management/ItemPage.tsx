@@ -5,7 +5,6 @@ import BannerButton from "@/components/BannerButton";
 import CustomSelect from "@/components/CustomSelect";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import {
   deleteItem,
   getSearchCompanyItem,
@@ -14,11 +13,8 @@ import {
 } from "@/services/api/ItemAPI";
 import { toast } from "react-toastify";
 import { MODAL_TITLES } from "@/constants/modals";
-
-interface TableHeader {
-  name: string;
-  id: string;
-}
+import type { TableHeader } from "@/types/table";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 
 interface FilterSelectConfig {
   id: keyof SelectState;
@@ -33,10 +29,6 @@ type SelectState = {
 type SelectAction =
   | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
   | { type: "RESET" };
-
-export type modalState = Record<string, Date | string | number | null>;
-
-export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
 
 const INITIAL_SELECT_FORM: SelectState = {
   order: "재고순",
@@ -88,7 +80,7 @@ const inputOption = useMemo<
 
 //모달 Submit 함수
 const modalSubmitFn: Partial<
-  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFn>
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
 > = {
   [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateItem({

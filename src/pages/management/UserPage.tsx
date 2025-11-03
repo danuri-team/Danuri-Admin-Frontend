@@ -7,7 +7,6 @@ import MainHeader from "@/components/MainHeader";
 import CustomSelect from "@/components/CustomSelect";
 import BannerButton from "@/components/BannerButton";
 import TableButton from "@/components/TableButton";
-import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import Modal from "@/components/modal/Modal";
 import {
   deleteUser,
@@ -15,27 +14,15 @@ import {
   postCreateUser,
   putUpdateUser,
 } from "@/services/api/UserAPI";
-import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { formatDatetoISOString } from "@/utils/format/dateFormat";
 import { getJoinForm } from "@/services/api/FormAPI";
 import { MODAL_TITLES } from "@/constants/modals";
+import type { TableHeader } from "@/types/table";
+import type { ModalInput, ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 
 // ============================================================================
 // Types
 // ============================================================================
-
-interface TableHeader {
-  name: string;
-  id: string;
-}
-
-interface ModalInput {
-  label: string;
-  key: string;
-  type: ModalInputTypesType;
-  initial?: string | number | Date;
-  hide?: boolean;
-}
 
 interface UserApiResponse {
   id: string;
@@ -157,7 +144,7 @@ const selectReducer = (state: SelectState, action: SelectAction): SelectState =>
 // ============================================================================
 
 const modalSubmitFn: Partial<
-  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFn>
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
 > = {
   [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateUser({

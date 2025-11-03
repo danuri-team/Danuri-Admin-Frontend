@@ -3,7 +3,6 @@ import BannerButton from "@/components/BannerButton";
 import CustomTable, { type UsageData } from "@/components/CustomTable";
 import MainHeader from "@/components/MainHeader";
 import Modal from "@/components/modal/Modal";
-import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import TableButton from "@/components/TableButton";
 import {
   deleteSpace,
@@ -11,10 +10,10 @@ import {
   postCreateSpace,
   putUpdateSpace,
 } from "@/services/api/SpaceAPI";
-import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { formatDatetoTime, formatTimetoDate } from "@/utils/format/dateFormat";
 import { toast } from "react-toastify";
 import { MODAL_TITLES } from "@/constants/modals";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 
 const FIXED_TABLE_HEADERS = [
   { name: "공간명", id: "name" },
@@ -54,14 +53,16 @@ const inputOption = useMemo<
   []
 );
 
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  add: (form: modalState) =>
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
+> = {
+  [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateSpace({
       name: form.name as string,
       startTime: formatDatetoTime(form.startTime as Date),
       endTime: formatDatetoTime(form.endTime as Date),
     }),
-  edit: (form: modalState) =>
+  [MODAL_TITLES.EDIT]: (form: modalState) =>
     putUpdateSpace({
       spaceId: form.spaceId as string,
       name: form.name as string,

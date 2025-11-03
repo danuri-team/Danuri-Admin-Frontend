@@ -4,16 +4,15 @@ import CustomSelect from "@/components/CustomSelect";
 import CustomTable, { type UsageData } from "@/components/CustomTable";
 import MainHeader from "@/components/MainHeader";
 import Modal from "@/components/modal/Modal";
-import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import TableButton from "@/components/TableButton";
 import {
   getSearchCompanyRental,
   postCreateRental,
   putUpdateRental,
 } from "@/services/api/RentalAPI";
-import type { ModalSubmitFn, modalState } from "./ItemPage";
 import { toast } from "react-toastify";
 import { MODAL_TITLES } from "@/constants/modals";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -90,7 +89,7 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
 };
 
 const modalSubmitFn: Partial<
-  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFn>
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
 > = {
   [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateRental({

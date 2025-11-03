@@ -4,18 +4,15 @@ import CustomTable, { type UsageData } from "@/components/CustomTable";
 import MainHeader from "@/components/MainHeader";
 import TableButton from "@/components/TableButton";
 import Modal from "@/components/modal/Modal";
-import type { ModalInputTypesType } from "@/components/modal/ModalInput";
 import { MODAL_TITLES } from "@/constants/modals";
 import { toast } from "react-toastify";
 import { getAllAdminInfo, deleteAdmin, putAdminInfo } from "@/services/api/AdminAPI";
+import type { ModalInputTypesType, ModalSubmitFnType } from "@/types/modal";
+import type { TableHeader } from "@/types/table";
 
 //수정 필요: 관리자 계정 관리 API로 변경해야함
 
-export type modalState = Record<string, Date | string | number | null>;
-
-export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
-
-const tableHeader = [
+const tableHeader: TableHeader[] = [
   { name: "ID", id: "id" },
   { name: "추가일", id: "created_at" },
 ];
@@ -46,7 +43,7 @@ const inputOption = useMemo<
 
 //모달 Submit 함수
 const modalSubmitFn: Partial<
-  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFn>
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
 > = {
   [MODAL_TITLES.SAVE]: () =>
     putAdminInfo({
