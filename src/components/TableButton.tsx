@@ -1,5 +1,4 @@
 import AddIcon from "../assets/icons/add-icon.svg?react";
-import DeleteIcon from "../assets/icons/delete-icon.svg?react";
 import FileIcon from "../assets/icons/file-icon.svg?react";
 import GridIcon from "../assets/icons/grid-icon.svg?react";
 import LeaveIcon from "../assets/icons/leave-icon.svg?react";

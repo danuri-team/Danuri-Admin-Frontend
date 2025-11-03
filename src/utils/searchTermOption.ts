@@ -4,7 +4,6 @@ import { getSearchCompanySpace } from "@/services/api/SpaceAPI";
 import { postUsageSearch } from "@/services/api/UsageAPI";
 import { getSearchCompanyUser } from "@/services/api/UserAPI";
 import { isFutureDate } from "./format/dateFormat";
-import { useMemo } from "react";
 import { SEARCH_TERMS } from "@/constants/modals";
 
 // 검색 결과 타입
@@ -23,11 +22,11 @@ const searchFn: Record<
     pass: boolean;
   }>
 > = {
-  [SEARCH_TERMS.ITEM]: () => getSearchCompanyItem(),
+  [SEARCH_TERMS.ITEM]: () => getSearchCompanyItem({ page: 0, size: 1000 }),
   [SEARCH_TERMS.USAGE]: () =>
-    postUsageSearch({ startDate: null, endDate: null, spaceId: null, userId: null }),
-  [SEARCH_TERMS.SPACE]: () => getSearchCompanySpace(),
-  [SEARCH_TERMS.USER]: () => getSearchCompanyUser(),
+    postUsageSearch({ usageForm: { startDate: null, endDate: null, spaceId: null, userId: null }, page: 0, size: 1000 }),
+  [SEARCH_TERMS.SPACE]: () => getSearchCompanySpace({ page: 0, size: 1000 }),
+  [SEARCH_TERMS.USER]: () => getSearchCompanyUser({ page: 0, size: 1000 }),
 };
 
 export type SearchLabel = (typeof SEARCH_TERMS)[keyof typeof SEARCH_TERMS];
@@ -94,7 +93,7 @@ export const getSearchTerm = async (
 
 // 물품의 이용 가능 수량 조회
 export const selectTermAvailableCount = async (itemId: string): Promise<number> => {
-  const res = await getSearchCompanyItem();
+  const res = await getSearchCompanyItem({ page: 0, size: 1000 });
 
   if (!res.pass) {
     return 0;

@@ -11,8 +11,6 @@ import PageSizeSelector from "./pagination/PageSizeSelector";
 import { IoIosCheckmark } from "react-icons/io";
 import renderTableCell from "../utils/table/renderTableCell";
 import type { MODAL_TITLES } from "@/constants/modals";
-import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
 
 export type UsageData = Record<string, string | number | number[]>;
 
