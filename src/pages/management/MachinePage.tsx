@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { MODAL_TITLES } from "@/constants/modals";
 import type { TableHeader } from "@/types/table";
 import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
+import { useSearchParams } from "react-router-dom";
 
 const tableHeader: TableHeader[] = [
   { name: "별칭", id: "name" },
@@ -38,6 +39,8 @@ const modalSubmitFn: Partial<
 };
 
 const MachinePage = () => {
+  const [searchParams] = useSearchParams();
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
@@ -53,15 +56,19 @@ const MachinePage = () => {
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
-      const res = await getSearchCompanyDevice();
+      const res = await getSearchCompanyDevice({
+        page: Number(searchParams.get("page")) || 0,
+        size: Number(searchParams.get("size")) || 10,
+      });
       if (res.pass) {
-        setTableData(res.data);
+        setTableData((res.data as any).content);
+        setTotalPages((res.data as any).total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
-  }, [isModalOpen, isDeleteMode]);
+  }, [isModalOpen, isDeleteMode, searchParams.get("page"), searchParams.get("size")]);
 
   const changeSelectedRow = ({ id }: { id: string | null }) => {
     if (id) {
@@ -189,6 +196,7 @@ const MachinePage = () => {
           isDeleteMode={isDeleteMode}
           changeSelectedRow={changeSelectedRow}
           selectedRowId={selectedRowId}
+          totalPages={totalPages}
         />
       </div>
       {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (

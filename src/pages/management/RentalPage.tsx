@@ -13,6 +13,7 @@ import {
 import { toast } from "react-toastify";
 import { MODAL_TITLES } from "@/constants/modals";
 import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
+import { useSearchParams } from "react-router-dom";
 
 type filterSelectType = {
   id: keyof SelectState;
@@ -77,6 +78,7 @@ const modalSubmitFn: Partial<
 };
 
 const RentalPage = () => {
+  const [searchParams] = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
@@ -84,6 +86,7 @@ const RentalPage = () => {
   const [modalTitle, setModalTitle] = useState<
     (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
   >(null);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
   const [filterData, setFilterData] = useState<UsageData[] | null>(null);
 
@@ -92,15 +95,19 @@ const RentalPage = () => {
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
-      const res = await getSearchCompanyRental();
+      const res = await getSearchCompanyRental({
+        page: Number(searchParams.get("page")) || 0,
+        size: Number(searchParams.get("size")) || 10,
+      });
       if (res.pass) {
-        setTableData(res.data);
+        setTableData((res.data as any).content);
+        setTotalPages((res.data as any).total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
-  }, [isModalOpen]);
+  }, [isModalOpen, searchParams.get("page"), searchParams.get("size")]);
 
   useEffect(() => {
     if (!tableData) return;
@@ -204,7 +211,12 @@ const RentalPage = () => {
             />
           </div>
         </div>
-        <CustomTable header={FIXED_TABLE_HEADERS} data={filterData} rowUpdate={onClickTableRow} />
+        <CustomTable
+          header={FIXED_TABLE_HEADERS}
+          data={filterData}
+          rowUpdate={onClickTableRow}
+          totalPages={totalPages}
+        />
       </div>
       {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
         <Modal

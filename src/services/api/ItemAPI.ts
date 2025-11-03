@@ -79,9 +79,9 @@ export const getSearchItem = async ({ itemId }: { itemId: string }) => {
 };
 
 //사내 아이템 조회
-export const getSearchCompanyItem = async () => {
+export const getSearchCompanyItem = async ({ page, size }: { page: number; size: number }) => {
   try {
-    const res = await PrivateAxios.get("/admin/items");
+    const res = await PrivateAxios.get(`/admin/items?page=${page}&size=${size}`);
     return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };

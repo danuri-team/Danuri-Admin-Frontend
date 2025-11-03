@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import CustomTable, { type UsageData } from "@/components/CustomTable";
@@ -164,6 +164,7 @@ const modalSubmitFn: Partial<
 
 const UserPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [userTableHeader, setUserTableHeader] = useState<TableHeader[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -171,6 +172,7 @@ const UserPage = () => {
   const [modalTitle, setModalTitle] = useState<
     (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
   >(null);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
   const [filterData, setFilterData] = useState<UsageData[] | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
@@ -198,11 +200,15 @@ const UserPage = () => {
     setModalTitle(null);
 
     const fetchUserData = async () => {
-      const res = await getSearchCompanyUser();
+      const res = await getSearchCompanyUser({
+        page: Number(searchParams.get("page")) || 0,
+        size: Number(searchParams.get("size")) || 10,
+      });
       if (!res.pass) return;
 
-      const users = res.data.user_list.map(transformUserData);
+      const users = res.data.user_list.content.map(transformUserData);
       setTableData(users);
+      setTotalPages(res.data.user_list.total_pages);
 
       const headers = res.data.header_list.map(
         (header: string): TableHeader => ({
@@ -214,7 +220,7 @@ const UserPage = () => {
     };
 
     fetchUserData();
-  }, [isModalOpen, isDeleteMode, modalTitle]);
+  }, [isModalOpen, isDeleteMode, modalTitle, searchParams.get("page"), searchParams.get("size")]);
 
   useEffect(() => {
     if (!tableData) return;
@@ -404,6 +410,7 @@ const UserPage = () => {
             isDeleteMode={isDeleteMode}
             changeSelectedRow={handleChangeSelectedRow}
             selectedRowId={selectedRowId}
+            totalPages={totalPages}
           />
         ) : (
           <div className="w-full flex h-40 text-center">

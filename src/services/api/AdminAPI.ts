@@ -21,9 +21,9 @@ export const getAdminInfo = async ({ adminId }: { adminId: string }) => {
 };
 
 //전체 관리자 정보 조회
-export const getAllAdminInfo = async () => {
+export const getAllAdminInfo = async ({ page, size }: { page: number; size: number }) => {
   try {
-    const res = await PrivateAxios.get(`/admin/management`);
+    const res = await PrivateAxios.get(`/admin/management?page=${page}&size=${size}`);
     return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };

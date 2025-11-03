@@ -52,9 +52,9 @@ export const getSearchUser = async ({ userId }: { userId: string }) => {
 };
 
 //사내 사용자 조회
-export const getSearchCompanyUser = async () => {
+export const getSearchCompanyUser = async ({ page, size }: { page: number; size: number }) => {
   try {
-    const res = await PrivateAxios.get("/admin/users");
+    const res = await PrivateAxios.get(`/admin/users?page=${page}&size=${size}`);
     return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };

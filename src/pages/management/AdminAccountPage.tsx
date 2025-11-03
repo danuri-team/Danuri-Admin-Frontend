@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { getAllAdminInfo, deleteAdmin, putAdminInfo } from "@/services/api/AdminAPI";
 import type { ModalInputTypesType, ModalSubmitFnType } from "@/types/modal";
 import type { TableHeader } from "@/types/table";
+import { useSearchParams } from "react-router-dom";
 
 //수정 필요: 관리자 계정 관리 API로 변경해야함
 
@@ -31,6 +32,7 @@ const modalSubmitFn: Partial<
 };
 
 const AdminAccountPage = () => {
+  const [searchParams] = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
@@ -38,6 +40,7 @@ const AdminAccountPage = () => {
   const [modalTitle, setModalTitle] = useState<
     (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
   >(null);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
@@ -46,15 +49,20 @@ const AdminAccountPage = () => {
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
-      const res = await getAllAdminInfo();
+      const res = await getAllAdminInfo({
+        page: Number(searchParams.get("page")) || 0,
+        size: Number(searchParams.get("size")) || 10,
+      });
+
       if (res.pass) {
-        setTableData(res.data);
+        setTableData((res.data as any).content);
+        setTotalPages((res.data as any).total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
-  }, [isModalOpen, isDeleteMode]);
+  }, [isModalOpen, isDeleteMode, searchParams.get("page"), searchParams.get("size")]);
 
   const changeSelectedRow = ({ id }: { id: string | null }) => {
     if (id) {
@@ -167,6 +175,7 @@ const AdminAccountPage = () => {
           isDeleteMode={isDeleteMode}
           changeSelectedRow={changeSelectedRow}
           selectedRowId={selectedRowId}
+          totalPages={totalPages}
         />
       </div>
       {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
