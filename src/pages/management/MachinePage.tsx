@@ -36,6 +36,14 @@ const modalSubmitFn: Partial<
       deviceId: form.id as string,
       name: form.name as string,
     }),
+  [MODAL_TITLES.CONNECT]: async () => {
+    return { data: null, pass: true };
+  },
+  [MODAL_TITLES.EDIT]: (form: modalState) =>
+    putUpdateDevice({
+      deviceId: form.id as string,
+      name: form.name as string,
+    }),
 };
 
 const MachinePage = () => {
@@ -142,8 +150,8 @@ const MachinePage = () => {
     title: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES]
   ) => {
     setModalTitle(title);
-    if (modalTitle) {
-      const addInitialInputs = inputOption[modalTitle]?.map((item) => {
+    if (title) {
+      const addInitialInputs = inputOption[title]?.map((item) => {
         if (title === "기기연결" && item.key === "QRCode") {
           return {
             ...item,
