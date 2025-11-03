@@ -46,36 +46,6 @@ const FILTER_SELECTS: filterSelectType[] = [
   { id: "order", type: "select", options: ["처리 여부", "미확인", "반납됨", "이용중"] },
 ];
 
-const inputOption = useMemo<
-  Partial<
-    Record<
-      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
-      {
-        label: string;
-        key: string;
-        type: ModalInputTypesType;
-        initial?: string | number | Date;
-        hide?: boolean;
-      }[]
-    >
-  >
->(
-  () => ({
-    [MODAL_TITLES.ADD]: [
-      { label: "물품", key: "itemId", type: "search" },
-      { label: "공간사용", key: "usageId", type: "search" },
-      { label: "대여 개수", key: "quantity", type: "number" },
-    ],
-    [MODAL_TITLES.EDIT]: [
-      { label: "대여 ID", key: "rentalId", type: "text", hide: true },
-      { label: "대여 개수", key: "quantity", type: "number" },
-      { label: "반납 개수", key: "returned_quantity", type: "number" },
-      { label: "상태", key: "status", type: "option" },
-    ],
-  }),
-  []
-);
-
 const selectReducer = (state: SelectState, action: SelectAction) => {
   switch (action.type) {
     case "CHANGE":
@@ -144,6 +114,36 @@ const RentalPage = () => {
     });
     setFilterData(filterTableData);
   }, [selectForm, tableData]);
+
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        {
+          label: string;
+          key: string;
+          type: ModalInputTypesType;
+          initial?: string | number | Date;
+          hide?: boolean;
+        }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.ADD]: [
+        { label: "물품", key: "itemId", type: "search" },
+        { label: "공간사용", key: "usageId", type: "search" },
+        { label: "대여 개수", key: "quantity", type: "number" },
+      ],
+      [MODAL_TITLES.EDIT]: [
+        { label: "대여 ID", key: "rentalId", type: "text", hide: true },
+        { label: "대여 개수", key: "quantity", type: "number" },
+        { label: "반납 개수", key: "returned_quantity", type: "number" },
+        { label: "상태", key: "status", type: "option" },
+      ],
+    }),
+    []
+  );
 
   const onClickTableButton = useCallback(
     ({ value }: { value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] }) => {

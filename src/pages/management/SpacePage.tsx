@@ -23,36 +23,6 @@ const FIXED_TABLE_HEADERS = [
   { name: "상태", id: "status" },
 ];
 
-const inputOption = useMemo<
-  Partial<
-    Record<
-      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
-      {
-        label: string;
-        key: string;
-        type: ModalInputTypesType;
-        initial?: string | number | Date;
-        hide?: boolean;
-      }[]
-    >
-  >
->(
-  () => ({
-    [MODAL_TITLES.ADD]: [
-      { label: "공간명", key: "name", type: "text" },
-      { label: "시작시간", key: "startTime", type: "time" },
-      { label: "종료시간", key: "endTime", type: "time" },
-    ],
-    [MODAL_TITLES.EDIT]: [
-      { label: "공간 ID", key: "spaceId", type: "text", hide: true },
-      { label: "공간명", key: "name", type: "text" },
-      { label: "시작시간", key: "startTime", type: "time" },
-      { label: "종료시간", key: "endTime", type: "time" },
-    ],
-  }),
-  []
-);
-
 const modalSubmitFn: Partial<
   Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
 > = {
@@ -102,6 +72,36 @@ const SpacePage = () => {
       setSelectedRowId(id);
     } else setSelectedRowId("");
   };
+
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        {
+          label: string;
+          key: string;
+          type: ModalInputTypesType;
+          initial?: string | number | Date;
+          hide?: boolean;
+        }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.ADD]: [
+        { label: "공간명", key: "name", type: "text" },
+        { label: "시작시간", key: "startTime", type: "time" },
+        { label: "종료시간", key: "endTime", type: "time" },
+      ],
+      [MODAL_TITLES.EDIT]: [
+        { label: "공간 ID", key: "spaceId", type: "text", hide: true },
+        { label: "공간명", key: "name", type: "text" },
+        { label: "시작시간", key: "startTime", type: "time" },
+        { label: "종료시간", key: "endTime", type: "time" },
+      ],
+    }),
+    []
+  );
 
   const onClickTableButton = ({
     value,

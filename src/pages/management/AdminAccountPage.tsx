@@ -17,30 +17,6 @@ const tableHeader: TableHeader[] = [
   { name: "추가일", id: "created_at" },
 ];
 
-const inputOption = useMemo<
-  Partial<
-    Record<
-      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
-      {
-        label: string;
-        key: string;
-        type: ModalInputTypesType;
-        initial?: string | number | Date;
-        hide?: boolean;
-        disable?: boolean;
-      }[]
-    >
-  >
->(
-  () => ({
-    [MODAL_TITLES.SAVE]: [
-      { label: "ID", key: "id", type: "text", disable: true, hide: true },
-      { label: "관리 권한 허가 여부", key: "status", type: "option" },
-    ],
-  }),
-  []
-);
-
 //모달 Submit 함수
 const modalSubmitFn: Partial<
   Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
@@ -85,6 +61,30 @@ const AdminAccountPage = () => {
       setSelectedRowId(id);
     } else setSelectedRowId("");
   };
+
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        {
+          label: string;
+          key: string;
+          type: ModalInputTypesType;
+          initial?: string | number | Date;
+          hide?: boolean;
+          disable?: boolean;
+        }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.SAVE]: [
+        { label: "ID", key: "id", type: "text", disable: true, hide: true },
+        { label: "관리 권한 허가 여부", key: "status", type: "option" },
+      ],
+    }),
+    []
+  );
 
   const onClickTableButton = ({
     value,

@@ -46,38 +46,6 @@ const FILTER_SELECTS: FilterSelectConfig[] = [
   { id: "order", type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
-const inputOption = useMemo<
-  Partial<
-    Record<
-      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
-      {
-        label: string;
-        key: string;
-        type: ModalInputTypesType;
-        initial?: string | number | Date;
-        hide?: boolean;
-      }[]
-    >
-  >
->(
-  () => ({
-    [MODAL_TITLES.ADD]: [
-      { label: "물품", key: "name", type: "text" },
-      { label: "총 수량", key: "total_quantity", type: "number" },
-      { label: "이용 가능 개수", key: "available_quantity", type: "number" },
-      { label: "상태", key: "status", type: "option" },
-    ],
-    [MODAL_TITLES.EDIT]: [
-      { label: "물품 ID", key: "itemId", type: "text", hide: true },
-      { label: "물품", key: "name", type: "text" },
-      { label: "총 수량", key: "total_quantity", type: "number" },
-      { label: "이용 가능 개수", key: "available_quantity", type: "number" },
-      { label: "상태", key: "status", type: "option" },
-    ],
-  }),
-  []
-);
-
 //모달 Submit 함수
 const modalSubmitFn: Partial<
   Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
@@ -153,6 +121,38 @@ const ItemPage = () => {
     };
     getTableData();
   }, [isModalOpen, isDeleteMode]);
+
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        {
+          label: string;
+          key: string;
+          type: ModalInputTypesType;
+          initial?: string | number | Date;
+          hide?: boolean;
+        }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.ADD]: [
+        { label: "물품", key: "name", type: "text" },
+        { label: "총 수량", key: "total_quantity", type: "number" },
+        { label: "이용 가능 개수", key: "available_quantity", type: "number" },
+        { label: "상태", key: "status", type: "option" },
+      ],
+      [MODAL_TITLES.EDIT]: [
+        { label: "물품 ID", key: "itemId", type: "text", hide: true },
+        { label: "물품", key: "name", type: "text" },
+        { label: "총 수량", key: "total_quantity", type: "number" },
+        { label: "이용 가능 개수", key: "available_quantity", type: "number" },
+        { label: "상태", key: "status", type: "option" },
+      ],
+    }),
+    []
+  );
 
   const changeSelectedRow = ({ id }: { id: string | null }) => {
     if (id) {

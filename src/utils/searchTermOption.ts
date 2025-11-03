@@ -16,24 +16,19 @@ export type SearchTerm = {
 
 // 검색 함수 맵
 //물품,공간,유저,이용현황 검색어 찾기
-const searchFn = useMemo<
-  Record<
-    (typeof SEARCH_TERMS)[keyof typeof SEARCH_TERMS],
-    () => Promise<{
-      data: any;
-      pass: boolean;
-    }>
-  >
->(
-  () => ({
-    [SEARCH_TERMS.ITEM]: () => getSearchCompanyItem(),
-    [SEARCH_TERMS.USAGE]: () =>
-      postUsageSearch({ startDate: null, endDate: null, spaceId: null, userId: null }),
-    [SEARCH_TERMS.SPACE]: () => getSearchCompanySpace(),
-    [SEARCH_TERMS.USER]: () => getSearchCompanyUser(),
-  }),
-  []
-);
+const searchFn: Record<
+  (typeof SEARCH_TERMS)[keyof typeof SEARCH_TERMS],
+  () => Promise<{
+    data: any;
+    pass: boolean;
+  }>
+> = {
+  [SEARCH_TERMS.ITEM]: () => getSearchCompanyItem(),
+  [SEARCH_TERMS.USAGE]: () =>
+    postUsageSearch({ startDate: null, endDate: null, spaceId: null, userId: null }),
+  [SEARCH_TERMS.SPACE]: () => getSearchCompanySpace(),
+  [SEARCH_TERMS.USER]: () => getSearchCompanyUser(),
+};
 
 export type SearchLabel = (typeof SEARCH_TERMS)[keyof typeof SEARCH_TERMS];
 

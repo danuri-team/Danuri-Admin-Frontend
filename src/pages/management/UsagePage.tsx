@@ -82,31 +82,6 @@ const FILTER_SELECTS: FilterSelectType[] = [
   { id: "useDate", type: "rangeDate", options: ["이용일"] },
 ];
 
-const inputOption = useMemo<
-  Partial<
-    Record<
-      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
-      { label: string; key: string; type: ModalInputTypesType }[]
-    >
-  >
->(
-  () => ({
-    [MODAL_TITLES.ADD]: [
-      { label: "공간", key: "spaceId", type: "search" },
-      { label: "시작일", key: "startDate", type: "date" },
-      { label: "종료일", key: "endDate", type: "date" },
-      { label: "유저", key: "userId", type: "search" },
-    ],
-    [MODAL_TITLES.DOWNLOAD]: [
-      { label: "공간", key: "spaceId", type: "search" },
-      { label: "시작일", key: "startDate", type: "date" },
-      { label: "종료일", key: "endDate", type: "date" },
-      { label: "유저", key: "userId", type: "search" },
-    ],
-  }),
-  []
-);
-
 // 필터 상태 리듀서
 const selectReducer = (state: SelectState, action: SelectAction): SelectState => {
   switch (action.type) {
@@ -138,28 +113,24 @@ const usageReducer = (state: UsageState, action: UsageAction): UsageState => {
   }
 };
 
-const modalSubmitFn = useMemo<
-  Partial<Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>>
->(
-  () => ({
-    [MODAL_TITLES.ADD]: (form: modalState) =>
-      postCreateUsage({
-        userId: form.userId as string,
-        spaceId: form.spaceId as string,
-        startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
-        endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
-      }),
-    [MODAL_TITLES.DOWNLOAD]: (form: modalState) =>
-      postUsageExcel({
-        userId: form.userId as string,
-        spaceId: form.spaceId as string,
-        startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
-        endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
-      }),
-  }),
-  []
-);
-
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
+> = {
+  [MODAL_TITLES.ADD]: (form: modalState) =>
+    postCreateUsage({
+      userId: form.userId as string,
+      spaceId: form.spaceId as string,
+      startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
+      endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
+    }),
+  [MODAL_TITLES.DOWNLOAD]: (form: modalState) =>
+    postUsageExcel({
+      userId: form.userId as string,
+      spaceId: form.spaceId as string,
+      startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
+      endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
+    }),
+};
 const UsagePage = () => {
   const navigate = useNavigate();
 
@@ -181,6 +152,8 @@ const UsagePage = () => {
   // 테이블 데이터 정렬
   const sortTableData = useMemo(() => {
     if (!tableData) return null;
+
+    console.log(tableData);
 
     return [...tableData].sort((a, b) => {
       // 이용일순 정렬
@@ -230,7 +203,7 @@ const UsagePage = () => {
       const res = await postUsageSearch(usageForm);
 
       if (res.pass) {
-        setTableData(res.data as UsageData[]);
+        setTableData((res.data as any).content as UsageData[]);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
@@ -238,6 +211,31 @@ const UsagePage = () => {
 
     fetchTableData();
   }, [usageForm, isModalOpen, isDeleteMode]);
+
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        { label: string; key: string; type: ModalInputTypesType }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.ADD]: [
+        { label: "공간", key: "spaceId", type: "search" },
+        { label: "시작일", key: "startDate", type: "date" },
+        { label: "종료일", key: "endDate", type: "date" },
+        { label: "유저", key: "userId", type: "search" },
+      ],
+      [MODAL_TITLES.DOWNLOAD]: [
+        { label: "공간", key: "spaceId", type: "search" },
+        { label: "시작일", key: "startDate", type: "date" },
+        { label: "종료일", key: "endDate", type: "date" },
+        { label: "유저", key: "userId", type: "search" },
+      ],
+    }),
+    []
+  );
 
   // 선택된 행 변경
   const changeSelectedRow = ({ id }: { id: string | null }) => {

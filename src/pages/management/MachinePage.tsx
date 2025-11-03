@@ -22,32 +22,6 @@ const tableHeader: TableHeader[] = [
   { name: "행동", id: "connect" },
 ];
 
-const inputOption = useMemo<
-  Partial<
-    Record<
-      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
-      {
-        label: string;
-        key: string;
-        type: ModalInputTypesType;
-        initial?: string | number | Date;
-        hide?: boolean;
-        disable?: boolean;
-      }[]
-    >
-  >
->(
-  () => ({
-    [MODAL_TITLES.ADD]: [{ label: "별칭", key: "name", type: "text" }],
-    [MODAL_TITLES.EDIT]: [
-      { label: "ID", key: "id", type: "text", disable: true },
-      { label: "별칭", key: "name", type: "text" },
-    ],
-    [MODAL_TITLES.CONNECT]: [{ label: "", key: "QRCode", type: "image", disable: true }],
-  }),
-  []
-);
-
 //모달 Submit 함수
 const modalSubmitFn: Partial<
   Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
@@ -94,6 +68,32 @@ const MachinePage = () => {
       setSelectedRowId(id);
     } else setSelectedRowId("");
   };
+
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        {
+          label: string;
+          key: string;
+          type: ModalInputTypesType;
+          initial?: string | number | Date;
+          hide?: boolean;
+          disable?: boolean;
+        }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.ADD]: [{ label: "별칭", key: "name", type: "text" }],
+      [MODAL_TITLES.EDIT]: [
+        { label: "ID", key: "id", type: "text", disable: true },
+        { label: "별칭", key: "name", type: "text" },
+      ],
+      [MODAL_TITLES.CONNECT]: [{ label: "", key: "QRCode", type: "image", disable: true }],
+    }),
+    []
+  );
 
   const onClickTableButton = ({
     value,
