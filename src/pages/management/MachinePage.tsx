@@ -61,12 +61,15 @@ const MachinePage = () => {
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
   const [selectedRowId, setSelectedRowId] = useState<string>("");
 
+  const currentPage = useMemo(() => Number(searchParams.get("page")) || 0, [searchParams]);
+  const currentSize = useMemo(() => Number(searchParams.get("size")) || 10, [searchParams]);
+
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
       const res = await getSearchCompanyDevice({
-        page: Number(searchParams.get("page")) || 0,
-        size: Number(searchParams.get("size")) || 10,
+        page: currentPage,
+        size: currentSize,
       });
       if (res.pass) {
         setTableData((res.data as any).content);
@@ -76,7 +79,7 @@ const MachinePage = () => {
       }
     };
     getTableData();
-  }, [isModalOpen, isDeleteMode, searchParams.get("page"), searchParams.get("size")]);
+  }, [isModalOpen, isDeleteMode, currentPage, currentSize]);
 
   const changeSelectedRow = ({ id }: { id: string | null }) => {
     if (id) {
