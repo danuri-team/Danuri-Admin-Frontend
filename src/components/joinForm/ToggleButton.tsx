@@ -1,3 +1,12 @@
+// 가입 폼 토글 버튼
+
+/**
+ * 
+ * @param handleToggle - 토글 상태 핸들러
+ * @param isActive - 토글 상태
+ * @param type - 토글 타입
+ * @returns 
+ */
 const ToggleButton = ({
   handleToggle,
   isActive,

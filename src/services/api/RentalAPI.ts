@@ -1,4 +1,4 @@
-import { PrivateAxios } from "./PrivateAxios";
+import { PrivateAxios } from "../PrivateAxios";
 
 //사내 대여 생성
 export const postCreateRental = async ({

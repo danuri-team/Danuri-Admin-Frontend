@@ -1,3 +1,5 @@
+// 비밀번호 찾기 - 인증 코드 입력 폼
+
 import { useEffect, useState } from "react";
 import CustomButton from "../CustomButton";
 import CustomInput from "../CustomInput";

@@ -1,11 +1,11 @@
 //company_id, email, password, phone
 import { useReducer } from "react";
-import CustomInput from "../../components/CustomInput";
-import CustomButton from "../../components/CustomButton";
+import CustomInput from "@/components/CustomInput";
+import CustomButton from "@/components/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
-import { postSignup } from "../../api/AuthAPI";
-import { isValidEmail } from "../../utils/infoValidation";
-import { replacePhone } from "../../utils/format/infoFormat";
+import { postSignup } from "@/services/api/AuthAPI";
+import { isValidEmail } from "@/utils/infoValidation";
+import { replacePhone } from "@/utils/format/infoFormat";
 import { GoChevronLeft } from "react-icons/go";
 import { toast } from "react-toastify";
 

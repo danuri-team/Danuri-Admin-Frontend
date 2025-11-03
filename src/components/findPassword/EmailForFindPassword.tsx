@@ -1,4 +1,6 @@
-import { isValidEmail } from "../../utils/infoValidation";
+// 비밀번호 찾기 - 이메일 입력 폼 
+
+import { isValidEmail } from "@/utils/infoValidation";
 import CustomButton from "../CustomButton";
 import CustomInput from "../CustomInput";
 

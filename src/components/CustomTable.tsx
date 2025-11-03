@@ -10,6 +10,7 @@ import PaginationButton from "./pagination/PaginationButton";
 import PageSizeSelector from "./pagination/PageSizeSelector";
 import { IoIosCheckmark } from "react-icons/io";
 import renderTableCell from "../utils/table/renderTableCell";
+import type { MODAL_TITLES } from "@/constants/modals";
 
 export type UsageData = Record<string, string | number | number[]>;
 
@@ -21,7 +22,10 @@ export type HeaderType = {
 type CustomTable = {
   header: HeaderType[];
   data: UsageData[] | null;
-  rowUpdate?: (row: UsageData, title?: string) => void | undefined;
+  rowUpdate?: (
+    row: UsageData,
+    title?: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES]
+  ) => void | undefined;
   isDeleteMode?: boolean;
   changeSelectedRow?: ({ id }: { id: string | null }) => void;
   selectedRowId?: string;

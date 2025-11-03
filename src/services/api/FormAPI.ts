@@ -1,5 +1,5 @@
-import type { FormItemType } from "../pages/management/JoinFormPage";
-import { PrivateAxios } from "./PrivateAxios";
+import type { FormItemType } from "@/pages/management/JoinFormPage";
+import { PrivateAxios } from "../PrivateAxios";
 
 //가입폼 생성
 export const postJoinForm = async (form: FormItemType[]) => {

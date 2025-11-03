@@ -2,34 +2,27 @@ import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import CustomSelect from "../../components/CustomSelect";
-import BannerButton from "../../components/BannerButton";
-import TableButton from "../../components/TableButton";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import Modal from "../../components/modal/Modal";
-import { deleteUser, getSearchCompanyUser, postCreateUser, putUpdateUser } from "../../api/UserAPI";
-import type { ModalSubmitFn, modalState } from "./ItemPage";
-import { formatDatetoISOString } from "../../utils/format/dateFormat";
-import { getJoinForm } from "../../api/FormAPI";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import CustomSelect from "@/components/CustomSelect";
+import BannerButton from "@/components/BannerButton";
+import TableButton from "@/components/TableButton";
+import Modal from "@/components/modal/Modal";
+import {
+  deleteUser,
+  getSearchCompanyUser,
+  postCreateUser,
+  putUpdateUser,
+} from "@/services/api/UserAPI";
+import { formatDatetoISOString } from "@/utils/format/dateFormat";
+import { getJoinForm } from "@/services/api/FormAPI";
+import { MODAL_TITLES } from "@/constants/modals";
+import type { TableHeader } from "@/types/table";
+import type { ModalInput, ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 
 // ============================================================================
 // Types
 // ============================================================================
-
-interface TableHeader {
-  name: string;
-  id: string;
-}
-
-interface ModalInput {
-  label: string;
-  key: string;
-  type: ModalInputTypesType;
-  initial?: string | number | Date;
-  hide?: boolean;
-}
 
 interface UserApiResponse {
   id: string;
@@ -60,25 +53,21 @@ interface FilterSelectConfig {
 // Constants
 // ============================================================================
 
-const MODAL_TITLES = {
-  ADD: "추가",
-  EDIT: "수정",
-  SEARCH: "검색",
-  DELETE: "삭제",
-} as const;
-
+// 테이블 고정 헤더
 const FIXED_TABLE_HEADERS: TableHeader[] = [
   { name: "ID", id: "id" },
   { name: "전화번호", id: "phone" },
   { name: "가입일", id: "created_at" },
 ];
 
+// 필터링 기본 값
 const INITIAL_SELECT_FORM: SelectState = {
   joinDate: null,
   age: "나이대",
   sex: "성별",
 };
 
+// 필터링 컴포넌트
 const FILTER_SELECTS: FilterSelectConfig[] = [
   { id: "joinDate", type: "date", options: ["가입일"] },
 ];
@@ -87,6 +76,8 @@ const FILTER_SELECTS: FilterSelectConfig[] = [
 // Helper Functions
 // ============================================================================
 
+// 사용자 가입 폼 정보 파싱 함수
+// string -> json
 const parseSignUpFormSchema = (schemaString: string): Record<string, unknown> | null => {
   if (!schemaString) return null;
 
@@ -100,6 +91,7 @@ const parseSignUpFormSchema = (schemaString: string): Record<string, unknown> | 
   }
 };
 
+// 사용자 가입 폼 정보와 사용자 정보 결합 함수
 const transformUserData = (user: UserApiResponse): UsageData => {
   const schema = parseSignUpFormSchema(user.sign_up_form_schema);
 
@@ -112,6 +104,7 @@ const transformUserData = (user: UserApiResponse): UsageData => {
   };
 };
 
+// 선택에 맞게 데이터 필터링하는 함수
 const matchesFilter = (item: UsageData, selectForm: SelectState): boolean => {
   const matchJoinDate =
     !selectForm.joinDate ||
@@ -120,6 +113,7 @@ const matchesFilter = (item: UsageData, selectForm: SelectState): boolean => {
   return matchJoinDate;
 };
 
+// 검색에 맞게 데이터 필터링하는 함수
 const matchesSearchForm = (item: UsageData, form: modalState): boolean => {
   const searchName = !form.name || form.name === item.name;
   const searchPhone = !form.phone || form.phone === item.phone;
@@ -149,7 +143,9 @@ const selectReducer = (state: SelectState, action: SelectAction): SelectState =>
 // Modal Submit Functions
 // ============================================================================
 
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
+> = {
   [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateUser({
       company_id: form.company_id as string,
@@ -172,7 +168,9 @@ const UserPage = () => {
   const [userTableHeader, setUserTableHeader] = useState<TableHeader[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInputs, setModalInputs] = useState<ModalInput[] | null>(null);
-  const [modalTitle, setModalTitle] = useState("");
+  const [modalTitle, setModalTitle] = useState<
+    (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
+  >(null);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
   const [filterData, setFilterData] = useState<UsageData[] | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
@@ -197,7 +195,7 @@ const UserPage = () => {
   useEffect(() => {
     if (isModalOpen || modalTitle === MODAL_TITLES.SEARCH) return;
 
-    setModalTitle("");
+    setModalTitle(null);
 
     const fetchUserData = async () => {
       const res = await getSearchCompanyUser();
@@ -239,7 +237,9 @@ const UserPage = () => {
     [userTableHeader]
   );
 
-  const inputOption = useMemo<Record<string, ModalInput[]>>(
+  const inputOption = useMemo<
+    Partial<Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalInput[]>>
+  >(
     () => ({
       [MODAL_TITLES.ADD]: [...inputs],
       [MODAL_TITLES.EDIT]: [
@@ -296,7 +296,7 @@ const UserPage = () => {
   }, [isDeleteMode, selectedRowId]);
 
   const handleTableButton = useCallback(
-    ({ value }: { value: string }) => {
+    ({ value }: { value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] }) => {
       if (value === MODAL_TITLES.DELETE) {
         handleDeleteButton();
         return;
@@ -314,14 +314,14 @@ const UserPage = () => {
   const handleTableRowClick = useCallback(
     (row: UsageData) => {
       setModalTitle(MODAL_TITLES.EDIT);
-      const addInitialInputs = inputOption[MODAL_TITLES.EDIT].map((item) => {
+      const addInitialInputs = inputOption[MODAL_TITLES.EDIT]?.map((item) => {
         const value = item.key === "itemId" ? row.id : row[item.key];
         return {
           ...item,
           initial: typeof value === "object" && !(value instanceof Date) ? undefined : value,
         };
       });
-      setModalInputs(addInitialInputs);
+      addInitialInputs && setModalInputs(addInitialInputs);
       setIsModalOpen(true);
     },
     [inputOption]
@@ -329,6 +329,7 @@ const UserPage = () => {
 
   const handleModalSubmit = useCallback(
     (form: modalState) => {
+      if (!modalTitle) return;
       if (modalTitle === MODAL_TITLES.SEARCH) {
         return handleSearchTableData(form);
       }
@@ -412,7 +413,7 @@ const UserPage = () => {
           </div>
         )}
       </div>
-      {isModalOpen && modalInputs && (
+      {isModalOpen && modalInputs && modalTitle && (
         <Modal
           isOpen={isModalOpen}
           title={modalTitle}

@@ -1,9 +1,11 @@
 import { toast } from "react-toastify";
-import { getSearchCompanyItem } from "../api/ItemAPI";
-import { getSearchCompanySpace } from "../api/SpaceAPI";
-import { postUsageSearch } from "../api/UsageAPI";
-import { getSearchCompanyUser } from "../api/UserAPI";
+import { getSearchCompanyItem } from "@/services/api/ItemAPI";
+import { getSearchCompanySpace } from "@/services/api/SpaceAPI";
+import { postUsageSearch } from "@/services/api/UsageAPI";
+import { getSearchCompanyUser } from "@/services/api/UserAPI";
 import { isFutureDate } from "./format/dateFormat";
+import { useMemo } from "react";
+import { SEARCH_TERMS } from "@/constants/modals";
 
 // 검색 결과 타입
 export type SearchTerm = {
@@ -13,15 +15,27 @@ export type SearchTerm = {
 };
 
 // 검색 함수 맵
-const searchFn = {
-  물품: () => getSearchCompanyItem(),
-  공간사용: () =>
-    postUsageSearch({ startDate: null, endDate: null, spaceId: null, userId: null }),
-  공간: () => getSearchCompanySpace(),
-  유저: () => getSearchCompanyUser(),
-};
+//물품,공간,유저,이용현황 검색어 찾기
+const searchFn = useMemo<
+  Record<
+    (typeof SEARCH_TERMS)[keyof typeof SEARCH_TERMS],
+    () => Promise<{
+      data: any;
+      pass: boolean;
+    }>
+  >
+>(
+  () => ({
+    [SEARCH_TERMS.ITEM]: () => getSearchCompanyItem(),
+    [SEARCH_TERMS.USAGE]: () =>
+      postUsageSearch({ startDate: null, endDate: null, spaceId: null, userId: null }),
+    [SEARCH_TERMS.SPACE]: () => getSearchCompanySpace(),
+    [SEARCH_TERMS.USER]: () => getSearchCompanyUser(),
+  }),
+  []
+);
 
-export type SearchLabel = keyof typeof searchFn;
+export type SearchLabel = (typeof SEARCH_TERMS)[keyof typeof SEARCH_TERMS];
 
 // 유저 스키마에서 이름을 안전하게 추출
 const extractUserName = (signUpFormSchema: string | number): string => {
@@ -49,7 +63,7 @@ export const getSearchTerm = async (
   }
 
   // 유저 검색
-  if (label === "유저") {
+  if (label === SEARCH_TERMS.USER) {
     return res.data.user_list
       .map((item: Record<string, string | number>) => ({
         name: extractUserName(item.sign_up_form_schema),
@@ -60,7 +74,7 @@ export const getSearchTerm = async (
   }
 
   // 공간사용 검색
-  if (label === "공간사용") {
+  if (label === SEARCH_TERMS.USAGE) {
     return res.data
       .map((item: Record<string, string | number>) => ({
         name: String(item.space_name || ""),

@@ -1,5 +1,8 @@
+// 로그인 되어있지 않는 사용자만 접근
+// ex) 로그인, 회원가입 페이지
+
 import { useSelector } from "react-redux";
-import type { RootState } from "../../redux/store";
+import type { RootState } from "@/redux/store";
 import { Navigate, Outlet } from "react-router-dom";
 
 const GuestGuard = () => {

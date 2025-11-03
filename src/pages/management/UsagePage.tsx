@@ -1,22 +1,22 @@
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import BannerButton from "../../components/BannerButton";
-import CustomSelect from "../../components/CustomSelect";
-import TableButton from "../../components/TableButton";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import BannerButton from "@/components/BannerButton";
+import CustomSelect from "@/components/CustomSelect";
+import TableButton from "@/components/TableButton";
 import { useEffect, useMemo, useReducer, useState } from "react";
-import Modal from "../../components/modal/Modal";
+import Modal from "@/components/modal/Modal";
 import {
   postCreateUsage,
   postUsageExcel,
   postUsageSearch,
   putForcedToLeave,
-} from "../../api/UsageAPI";
-import { formatDatetoISOString } from "../../utils/format/dateFormat";
-import type { ModalSubmitFn, modalState } from "./ItemPage";
+} from "@/services/api/UsageAPI";
+import { formatDatetoISOString } from "@/utils/format/dateFormat";
 import { useNavigate } from "react-router-dom";
 import { isAfter, isBefore } from "date-fns";
 import { toast } from "react-toastify";
+import { MODAL_TITLES } from "@/constants/modals";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 
 // 필터 선택 타입
 type FilterSelectType = {
@@ -50,7 +50,7 @@ type SelectAction =
 // 사용 기록 액션
 type UsageAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
-const initialSelectForm: SelectState = {
+const INITIAL_SELECT_FORM: SelectState = {
   order: "이용일순",
   useDate: {
     startDate: null,
@@ -60,15 +60,14 @@ const initialSelectForm: SelectState = {
   sex: "성별",
 };
 
-const initialUsageForm: UsageState = {
-  startDate: null,
-  endDate: null,
+const INITIAL_USAGE_FORM: UsageState = {
+  startDate: "2025-03-01T00:00:00",
+  endDate: "",
   spaceId: null,
   userId: null,
 };
 
-// 테이블 헤더 정의
-const tableHeader = [
+const FIXED_TABLE_HEADERS = [
   { name: "사용 ID", id: "id" },
   { name: "공간", id: "space_name" },
   { name: "시작일", id: "start_at" },
@@ -78,29 +77,35 @@ const tableHeader = [
 ];
 
 // 필터 선택 옵션
-const filterSelects: FilterSelectType[] = [
+const FILTER_SELECTS: FilterSelectType[] = [
   { id: "order", type: "select", options: ["이용일순", "상태순"] },
   { id: "useDate", type: "rangeDate", options: ["이용일"] },
 ];
 
-// 모달 입력 필드 설정
-const modalInputFields: Record<
-  string,
-  { label: string; key: string; type: ModalInputTypesType }[]
-> = {
-  추가: [
-    { label: "공간", key: "spaceId", type: "search" },
-    { label: "시작일", key: "startDate", type: "date" },
-    { label: "종료일", key: "endDate", type: "date" },
-    { label: "유저", key: "userId", type: "search" },
-  ],
-  다운로드: [
-    { label: "공간", key: "spaceId", type: "search" },
-    { label: "시작일", key: "startDate", type: "date" },
-    { label: "종료일", key: "endDate", type: "date" },
-    { label: "유저", key: "userId", type: "search" },
-  ],
-};
+const inputOption = useMemo<
+  Partial<
+    Record<
+      (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+      { label: string; key: string; type: ModalInputTypesType }[]
+    >
+  >
+>(
+  () => ({
+    [MODAL_TITLES.ADD]: [
+      { label: "공간", key: "spaceId", type: "search" },
+      { label: "시작일", key: "startDate", type: "date" },
+      { label: "종료일", key: "endDate", type: "date" },
+      { label: "유저", key: "userId", type: "search" },
+    ],
+    [MODAL_TITLES.DOWNLOAD]: [
+      { label: "공간", key: "spaceId", type: "search" },
+      { label: "시작일", key: "startDate", type: "date" },
+      { label: "종료일", key: "endDate", type: "date" },
+      { label: "유저", key: "userId", type: "search" },
+    ],
+  }),
+  []
+);
 
 // 필터 상태 리듀서
 const selectReducer = (state: SelectState, action: SelectAction): SelectState => {
@@ -116,7 +121,7 @@ const selectReducer = (state: SelectState, action: SelectAction): SelectState =>
         useDate: action.payload.value,
       };
     case "RESET":
-      return initialSelectForm;
+      return INITIAL_SELECT_FORM;
   }
 };
 
@@ -129,27 +134,31 @@ const usageReducer = (state: UsageState, action: UsageAction): UsageState => {
         [action.payload.key]: action.payload.value,
       };
     case "RESET":
-      return initialUsageForm;
+      return INITIAL_USAGE_FORM;
   }
 };
 
-// 모달 제출 함수 매핑
-const createModalSubmitFn = (): Record<string, ModalSubmitFn> => ({
-  추가: (form: modalState) =>
-    postCreateUsage({
-      userId: form.userId as string,
-      spaceId: form.spaceId as string,
-      startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
-      endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
-    }),
-  다운로드: (form: modalState) =>
-    postUsageExcel({
-      userId: form.userId as string,
-      spaceId: form.spaceId as string,
-      startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
-      endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
-    }),
-});
+const modalSubmitFn = useMemo<
+  Partial<Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>>
+>(
+  () => ({
+    [MODAL_TITLES.ADD]: (form: modalState) =>
+      postCreateUsage({
+        userId: form.userId as string,
+        spaceId: form.spaceId as string,
+        startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
+        endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
+      }),
+    [MODAL_TITLES.DOWNLOAD]: (form: modalState) =>
+      postUsageExcel({
+        userId: form.userId as string,
+        spaceId: form.spaceId as string,
+        startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
+        endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
+      }),
+  }),
+  []
+);
 
 const UsagePage = () => {
   const navigate = useNavigate();
@@ -159,19 +168,15 @@ const UsagePage = () => {
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
-  const [modalTitle, setModalTitle] = useState("");
-
-  // 테이블 상태
+  const [modalTitle, setModalTitle] = useState<
+    (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
+  >(null);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState("");
 
-  // 폼 상태
-  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
-  const [usageForm, usageDispatch] = useReducer(usageReducer, initialUsageForm);
-
-  // 모달 제출 함수
-  const modalSubmitFn = useMemo(() => createModalSubmitFn(), []);
+  const [selectForm, selectDispatch] = useReducer(selectReducer, INITIAL_SELECT_FORM);
+  const [usageForm, usageDispatch] = useReducer(usageReducer, INITIAL_USAGE_FORM);
 
   // 테이블 데이터 정렬
   const sortTableData = useMemo(() => {
@@ -239,24 +244,26 @@ const UsagePage = () => {
     setSelectedRowId(id || "");
   };
 
-  // 테이블 버튼 클릭 핸들러
-  const onClickTableButton = ({ value }: { value: string }) => {
-    // 강제퇴실 버튼은 별도 처리
-    if (value === "강제퇴실") {
+  const onClickTableButton = ({
+    value,
+  }: {
+    value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES];
+  }) => {
+    if (value === MODAL_TITLES.FORCED) {
       handleForceLeave();
       return;
     }
 
     // 모달 열기
     setModalTitle(value);
-    setModalInputs(modalInputFields[value] || null);
+    setModalInputs(inputOption[value] || null);
     setIsModalOpen(true);
   };
 
   // 모달 닫기
   const onCloseModal = () => {
     setIsModalOpen(false);
-    setModalTitle("");
+    setModalTitle(null);
     setModalInputs(null);
   };
 
@@ -296,7 +303,7 @@ const UsagePage = () => {
         <div className="mr-[20px] ml-[20px]  mb-[30px] flex justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">이용 현황</h1>
-            {filterSelects.map((item) => {
+            {FILTER_SELECTS.map((item) => {
               if (item.type === "rangeDate")
                 return (
                   <CustomSelect
@@ -335,26 +342,29 @@ const UsagePage = () => {
           <div className="flex gap-[10px]">
             <TableButton
               value="다운로드"
-              onClick={() => onClickTableButton({ value: "다운로드" })}
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.DOWNLOAD })}
             />
             <TableButton value="대여관리" onClick={() => navigate("/rental")} />
-            <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
+            <TableButton
+              value="추가"
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.ADD })}
+            />
             <TableButton
               value="강제퇴실"
-              onClick={() => onClickTableButton({ value: "강제퇴실" })}
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.FORCED })}
               isDeleteMode={isDeleteMode}
             />
           </div>
         </div>
         <CustomTable
-          header={tableHeader}
+          header={FIXED_TABLE_HEADERS}
           data={sortTableData}
           changeSelectedRow={changeSelectedRow}
           isDeleteMode={isDeleteMode}
           selectedRowId={selectedRowId}
         />
       </div>
-      {isModalOpen && (
+      {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
         <Modal
           isOpen={isModalOpen}
           title={modalTitle}

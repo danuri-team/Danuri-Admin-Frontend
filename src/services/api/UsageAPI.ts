@@ -1,5 +1,5 @@
-import { PrivateAxios } from "./PrivateAxios";
 import dayjs from "dayjs";
+import { PrivateAxios } from "../PrivateAxios";
 
 export type UsageSearchType = {
   startDate: string | null;
