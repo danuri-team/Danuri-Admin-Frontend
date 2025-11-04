@@ -18,7 +18,7 @@ export type SearchTerm = {
 const searchFn: Record<
   (typeof SEARCH_TERMS)[keyof typeof SEARCH_TERMS],
   () => Promise<{
-    data: any;
+    data: unknown;
     pass: boolean;
   }>
 > = {
@@ -58,7 +58,7 @@ export const getSearchTerm = async (
 
   // 유저 검색
   if (label === SEARCH_TERMS.USER) {
-    return res.data.user_list
+    return (res.data as any).user_list
       .map((item: Record<string, string | number>) => ({
         name: extractUserName(item.sign_up_form_schema),
         id: String(item.id),
@@ -69,7 +69,7 @@ export const getSearchTerm = async (
 
   // 공간사용 검색
   if (label === SEARCH_TERMS.USAGE) {
-    return res.data
+    return (res.data as any)
       .map((item: Record<string, string | number>) => ({
         name: String(item.space_name || ""),
         id: String(item.id),
@@ -82,7 +82,7 @@ export const getSearchTerm = async (
   }
 
   // 물품, 공간 검색
-  return res.data
+  return (res.data as any)
     .map((item: Record<string, string | number>) => ({
       name: String(item.name || ""),
       id: String(item.id),
@@ -99,7 +99,7 @@ export const selectTermAvailableCount = async (itemId: string): Promise<number> 
     return 0;
   }
 
-  const selectedItem = res.data.find(
+  const selectedItem = (res.data as any).find(
     (item: Record<string, string | number>) => String(item.id) === itemId
   );
 

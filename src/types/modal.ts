@@ -23,7 +23,7 @@ export interface ModalInput {
 
 // 모달 Submit 함수 타입
 export type ModalSubmitFnType = (form: modalState) => Promise<{
-  data: any;
+  data: unknown;
   pass: boolean;
 }>;
 
@@ -50,7 +50,7 @@ export type modalAction =
   | { type: "CHANGE"; payload: { key: string; value: string | number } }
   | { type: "CHANGE_DATE"; payload: { key: string; value: Date | null } }
   | { type: "RESET_ITEM"; payload: { key: string; type: ModalInputTypesType } }
-  | { type: "RESET"; payload: { initailModalForm: modalState } };
+  | { type: "RESET"; payload: { initialModalForm: modalState } };
 
 // 모달 리듀서 State 타입
 export type modalState = Record<string, Date | string | number | null>;

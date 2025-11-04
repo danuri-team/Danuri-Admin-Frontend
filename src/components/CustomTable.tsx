@@ -11,6 +11,7 @@ import PageSizeSelector from "./pagination/PageSizeSelector";
 import { IoIosCheckmark } from "react-icons/io";
 import renderTableCell from "../utils/table/renderTableCell";
 import type { MODAL_TITLES } from "@/constants/modals";
+import { useNavigate } from "react-router-dom";
 
 export type UsageData = Record<string, string | number | number[]>;
 
@@ -41,6 +42,8 @@ const CustomTable = ({
   selectedRowId,
   totalPages,
 }: CustomTable) => {
+  const navigate = useNavigate();
+
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
     header: item.name,
@@ -48,7 +51,7 @@ const CustomTable = ({
       const value = getValue() as string;
       const rowData = row.original;
 
-      return renderTableCell({ item, rowData, value, header, rowUpdate });
+      return renderTableCell({ item, rowData, value, header, rowUpdate, navigate });
     },
   }));
 

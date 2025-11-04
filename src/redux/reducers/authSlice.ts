@@ -26,7 +26,7 @@ export const login = createAsyncThunk<
     if (res.pass) {
       return;
     } else return rejectWithValue(res.data as string);
-  } catch (error) {
+  } catch {
     return rejectWithValue("서버오류");
   }
 });

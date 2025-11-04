@@ -50,7 +50,7 @@ const modalReducer = (state: modalState, action: modalAction) => {
               : "",
       };
     case "RESET":
-      return action.payload.initailModalForm;
+      return action.payload.initialModalForm;
   }
 };
 

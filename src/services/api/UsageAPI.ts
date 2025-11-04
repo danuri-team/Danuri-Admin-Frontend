@@ -99,7 +99,7 @@ export const postUsageExcel = async ({
     window.URL.revokeObjectURL(url);
 
     return { data: null, pass: true };
-  } catch (error) {
+  } catch {
     return { data: null, pass: false };
   }
 };
