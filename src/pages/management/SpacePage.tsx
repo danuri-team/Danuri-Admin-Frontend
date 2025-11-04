@@ -16,6 +16,11 @@ import { MODAL_TITLES } from "@/constants/modals";
 import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 import { useSearchParams } from "react-router-dom";
 
+type SpaceListResponse = {
+  content: UsageData[];
+  total_pages: number;
+};
+
 const FIXED_TABLE_HEADERS = [
   { name: "공간명", id: "name" },
   { name: "시작시간", id: "start_at" },
@@ -65,8 +70,9 @@ const SpacePage = () => {
         size: Number(searchParams.get("size")) || 10,
       });
       if (res.pass) {
-        setTableData((res.data as any).content);
-        setTotalPages((res.data as any).total_pages);
+        const { content, total_pages } = res.data as SpaceListResponse;
+        setTableData(content);
+        setTotalPages(total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
@@ -160,7 +166,9 @@ const SpacePage = () => {
                 : row[item.key],
       };
     });
-    addInitialInputs && setModalInputs(addInitialInputs);
+    if (addInitialInputs) {
+      setModalInputs(addInitialInputs);
+    }
     setIsModalOpen(true);
   };
 

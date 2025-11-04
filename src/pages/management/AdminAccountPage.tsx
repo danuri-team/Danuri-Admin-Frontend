@@ -13,6 +13,11 @@ import { useSearchParams } from "react-router-dom";
 
 //수정 필요: 관리자 계정 관리 API로 변경해야함
 
+type AdminListResponse = {
+  content: UsageData[];
+  total_pages: number;
+};
+
 const tableHeader: TableHeader[] = [
   { name: "ID", id: "id" },
   { name: "추가일", id: "created_at" },
@@ -55,8 +60,9 @@ const AdminAccountPage = () => {
       });
 
       if (res.pass) {
-        setTableData((res.data as any).content);
-        setTotalPages((res.data as any).total_pages);
+        const { content, total_pages } = res.data as AdminListResponse;
+        setTableData(content);
+        setTotalPages(total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
@@ -140,7 +146,9 @@ const AdminAccountPage = () => {
           initial: item.key === "id" ? row.id : row[item.key],
         };
       });
-      addInitialInputs && setModalInputs(addInitialInputs);
+      if (addInitialInputs) {
+        setModalInputs(addInitialInputs);
+      }
       setIsModalOpen(true);
     },
     [inputOption]

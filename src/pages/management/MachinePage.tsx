@@ -16,6 +16,11 @@ import type { TableHeader } from "@/types/table";
 import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 import { useSearchParams } from "react-router-dom";
 
+type DeviceListResponse = {
+  content: UsageData[];
+  total_pages: number;
+};
+
 const tableHeader: TableHeader[] = [
   { name: "별칭", id: "name" },
   { name: "ID", id: "id" },
@@ -72,8 +77,9 @@ const MachinePage = () => {
         size: currentSize,
       });
       if (res.pass) {
-        setTableData((res.data as any).content);
-        setTotalPages((res.data as any).total_pages);
+        const { content, total_pages } = res.data as DeviceListResponse;
+        setTableData(content);
+        setTotalPages(total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
@@ -166,7 +172,9 @@ const MachinePage = () => {
           initial: item.key === "itemId" ? row.id : row[item.key],
         };
       });
-      addInitialInputs && setModalInputs(addInitialInputs);
+      if (addInitialInputs) {
+        setModalInputs(addInitialInputs);
+      }
     }
     setIsModalOpen(true);
   };

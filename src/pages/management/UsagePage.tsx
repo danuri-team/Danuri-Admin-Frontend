@@ -50,6 +50,11 @@ type SelectAction =
 // 사용 기록 액션
 type UsageAction = { type: "CHANGE"; payload: { key: string; value: string } } | { type: "RESET" };
 
+type UsageListResponse = {
+  content: UsageData[];
+  total_pages: number;
+};
+
 const INITIAL_SELECT_FORM: SelectState = {
   order: "이용일순",
   useDate: {
@@ -207,8 +212,9 @@ const UsagePage = () => {
       });
 
       if (res.pass) {
-        setTableData((res.data as any).content as UsageData[]);
-        setTotalPages((res.data as any).total_pages);
+        const { content, total_pages } = res.data as UsageListResponse;
+        setTableData(content);
+        setTotalPages(total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }

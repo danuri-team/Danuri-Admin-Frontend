@@ -327,7 +327,9 @@ const UserPage = () => {
           initial: typeof value === "object" && !(value instanceof Date) ? undefined : value,
         };
       });
-      addInitialInputs && setModalInputs(addInitialInputs);
+      if (addInitialInputs) {
+        setModalInputs(addInitialInputs);
+      }
       setIsModalOpen(true);
     },
     [inputOption]

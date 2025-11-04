@@ -31,6 +31,11 @@ type SelectAction =
   | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
   | { type: "RESET" };
 
+type ItemListResponse = {
+  content: UsageData[];
+  total_pages: number;
+};
+
 const INITIAL_SELECT_FORM: SelectState = {
   order: "재고순",
 };
@@ -119,8 +124,9 @@ const ItemPage = () => {
         size: Number(searchParams.get("size")) || 10,
       });
       if (res.pass) {
-        setTableData((res.data as any).content);
-        setTotalPages((res.data as any).total_pages);
+        const { content, total_pages } = res.data as ItemListResponse;
+        setTableData(content);
+        setTotalPages(total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
@@ -210,7 +216,9 @@ const ItemPage = () => {
           initial: item.key === "itemId" ? row.id : row[item.key],
         };
       });
-      addInitialInputs && setModalInputs(addInitialInputs);
+      if (addInitialInputs) {
+        setModalInputs(addInitialInputs);
+      }
       setIsModalOpen(true);
     },
     [inputOption]
