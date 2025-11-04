@@ -1,45 +1,33 @@
-import { useState, useEffect } from "react";
-import BannerButton from "../../components/BannerButton";
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import TableButton from "../../components/TableButton";
-import Modal from "../../components/modal/Modal";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-// import {  putUpdateDevice } from "../../api/DeviceAPI";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import BannerButton from "@/components/BannerButton";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import TableButton from "@/components/TableButton";
+import Modal from "@/components/modal/Modal";
+import { MODAL_TITLES } from "@/constants/modals";
 import { toast } from "react-toastify";
-import { getAllAdminInfo, deleteAdmin, putAdminInfo } from "../../api/AdminAPI";
+import { getAllAdminInfo, deleteAdmin, putAdminInfo } from "@/services/api/AdminAPI";
+import type { ModalInputTypesType, ModalSubmitFnType } from "@/types/modal";
+import type { TableHeader } from "@/types/table";
+import { useSearchParams } from "react-router-dom";
 
 //수정 필요: 관리자 계정 관리 API로 변경해야함
 
-export type modalState = Record<string, Date | string | number | null>;
+type AdminListResponse = {
+  content: UsageData[];
+  total_pages: number;
+};
 
-export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
-
-const tableHeader = [
+const tableHeader: TableHeader[] = [
   { name: "ID", id: "id" },
   { name: "추가일", id: "created_at" },
 ];
 
-const inputOption: Record<
-  string,
-  {
-    label: string;
-    key: string;
-    type: ModalInputTypesType;
-    initial?: string | number | Date;
-    hide?: boolean;
-    disable?: boolean;
-  }[]
-> = {
-  저장: [
-    { label: "ID", key: "id", type: "text", disable: true, hide: true },
-    { label: "관리 권한 허가 여부", key: "status", type: "option" },
-  ],
-};
-
 //모달 Submit 함수
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  저장: () =>
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
+> = {
+  [MODAL_TITLES.SAVE]: () =>
     putAdminInfo({
       id: "",
       email: "",
@@ -49,11 +37,15 @@ const modalSubmitFn: Record<string, ModalSubmitFn> = {
 };
 
 const AdminAccountPage = () => {
+  const [searchParams] = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
-  const [modalTitle, setModalTitle] = useState<string>("");
+  const [modalTitle, setModalTitle] = useState<
+    (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
+  >(null);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
@@ -62,15 +54,21 @@ const AdminAccountPage = () => {
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
-      const res = await getAllAdminInfo();
+      const res = await getAllAdminInfo({
+        page: Number(searchParams.get("page")) || 0,
+        size: Number(searchParams.get("size")) || 10,
+      });
+
       if (res.pass) {
-        setTableData(res.data);
+        const { content, total_pages } = res.data as AdminListResponse;
+        setTableData(content);
+        setTotalPages(total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
-  }, [isModalOpen, isDeleteMode]);
+  }, [isModalOpen, isDeleteMode, searchParams.get("page"), searchParams.get("size")]);
 
   const changeSelectedRow = ({ id }: { id: string | null }) => {
     if (id) {
@@ -78,8 +76,36 @@ const AdminAccountPage = () => {
     } else setSelectedRowId("");
   };
 
-  const onClickTableButton = ({ value }: { value: string }) => {
-    if (value === "삭제") {
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        {
+          label: string;
+          key: string;
+          type: ModalInputTypesType;
+          initial?: string | number | Date;
+          hide?: boolean;
+          disable?: boolean;
+        }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.SAVE]: [
+        { label: "ID", key: "id", type: "text", disable: true, hide: true },
+        { label: "관리 권한 허가 여부", key: "status", type: "option" },
+      ],
+    }),
+    []
+  );
+
+  const onClickTableButton = ({
+    value,
+  }: {
+    value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES];
+  }) => {
+    if (value === MODAL_TITLES.DELETE) {
       onClickDeleteButton();
       return;
     }
@@ -111,21 +137,26 @@ const AdminAccountPage = () => {
     }
   };
 
-  const onClickTableRow = (row: UsageData) => {
-    setModalTitle("저장");
-    const addInitialInputs = inputOption["저장"].map((item) => {
-      return {
-        ...item,
-        initial: item.key === "id" ? row.id : row[item.key],
-      };
-    });
-    setModalInputs(addInitialInputs);
-    setIsModalOpen(true);
-  };
+  const onClickTableRow = useCallback(
+    (row: UsageData) => {
+      setModalTitle(MODAL_TITLES.SAVE);
+      const addInitialInputs = inputOption[MODAL_TITLES.SAVE]?.map((item) => {
+        return {
+          ...item,
+          initial: item.key === "id" ? row.id : row[item.key],
+        };
+      });
+      if (addInitialInputs) {
+        setModalInputs(addInitialInputs);
+      }
+      setIsModalOpen(true);
+    },
+    [inputOption]
+  );
 
   const onCloseModal = () => {
     setIsModalOpen(false);
-    setModalTitle("");
+    setModalTitle(null);
     setModalInputs(null);
   };
   return (
@@ -152,9 +183,10 @@ const AdminAccountPage = () => {
           isDeleteMode={isDeleteMode}
           changeSelectedRow={changeSelectedRow}
           selectedRowId={selectedRowId}
+          totalPages={totalPages}
         />
       </div>
-      {isModalOpen && (
+      {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
         <Modal
           isOpen={isModalOpen}
           title={modalTitle}

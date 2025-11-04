@@ -10,6 +10,8 @@ import PaginationButton from "./pagination/PaginationButton";
 import PageSizeSelector from "./pagination/PageSizeSelector";
 import { IoIosCheckmark } from "react-icons/io";
 import renderTableCell from "../utils/table/renderTableCell";
+import type { MODAL_TITLES } from "@/constants/modals";
+import { useNavigate } from "react-router-dom";
 
 export type UsageData = Record<string, string | number | number[]>;
 
@@ -21,10 +23,14 @@ export type HeaderType = {
 type CustomTable = {
   header: HeaderType[];
   data: UsageData[] | null;
-  rowUpdate?: (row: UsageData, title?: string) => void | undefined;
+  rowUpdate?: (
+    row: UsageData,
+    title?: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES]
+  ) => void | undefined;
   isDeleteMode?: boolean;
   changeSelectedRow?: ({ id }: { id: string | null }) => void;
   selectedRowId?: string;
+  totalPages: number;
 };
 
 const CustomTable = ({
@@ -34,7 +40,10 @@ const CustomTable = ({
   isDeleteMode,
   changeSelectedRow,
   selectedRowId,
+  totalPages,
 }: CustomTable) => {
+  const navigate = useNavigate();
+
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
     accessorKey: item.id,
     header: item.name,
@@ -42,7 +51,7 @@ const CustomTable = ({
       const value = getValue() as string;
       const rowData = row.original;
 
-      return renderTableCell({ item, rowData, value, header, rowUpdate });
+      return renderTableCell({ item, rowData, value, header, rowUpdate, navigate });
     },
   }));
 
@@ -131,9 +140,9 @@ const CustomTable = ({
           <tr>
             <td colSpan={isDeleteMode ? header.length + 1 : header.length}>
               <div className="flex justify-between items-center p-[10px]">
-                <PageSizeSelector table={table} />
-                <PaginationButton table={table} />
-                <PageJump table={table} />
+                <PageSizeSelector />
+                <PaginationButton totalPages={totalPages} />
+                <PageJump totalPages={totalPages} />
               </div>
             </td>
           </tr>

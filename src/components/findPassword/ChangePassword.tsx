@@ -1,3 +1,5 @@
+// 비밀번호 변경 폼
+
 import CustomButton from "../CustomButton";
 import CustomInput from "../CustomInput";
 

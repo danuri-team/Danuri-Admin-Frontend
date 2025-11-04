@@ -1,4 +1,4 @@
-import { PrivateAxios } from "./PrivateAxios";
+import { PrivateAxios } from "../PrivateAxios";
 
 //사내 대여 생성
 export const postCreateRental = async ({
@@ -67,9 +67,9 @@ export const getSearchRental = async ({ rentalId }: { rentalId: string }) => {
 };
 
 //사내 전체 대여 조회
-export const getSearchCompanyRental = async () => {
+export const getSearchCompanyRental = async ({ page, size }: { page: number; size: number }) => {
   try {
-    const res = await PrivateAxios.get("/admin/rentals");
+    const res = await PrivateAxios.get(`/admin/rentals?page=${page}&size=${size}`);
     return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };

@@ -1,4 +1,4 @@
-import { PrivateAxios } from "./PrivateAxios";
+import { PrivateAxios } from "../PrivateAxios";
 
 //기기 추가
 export const postAddDevice = async ({ name }: { name: string }) => {
@@ -45,9 +45,9 @@ export const getSearchDevice = async ({ deviceId }: { deviceId: string }) => {
 };
 
 //사내 기기 조회
-export const getSearchCompanyDevice = async () => {
+export const getSearchCompanyDevice = async ({ page, size }: { page: number; size: number }) => {
   try {
-    const res = await PrivateAxios.get("/admin/devices");
+    const res = await PrivateAxios.get(`/admin/devices?page=${page}&size=${size}`);
     return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };

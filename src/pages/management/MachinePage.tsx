@@ -1,85 +1,91 @@
-import { useState, useEffect } from "react";
-import BannerButton from "../../components/BannerButton";
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import MainHeader from "../../components/MainHeader";
-import TableButton from "../../components/TableButton";
-import Modal from "../../components/modal/Modal";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
+import { useState, useEffect, useMemo } from "react";
+import BannerButton from "@/components/BannerButton";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import MainHeader from "@/components/MainHeader";
+import TableButton from "@/components/TableButton";
+import Modal from "@/components/modal/Modal";
 import {
   getSearchCompanyDevice,
   postAddDevice,
   putUpdateDevice,
   deleteDevice,
-} from "../../api/DeviceAPI";
+} from "@/services/api/DeviceAPI";
 import { toast } from "react-toastify";
+import { MODAL_TITLES } from "@/constants/modals";
+import type { TableHeader } from "@/types/table";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
+import { useSearchParams } from "react-router-dom";
 
-export type modalState = Record<string, Date | string | number | null>;
+type DeviceListResponse = {
+  content: UsageData[];
+  total_pages: number;
+};
 
-export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }> | void;
-
-const tableHeader = [
+const tableHeader: TableHeader[] = [
   { name: "별칭", id: "name" },
   { name: "ID", id: "id" },
   { name: "추가일", id: "created_at" },
   { name: "행동", id: "connect" },
 ];
 
-const inputOption: Record<
-  string,
-  {
-    label: string;
-    key: string;
-    type: ModalInputTypesType;
-    initial?: string | number | Date;
-    hide?: boolean;
-    disable?: boolean;
-  }[]
-> = {
-  추가: [{ label: "별칭", key: "name", type: "text" }],
-  수정: [
-    { label: "ID", key: "id", type: "text", disable: true },
-    { label: "별칭", key: "name", type: "text" },
-  ],
-  기기연결: [{ label: "", key: "QRCode", type: "image", disable: true }],
-};
-
 //모달 Submit 함수
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form: modalState) =>
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
+> = {
+  [MODAL_TITLES.ADD]: (form: modalState) =>
     postAddDevice({
       name: form.name as string,
     }),
-  수정: (form: modalState) =>
+  [MODAL_TITLES.SAVE]: (form: modalState) =>
     putUpdateDevice({
       deviceId: form.id as string,
       name: form.name as string,
     }),
-  기기연결: () => {},
+  [MODAL_TITLES.CONNECT]: async () => {
+    return { data: null, pass: true };
+  },
+  [MODAL_TITLES.EDIT]: (form: modalState) =>
+    putUpdateDevice({
+      deviceId: form.id as string,
+      name: form.name as string,
+    }),
 };
 
 const MachinePage = () => {
+  const [searchParams] = useSearchParams();
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
-  const [modalTitle, setModalTitle] = useState<string>("");
+  const [modalTitle, setModalTitle] = useState<
+    (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
+  >(null);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
 
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
   const [selectedRowId, setSelectedRowId] = useState<string>("");
 
+  const currentPage = useMemo(() => Number(searchParams.get("page")) || 0, [searchParams]);
+  const currentSize = useMemo(() => Number(searchParams.get("size")) || 10, [searchParams]);
+
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
-      const res = await getSearchCompanyDevice();
+      const res = await getSearchCompanyDevice({
+        page: currentPage,
+        size: currentSize,
+      });
       if (res.pass) {
-        setTableData(res.data);
+        const { content, total_pages } = res.data as DeviceListResponse;
+        setTableData(content);
+        setTotalPages(total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
-  }, [isModalOpen, isDeleteMode]);
+  }, [isModalOpen, isDeleteMode, currentPage, currentSize]);
 
   const changeSelectedRow = ({ id }: { id: string | null }) => {
     if (id) {
@@ -87,8 +93,38 @@ const MachinePage = () => {
     } else setSelectedRowId("");
   };
 
-  const onClickTableButton = ({ value }: { value: string }) => {
-    if (value === "삭제") {
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        {
+          label: string;
+          key: string;
+          type: ModalInputTypesType;
+          initial?: string | number | Date;
+          hide?: boolean;
+          disable?: boolean;
+        }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.ADD]: [{ label: "별칭", key: "name", type: "text" }],
+      [MODAL_TITLES.EDIT]: [
+        { label: "ID", key: "id", type: "text", disable: true },
+        { label: "별칭", key: "name", type: "text" },
+      ],
+      [MODAL_TITLES.CONNECT]: [{ label: "", key: "QRCode", type: "image", disable: true }],
+    }),
+    []
+  );
+
+  const onClickTableButton = ({
+    value,
+  }: {
+    value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES];
+  }) => {
+    if (value === MODAL_TITLES.DELETE) {
       onClickDeleteButton();
       return;
     }
@@ -118,27 +154,34 @@ const MachinePage = () => {
     }
   };
 
-  const onClickTableRow = (row: UsageData, title: string) => {
+  const onClickTableRow = (
+    row: UsageData,
+    title: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES]
+  ) => {
     setModalTitle(title);
-    const addInitialInputs = inputOption[title].map((item) => {
-      if (title === "기기연결" && item.key === "QRCode") {
+    if (title) {
+      const addInitialInputs = inputOption[title]?.map((item) => {
+        if (title === "기기연결" && item.key === "QRCode") {
+          return {
+            ...item,
+            initial: row.id,
+          };
+        }
         return {
           ...item,
-          initial: row.id,
+          initial: item.key === "itemId" ? row.id : row[item.key],
         };
+      });
+      if (addInitialInputs) {
+        setModalInputs(addInitialInputs);
       }
-      return {
-        ...item,
-        initial: item.key === "itemId" ? row.id : row[item.key],
-      };
-    });
-    setModalInputs(addInitialInputs);
+    }
     setIsModalOpen(true);
   };
 
   const onCloseModal = () => {
     setIsModalOpen(false);
-    setModalTitle("");
+    setModalTitle(null);
     setModalInputs(null);
   };
   return (
@@ -151,10 +194,13 @@ const MachinePage = () => {
             <h1 className="text-xl font-bold">기기 관리</h1>
           </div>
           <div className="flex gap-[10px]">
-            <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
+            <TableButton
+              value="추가"
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.ADD })}
+            />
             <TableButton
               value="삭제"
-              onClick={() => onClickTableButton({ value: "삭제" })}
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.DELETE })}
               isDeleteMode={isDeleteMode}
             />
           </div>
@@ -162,15 +208,17 @@ const MachinePage = () => {
         <CustomTable
           header={tableHeader}
           data={tableData}
-          rowUpdate={(row: UsageData, title: string | undefined) =>
-            onClickTableRow(row, title || "기기연결")
-          }
+          rowUpdate={(
+            row: UsageData,
+            title: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | undefined
+          ) => onClickTableRow(row, title || "기기연결")}
           isDeleteMode={isDeleteMode}
           changeSelectedRow={changeSelectedRow}
           selectedRowId={selectedRowId}
+          totalPages={totalPages}
         />
       </div>
-      {isModalOpen && (
+      {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
         <Modal
           isOpen={isModalOpen}
           title={modalTitle}

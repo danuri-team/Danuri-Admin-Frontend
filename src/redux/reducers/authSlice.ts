@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postLogin } from "../../api/AuthAPI";
-import { PrivateAxios } from "../../api/PrivateAxios";
+import { postLogin } from "@/services/api/AuthAPI";
+import { PrivateAxios } from "@/services/PrivateAxios";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -26,7 +26,7 @@ export const login = createAsyncThunk<
     if (res.pass) {
       return;
     } else return rejectWithValue(res.data as string);
-  } catch (error) {
+  } catch {
     return rejectWithValue("서버오류");
   }
 });

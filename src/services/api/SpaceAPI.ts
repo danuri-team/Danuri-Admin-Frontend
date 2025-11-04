@@ -1,4 +1,4 @@
-import { PrivateAxios } from "./PrivateAxios";
+import { PrivateAxios } from "../PrivateAxios";
 
 //공간 생성
 export const postCreateSpace = async ({
@@ -67,9 +67,9 @@ export const getSearchSpace = async ({ spaceId }: { spaceId: string }) => {
 };
 
 //사내 공간 조회
-export const getSearchCompanySpace = async () => {
+export const getSearchCompanySpace = async ({ page, size }: { page: number; size: number }) => {
   try {
-    const res = await PrivateAxios.get("/admin/spaces");
+    const res = await PrivateAxios.get(`/admin/spaces?page=${page}&size=${size}`);
     return { data: res.data, pass: true };
   } catch (error) {
     return { data: error, pass: false };

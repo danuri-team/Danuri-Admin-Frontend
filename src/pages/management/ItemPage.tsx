@@ -1,19 +1,27 @@
-import CustomTable, { type UsageData } from "../../components/CustomTable";
-import TableButton from "../../components/TableButton";
-import MainHeader from "../../components/MainHeader";
-import BannerButton from "../../components/BannerButton";
-import CustomSelect from "../../components/CustomSelect";
-import { useEffect, useMemo, useReducer, useState } from "react";
-import Modal from "../../components/modal/Modal";
-import type { ModalInputTypesType } from "../../components/modal/ModalInput";
-import { deleteItem, getSearchCompanyItem, postCreateItem, putUpdateItem } from "../../api/ItemAPI";
+import CustomTable, { type UsageData } from "@/components/CustomTable";
+import TableButton from "@/components/TableButton";
+import MainHeader from "@/components/MainHeader";
+import BannerButton from "@/components/BannerButton";
+import CustomSelect from "@/components/CustomSelect";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import Modal from "@/components/modal/Modal";
+import {
+  deleteItem,
+  getSearchCompanyItem,
+  postCreateItem,
+  putUpdateItem,
+} from "@/services/api/ItemAPI";
 import { toast } from "react-toastify";
+import { MODAL_TITLES } from "@/constants/modals";
+import type { TableHeader } from "@/types/table";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
+import { useSearchParams } from "react-router-dom";
 
-type filterSelectType = {
+interface FilterSelectConfig {
   id: keyof SelectState;
   type: "select" | "date";
   options: string[];
-};
+}
 
 type SelectState = {
   order: string;
@@ -23,15 +31,16 @@ type SelectAction =
   | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
   | { type: "RESET" };
 
-export type modalState = Record<string, Date | string | number | null>;
+type ItemListResponse = {
+  content: UsageData[];
+  total_pages: number;
+};
 
-export type ModalSubmitFn = (form: modalState) => Promise<{ data: unknown; pass: boolean }>;
-
-const initialSelectForm: SelectState = {
+const INITIAL_SELECT_FORM: SelectState = {
   order: "재고순",
 };
 
-const tableHeader = [
+const FIXED_TABLE_HEADERS: TableHeader[] = [
   { name: "물품", id: "name" },
   { name: "총 수량", id: "total_quantity" },
   { name: "이용 가능 개수", id: "available_quantity" },
@@ -39,45 +48,22 @@ const tableHeader = [
 ];
 
 //type = 'select' || 'date'
-const filterSelects: filterSelectType[] = [
+const FILTER_SELECTS: FilterSelectConfig[] = [
   { id: "order", type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
 ];
 
-const inputOption: Record<
-  string,
-  {
-    label: string;
-    key: string;
-    type: ModalInputTypesType;
-    initial?: string | number | Date;
-    hide?: boolean;
-  }[]
-> = {
-  추가: [
-    { label: "물품", key: "name", type: "text" },
-    { label: "총 수량", key: "total_quantity", type: "number" },
-    { label: "이용 가능 개수", key: "available_quantity", type: "number" },
-    { label: "상태", key: "status", type: "option" },
-  ],
-  수정: [
-    { label: "물품 ID", key: "itemId", type: "text", hide: true },
-    { label: "물품", key: "name", type: "text" },
-    { label: "총 수량", key: "total_quantity", type: "number" },
-    { label: "이용 가능 개수", key: "available_quantity", type: "number" },
-    { label: "상태", key: "status", type: "option" },
-  ],
-};
-
 //모달 Submit 함수
-const modalSubmitFn: Record<string, ModalSubmitFn> = {
-  추가: (form: modalState) =>
+const modalSubmitFn: Partial<
+  Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
+> = {
+  [MODAL_TITLES.ADD]: (form: modalState) =>
     postCreateItem({
       name: form.name as string,
       totalQuantity: form.total_quantity as string,
       availableQuantity: form.available_quantity as string,
       status: form.status as string,
     }),
-  수정: (form: modalState) =>
+  [MODAL_TITLES.EDIT]: (form: modalState) =>
     putUpdateItem({
       itemId: form.itemId as string,
       name: form.name as string,
@@ -95,22 +81,25 @@ const selectReducer = (state: SelectState, action: SelectAction) => {
         [action.payload.key]: action.payload.value,
       };
     case "RESET":
-      return initialSelectForm;
+      return INITIAL_SELECT_FORM;
   }
 };
 
 const ItemPage = () => {
+  const [searchParams] = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
     { label: string; key: string; type: ModalInputTypesType }[] | null
   >(null);
-  const [modalTitle, setModalTitle] = useState<string>("");
+  const [modalTitle, setModalTitle] = useState<
+    (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] | null
+  >(null);
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
-
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [isDeleteMode, setIsDeleteMode] = useState<boolean>(false);
   const [selectedRowId, setSelectedRowId] = useState<string>("");
 
-  const [selectForm, selectDispatch] = useReducer(selectReducer, initialSelectForm);
+  const [selectForm, selectDispatch] = useReducer(selectReducer, INITIAL_SELECT_FORM);
 
   const sortTableData = useMemo(() => {
     if (!tableData) return null;
@@ -130,15 +119,52 @@ const ItemPage = () => {
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
-      const res = await getSearchCompanyItem();
+      const res = await getSearchCompanyItem({
+        page: Number(searchParams.get("page")) || 0,
+        size: Number(searchParams.get("size")) || 10,
+      });
       if (res.pass) {
-        setTableData(res.data);
+        const { content, total_pages } = res.data as ItemListResponse;
+        setTableData(content);
+        setTotalPages(total_pages);
       } else {
         toast.error("데이터를 불러오지 못했습니다.");
       }
     };
     getTableData();
-  }, [isModalOpen, isDeleteMode]);
+  }, [isModalOpen, isDeleteMode, searchParams.get("page"), searchParams.get("size")]);
+
+  const inputOption = useMemo<
+    Partial<
+      Record<
+        (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES],
+        {
+          label: string;
+          key: string;
+          type: ModalInputTypesType;
+          initial?: string | number | Date;
+          hide?: boolean;
+        }[]
+      >
+    >
+  >(
+    () => ({
+      [MODAL_TITLES.ADD]: [
+        { label: "물품", key: "name", type: "text" },
+        { label: "총 수량", key: "total_quantity", type: "number" },
+        { label: "이용 가능 개수", key: "available_quantity", type: "number" },
+        { label: "상태", key: "status", type: "option" },
+      ],
+      [MODAL_TITLES.EDIT]: [
+        { label: "물품 ID", key: "itemId", type: "text", hide: true },
+        { label: "물품", key: "name", type: "text" },
+        { label: "총 수량", key: "total_quantity", type: "number" },
+        { label: "이용 가능 개수", key: "available_quantity", type: "number" },
+        { label: "상태", key: "status", type: "option" },
+      ],
+    }),
+    []
+  );
 
   const changeSelectedRow = ({ id }: { id: string | null }) => {
     if (id) {
@@ -146,8 +172,12 @@ const ItemPage = () => {
     } else setSelectedRowId("");
   };
 
-  const onClickTableButton = ({ value }: { value: string }) => {
-    if (value === "삭제") {
+  const onClickTableButton = ({
+    value,
+  }: {
+    value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES];
+  }) => {
+    if (value === MODAL_TITLES.DELETE) {
       onClickDeleteButton();
       return;
     }
@@ -177,21 +207,26 @@ const ItemPage = () => {
     }
   };
 
-  const onClickTableRow = (row: UsageData) => {
-    setModalTitle("수정");
-    const addInitialInputs = inputOption["수정"].map((item) => {
-      return {
-        ...item,
-        initial: item.key === "itemId" ? row.id : row[item.key],
-      };
-    });
-    setModalInputs(addInitialInputs);
-    setIsModalOpen(true);
-  };
+  const onClickTableRow = useCallback(
+    (row: UsageData) => {
+      setModalTitle(MODAL_TITLES.EDIT);
+      const addInitialInputs = inputOption[MODAL_TITLES.EDIT]?.map((item) => {
+        return {
+          ...item,
+          initial: item.key === "itemId" ? row.id : row[item.key],
+        };
+      });
+      if (addInitialInputs) {
+        setModalInputs(addInitialInputs);
+      }
+      setIsModalOpen(true);
+    },
+    [inputOption]
+  );
 
   const onCloseModal = () => {
     setIsModalOpen(false);
-    setModalTitle("");
+    setModalTitle(null);
     setModalInputs(null);
   };
 
@@ -203,7 +238,7 @@ const ItemPage = () => {
         <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">물품 관리</h1>
-            {filterSelects.map((item) => (
+            {FILTER_SELECTS.map((item) => (
               <CustomSelect
                 key={item.id}
                 type={item.type}
@@ -219,24 +254,28 @@ const ItemPage = () => {
             ))}
           </div>
           <div className="flex gap-[10px]">
-            <TableButton value="추가" onClick={() => onClickTableButton({ value: "추가" })} />
+            <TableButton
+              value="추가"
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.ADD })}
+            />
             <TableButton
               value="삭제"
-              onClick={() => onClickTableButton({ value: "삭제" })}
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.DELETE })}
               isDeleteMode={isDeleteMode}
             />
           </div>
         </div>
         <CustomTable
-          header={tableHeader}
+          header={FIXED_TABLE_HEADERS}
           data={sortTableData}
           rowUpdate={onClickTableRow}
           isDeleteMode={isDeleteMode}
           changeSelectedRow={changeSelectedRow}
           selectedRowId={selectedRowId}
+          totalPages={totalPages}
         />
       </div>
-      {isModalOpen && (
+      {isModalOpen && modalTitle && modalSubmitFn[modalTitle] && (
         <Modal
           isOpen={isModalOpen}
           title={modalTitle}
