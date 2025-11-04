@@ -59,7 +59,6 @@ const CustomTable = ({
     data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
         pageSize: 100,
