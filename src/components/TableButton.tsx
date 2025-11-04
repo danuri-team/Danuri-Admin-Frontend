@@ -4,6 +4,7 @@ import GridIcon from "../assets/icons/grid-icon.svg?react";
 import LeaveIcon from "../assets/icons/leave-icon.svg?react";
 import PenIcon from "../assets/icons/pen-icon.svg?react";
 import SearchIcon from "../assets/icons/search-icon.svg?react";
+import DeleteIcon from "../assets/icons/delete-icon.svg?react";
 
 import type { JSX } from "react";
 
@@ -30,6 +31,7 @@ const buttonIcon: Record<string, { value: ButtonValues; icon: JSX.Element }> = {
   search: { value: "검색", icon: <SearchIcon /> },
   leave: { value: "강제퇴실", icon: <LeaveIcon /> },
   form: { value: "가입 폼 관리", icon: <PenIcon /> },
+  delete: { value: "삭제", icon: <DeleteIcon /> },
 };
 
 const TableButton = ({ value, onClick, isDeleteMode }: TableButtonType) => {

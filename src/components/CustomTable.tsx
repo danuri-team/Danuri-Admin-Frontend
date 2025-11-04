@@ -1,6 +1,5 @@
 import {
   getCoreRowModel,
-  getPaginationRowModel,
   useReactTable,
   type ColumnDef,
   flexRender,
@@ -59,7 +58,6 @@ const CustomTable = ({
     data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
