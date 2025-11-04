@@ -379,7 +379,7 @@ const UserPage = () => {
             {selectForm.joinDate && (
               <button
                 onClick={handleResetFilter}
-                className="ml-[10px] text-sm text-gray-500 hover:text-gray-700 underline"
+                className="ml-[10px] text-sm cursor-pointer text-gray-500 hover:text-gray-700 underline"
               >
                 초기화
               </button>

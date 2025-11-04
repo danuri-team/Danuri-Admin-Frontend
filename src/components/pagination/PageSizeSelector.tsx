@@ -29,6 +29,7 @@ const PageSizeSelector = () => {
               key={option.value}
               onMouseDown={() => {
                 searchParams.set("size", String(option.value));
+                
                 setSearchParams(searchParams);
               }}
             >

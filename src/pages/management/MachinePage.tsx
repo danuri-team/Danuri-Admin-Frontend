@@ -72,12 +72,14 @@ const MachinePage = () => {
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
+      console.log(currentPage, currentSize);
       const res = await getSearchCompanyDevice({
         page: currentPage,
         size: currentSize,
       });
       if (res.pass) {
         const { content, total_pages } = res.data as DeviceListResponse;
+        console.log(content.length);
         setTableData(content);
         setTotalPages(total_pages);
       } else {
