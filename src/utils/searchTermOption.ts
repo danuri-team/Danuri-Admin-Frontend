@@ -24,7 +24,11 @@ const searchFn: Record<
 > = {
   [SEARCH_TERMS.ITEM]: () => getSearchCompanyItem({ page: 0, size: 1000 }),
   [SEARCH_TERMS.USAGE]: () =>
-    postUsageSearch({ usageForm: { startDate: null, endDate: null, spaceId: null, userId: null }, page: 0, size: 1000 }),
+    postUsageSearch({
+      usageForm: { startDate: null, endDate: null, spaceId: null, userId: null },
+      page: 0,
+      size: 1000,
+    }),
   [SEARCH_TERMS.SPACE]: () => getSearchCompanySpace({ page: 0, size: 1000 }),
   [SEARCH_TERMS.USER]: () => getSearchCompanyUser({ page: 0, size: 1000 }),
 };
@@ -58,7 +62,7 @@ export const getSearchTerm = async (
 
   // 유저 검색
   if (label === SEARCH_TERMS.USER) {
-    return (res.data as any).user_list
+    return (res.data as any).user_list.content
       .map((item: Record<string, string | number>) => ({
         name: extractUserName(item.sign_up_form_schema),
         id: String(item.id),
@@ -69,7 +73,7 @@ export const getSearchTerm = async (
 
   // 공간사용 검색
   if (label === SEARCH_TERMS.USAGE) {
-    return (res.data as any)
+    return (res.data as any).content
       .map((item: Record<string, string | number>) => ({
         name: String(item.space_name || ""),
         id: String(item.id),
@@ -82,7 +86,7 @@ export const getSearchTerm = async (
   }
 
   // 물품, 공간 검색
-  return (res.data as any)
+  return (res.data as any).content
     .map((item: Record<string, string | number>) => ({
       name: String(item.name || ""),
       id: String(item.id),
@@ -99,7 +103,7 @@ export const selectTermAvailableCount = async (itemId: string): Promise<number> 
     return 0;
   }
 
-  const selectedItem = (res.data as any).find(
+  const selectedItem = (res.data as any).content.find(
     (item: Record<string, string | number>) => String(item.id) === itemId
   );
 
