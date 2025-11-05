@@ -1,3 +1,4 @@
+// 관리 페이지 레이아웃 - 컴파운드 컴포넌트 패턴
 import { memo, type ReactNode } from "react";
 import MainHeader from "@/components/MainHeader";
 import BannerButton from "@/components/BannerButton";
@@ -33,7 +34,7 @@ const ManagementLayoutComponent = ({ children, title }: ManagementLayoutProps) =
     <div className="w-full">
       <MainHeader />
       <BannerButton />
-      <div className="w-full flex-1 max-w-360 justify-self-center pr-[50px] pl-[50px] text-nowrap">
+      <div className="w-full flex-1 max-w-360 justify-self-center text-nowrap">
         {title && (
           <div className="mr-[20px] ml-[20px] mb-[30px]">
             <h1 className="text-xl font-bold">{title}</h1>
@@ -49,9 +50,9 @@ const ManagementLayoutComponent = ({ children, title }: ManagementLayoutProps) =
 const Header = memo<HeaderProps>(({ title, children }) => {
   return (
     <div className="mr-[20px] ml-[20px] mb-[30px] flex flex-1 justify-between">
-      <div className="flex items-center">
+      <div className="flex items-center flex-1">
         <h1 className="text-xl font-bold">{title}</h1>
-        {children}
+        <div className="flex-1 flex items-center justify-between">{children}</div>
       </div>
     </div>
   );
@@ -68,9 +69,7 @@ Filters.displayName = "ManagementLayout.Filters";
 
 // Actions 컴포넌트
 const Actions = memo<ActionsProps>(({ children }) => {
-  return (
-    <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-end gap-[10px]">{children}</div>
-  );
+  return <div className="ml-5 flex justify-end gap-[10px]">{children}</div>;
 });
 
 Actions.displayName = "ManagementLayout.Actions";
@@ -84,7 +83,7 @@ Content.displayName = "ManagementLayout.Content";
 
 // Table 컴포넌트
 const Table = memo<TableProps>(({ children }) => {
-  return <div className="mr-[20px] ml-[20px]">{children}</div>;
+  return <div className="">{children}</div>;
 });
 
 Table.displayName = "ManagementLayout.Table";
@@ -100,7 +99,7 @@ const ManagementLayout = Object.assign(memo(ManagementLayoutComponent), {
 
 export default ManagementLayout;
 
-// 레이아웃과 함께 사용할 수 있는 유틸리티 컴포넌트
+// 레이아웃과 함께 사용할 수 있는 유틸리티 컴포넌트 - 테이블에 데이터가 없을 때
 export const EmptyState = memo<{ message: string }>(({ message }) => {
   return (
     <div className="w-full flex h-40 text-center">

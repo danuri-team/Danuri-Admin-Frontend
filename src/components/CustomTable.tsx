@@ -71,7 +71,7 @@ const CustomTable = ({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="text-sm font-medium p-[8px] px-4 overflow-hidden text-ellipsis"
+                  className="text-sm font-medium p-[8px] pl-5 pr-4 overflow-hidden text-ellipsis"
                   // style={{ width: `${100 / headerGroup.headers.length}%` }}
                 >
                   {header.isPlaceholder

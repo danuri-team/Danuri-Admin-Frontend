@@ -3,7 +3,7 @@ import Modal from "@/components/modal/Modal";
 import UserFilters from "./UserFilters";
 import UserActions from "./UserActions";
 import UserTable from "./UserTable";
-import { useUserPage } from "./useUserPage";
+import { useUserPage } from "../../../hooks/page/useUserPage";
 
 const UserPage = () => {
   const {
@@ -37,16 +37,15 @@ const UserPage = () => {
             onResetFilter={handleResetFilter}
           />
         </ManagementLayout.Filters>
+        <ManagementLayout.Actions>
+          <UserActions
+            onTableButton={handleTableButton}
+            onJoinFormNavigate={handleJoinFormNavigate}
+            isDeleteMode={isDeleteMode}
+            isJoinForm={isJoinForm}
+          />
+        </ManagementLayout.Actions>
       </ManagementLayout.Header>
-
-      <ManagementLayout.Actions>
-        <UserActions
-          onTableButton={handleTableButton}
-          onJoinFormNavigate={handleJoinFormNavigate}
-          isDeleteMode={isDeleteMode}
-          isJoinForm={isJoinForm}
-        />
-      </ManagementLayout.Actions>
 
       <ManagementLayout.Table>
         <UserTable
