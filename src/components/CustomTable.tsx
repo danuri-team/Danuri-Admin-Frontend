@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   getCoreRowModel,
   useReactTable,
@@ -150,4 +151,4 @@ const CustomTable = ({
   );
 };
 
-export default CustomTable;
+export default memo(CustomTable);

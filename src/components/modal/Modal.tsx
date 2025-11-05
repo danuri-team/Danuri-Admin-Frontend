@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState, memo } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput from "./ModalInput";
 import CustomButton from "../CustomButton";
@@ -204,4 +204,4 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   );
 };
 
-export default Modal;
+export default memo(Modal);
