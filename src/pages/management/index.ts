@@ -5,7 +5,7 @@ export { default as JoinFormPage } from "./JoinFormPage";
 export { default as MachinePage } from "./MachinePage";
 export { default as NotiTalkPage } from "./NotiTalkPage";
 export { default as RentalPage } from "./RentalPage";
-export { default as SpacePage } from "./SpacePage";
+export { default as SpacePage } from "./SpacePage/index";
 export { default as UsagePage } from "./UsagePage";
 export { default as UserPage } from "./UserPage/index";
 export { default as AdminAccountPage } from "./AdminAccountPage";

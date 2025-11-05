@@ -4,12 +4,12 @@ import { memo } from "react";
 import TableButton from "@/components/TableButton";
 import { MODAL_TITLES } from "@/constants/modals";
 
-interface ItemActionsProps {
+interface SpaceActionsProps {
   onTableButton: ({ value }: { value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES] }) => void;
   isDeleteMode: boolean;
 }
 
-const ItemActions = memo<ItemActionsProps>(({ onTableButton, isDeleteMode }) => {
+const SpaceActions = memo<SpaceActionsProps>(({ onTableButton, isDeleteMode }) => {
   return (
     <div className="flex gap-[10px]">
       <TableButton
@@ -25,6 +25,6 @@ const ItemActions = memo<ItemActionsProps>(({ onTableButton, isDeleteMode }) => 
   );
 });
 
-ItemActions.displayName = "ItemActions";
+SpaceActions.displayName = "SpaceActions";
 
-export default ItemActions;
+export default SpaceActions;

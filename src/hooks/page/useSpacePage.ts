@@ -12,90 +12,56 @@ import {
   putUpdateItem,
 } from "@/services/api/ItemAPI";
 import type { Item } from "@/types/domains/item";
-
-interface SelectState {
-  order: string;
-}
-
-type SelectAction =
-  | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
-  | { type: "RESET" };
+import {
+  getSearchCompanySpace,
+  getSearchSpace,
+  postCreateSpace,
+  putUpdateSpace,
+} from "@/services/api/SpaceAPI";
+import { formatDatetoTime, formatTimetoDate } from "@/utils/format/dateFormat";
+import type { Space } from "@/types/domains/space";
 
 // Constants
 const FIXED_TABLE_HEADERS: TableHeader[] = [
-  { name: "물품", id: "name" },
-  { name: "총 수량", id: "total_quantity" },
-  { name: "이용 가능 개수", id: "available_quantity" },
+  { name: "공간명", id: "name" },
+  { name: "시작시간", id: "start_at" },
+  { name: "종료시간", id: "end_at" },
+  { name: "사용횟수", id: "usage_count" },
   { name: "상태", id: "status" },
 ];
 
-const INITIAL_SELECT_FORM: SelectState = {
-  order: "재고순",
-};
-
-// Reducer
-const selectReducer = (state: SelectState, action: SelectAction): SelectState => {
-  switch (action.type) {
-    case "CHANGE":
-      return {
-        ...state,
-        [action.payload.key]: action.payload.value,
-      };
-    case "RESET":
-      return INITIAL_SELECT_FORM;
-  }
-};
-
 // Hook
-export const useItemPage = () => {
+export const useSpacePage = () => {
   const [searchParams] = useSearchParams();
   const modal = useModal();
 
   // State
-  const itemTableHeader = useMemo(() => FIXED_TABLE_HEADERS, []);
+  const spaceTableHeader = useMemo(() => FIXED_TABLE_HEADERS, []);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [tableData, setTableData] = useState<Item[] | null>(null);
+  const [tableData, setTableData] = useState<Space[] | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState("");
-  const [selectForm, selectDispatch] = useReducer(selectReducer, INITIAL_SELECT_FORM);
 
   // Extract search params
   const page = Number(searchParams.get("page")) || 0;
   const size = Number(searchParams.get("size")) || 10;
-
-  const sortTableData = useMemo(() => {
-    if (!tableData) return null;
-    return [...tableData].sort((a, b) => {
-      if (selectForm.order === "재고순") {
-        return (a.available_quantity as number) - (b.available_quantity as number);
-      } else if (selectForm.order === "이름순") {
-        return (a.name as string).localeCompare(b.name as string);
-      } else {
-        if (a.status === "AVAILABLE" && b.status !== "AVAILABLE") return -1;
-        else if (a.status !== "AVAILABLE" && b.status === "AVAILABLE") return 1;
-        else return 0;
-      }
-    });
-  }, [tableData, selectForm.order]);
 
   // Modal Submit Functions
   const modalSubmitFn: Partial<
     Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
   > = {
     [MODAL_TITLES.ADD]: (form: modalState) =>
-      postCreateItem({
+      postCreateSpace({
         name: form.name as string,
-        totalQuantity: form.total_quantity as string,
-        availableQuantity: form.available_quantity as string,
-        status: form.status as string,
+        startTime: formatDatetoTime(form.startTime as Date),
+        endTime: formatDatetoTime(form.endTime as Date),
       }),
     [MODAL_TITLES.EDIT]: (form: modalState) =>
-      putUpdateItem({
-        itemId: form.itemId as string,
+      putUpdateSpace({
+        spaceId: form.spaceId as string,
         name: form.name as string,
-        totalQuantity: form.total_quantity as string,
-        availableQuantity: form.available_quantity as string,
-        status: form.status as string,
+        startTime: formatDatetoTime(form.startTime as Date),
+        endTime: formatDatetoTime(form.endTime as Date),
       }),
   };
 
@@ -103,7 +69,7 @@ export const useItemPage = () => {
     if (modal.isOpen) return;
 
     const fetchUserData = async () => {
-      const res = await getSearchCompanyItem({ page, size });
+      const res = await getSearchCompanySpace({ page, size });
       if (!res.pass) {
         toast.error("데이터를 불러오지 못했습니다.");
         return;
@@ -121,17 +87,15 @@ export const useItemPage = () => {
   >(
     () => ({
       [MODAL_TITLES.ADD]: [
-        { label: "물품", key: "name", type: "text" },
-        { label: "총 수량", key: "total_quantity", type: "number" },
-        { label: "이용 가능 개수", key: "available_quantity", type: "number" },
-        { label: "상태", key: "status", type: "option" },
+        { label: "공간명", key: "name", type: "text" },
+        { label: "시작시간", key: "startTime", type: "time" },
+        { label: "종료시간", key: "endTime", type: "time" },
       ],
       [MODAL_TITLES.EDIT]: [
-        { label: "물품 ID", key: "itemId", type: "text", hide: true },
-        { label: "물품", key: "name", type: "text" },
-        { label: "총 수량", key: "total_quantity", type: "number" },
-        { label: "이용 가능 개수", key: "available_quantity", type: "number" },
-        { label: "상태", key: "status", type: "option" },
+        { label: "공간 ID", key: "spaceId", type: "text", hide: true },
+        { label: "공간명", key: "name", type: "text" },
+        { label: "시작시간", key: "startTime", type: "time" },
+        { label: "종료시간", key: "endTime", type: "time" },
       ],
     }),
     []
@@ -149,7 +113,7 @@ export const useItemPage = () => {
     }
 
     if (!selectedRowId) {
-      toast.error("선택된 물품이 없습니다.");
+      toast.error("선택된 공간이 없습니다.");
       setIsDeleteMode(false);
       return;
     }
@@ -180,7 +144,14 @@ export const useItemPage = () => {
   const handleTableRowClick = useCallback(
     (row: UsageData) => {
       const addInitialInputs = inputOption[MODAL_TITLES.EDIT]?.map((item) => {
-        const value = item.key === "itemId" ? row.id : row[item.key];
+        const value =
+          item.key === "spaceId"
+            ? row.id
+            : item.key === "startTime"
+              ? formatTimetoDate(row.start_at as number[])
+              : item.key === "endTime"
+                ? formatTimetoDate(row.end_at as number[])
+                : row[item.key];
         return {
           ...item,
           initial: typeof value === "object" && !(value instanceof Date) ? undefined : value,
@@ -201,25 +172,13 @@ export const useItemPage = () => {
     [modal.title]
   );
 
-  const handleResetFilter = useCallback(() => {
-    selectDispatch({ type: "RESET" });
-  }, []);
-
-  const handleFilterChange = useCallback((key: string, value: string | Date | null) => {
-    selectDispatch({
-      type: "CHANGE",
-      payload: { key, value },
-    });
-  }, []);
-
   return {
     // State
-    itemTableHeader,
+    spaceTableHeader,
     totalPages,
-    sortTableData,
+    tableData,
     isDeleteMode,
     selectedRowId,
-    selectForm,
     // Modal
     modal,
 
@@ -228,7 +187,5 @@ export const useItemPage = () => {
     handleTableButton,
     handleTableRowClick,
     handleModalSubmit,
-    handleResetFilter,
-    handleFilterChange,
   };
 };
