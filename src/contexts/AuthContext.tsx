@@ -41,8 +41,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       setIsAuthenticated(false);
       const axiosError = error as AxiosError;
+      const status = axiosError.response?.status;
 
-      if (axiosError.response?.status === 401) {
+      if (typeof status === "number" && [401, 500].includes(status)) {
         try {
           await PublicAxios.get("/auth/common/refresh");
           await PrivateAxios.get("/admin/management/me");
