@@ -80,8 +80,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       (response) => response,
       async (error) => {
         const axiosError = error as AxiosError;
+        const status = axiosError.response?.status;
 
-        if (axiosError.response?.status === 401) {
+        if (typeof status === "number" && [401, 500].includes(status)) {
           const originalRequest = axiosError.config;
 
           if (originalRequest?.url?.includes("/auth/common/refresh")) {
