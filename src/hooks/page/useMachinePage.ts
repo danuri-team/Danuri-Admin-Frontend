@@ -5,33 +5,32 @@ import { MODAL_TITLES } from "@/constants/modals";
 import { useModal } from "@/hooks/useModal";
 import type { TableHeader, UsageData } from "@/types/table";
 import type { ModalInput, modalState, ModalSubmitFnType } from "@/types/modal";
-import {
-  deleteSpace,
-  getSearchCompanySpace,
-  postCreateSpace,
-  putUpdateSpace,
-} from "@/services/api/SpaceAPI";
 import { formatDatetoTime, formatTimetoDate } from "@/utils/format/dateFormat";
-import type { Space } from "@/types/domains/space";
+import {
+  deleteDevice,
+  getSearchCompanyDevice,
+  postAddDevice,
+  putUpdateDevice,
+} from "@/services/api/DeviceAPI";
+import type { Device } from "@/types/domains/device";
 
 // Constants
 const FIXED_TABLE_HEADERS: TableHeader[] = [
-  { name: "공간명", id: "name" },
-  { name: "시작시간", id: "start_at" },
-  { name: "종료시간", id: "end_at" },
-  { name: "사용횟수", id: "usage_count" },
-  { name: "상태", id: "status" },
+  { name: "별칭", id: "name" },
+  { name: "ID", id: "id" },
+  { name: "추가일", id: "created_at" },
+  { name: "행동", id: "connect" },
 ];
 
 // Hook
-export const useSpacePage = () => {
+export const useMachinePage = () => {
   const [searchParams] = useSearchParams();
   const modal = useModal();
 
   // State
-  const spaceTableHeader = useMemo(() => FIXED_TABLE_HEADERS, []);
+  const machineTableHeader = useMemo(() => FIXED_TABLE_HEADERS, []);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [tableData, setTableData] = useState<Space[] | null>(null);
+  const [tableData, setTableData] = useState<Device[] | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState("");
 
@@ -44,17 +43,21 @@ export const useSpacePage = () => {
     Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
   > = {
     [MODAL_TITLES.ADD]: (form: modalState) =>
-      postCreateSpace({
+      postAddDevice({
         name: form.name as string,
-        startTime: formatDatetoTime(form.startTime as Date),
-        endTime: formatDatetoTime(form.endTime as Date),
       }),
-    [MODAL_TITLES.EDIT]: (form: modalState) =>
-      putUpdateSpace({
-        spaceId: form.spaceId as string,
+    [MODAL_TITLES.SAVE]: (form: modalState) =>
+      putUpdateDevice({
+        deviceId: form.id as string,
         name: form.name as string,
-        startTime: formatDatetoTime(form.startTime as Date),
-        endTime: formatDatetoTime(form.endTime as Date),
+      }),
+    [MODAL_TITLES.CONNECT]: async () => {
+      return { data: null, pass: true };
+    },
+    [MODAL_TITLES.EDIT]: (form: modalState) =>
+      putUpdateDevice({
+        deviceId: form.id as string,
+        name: form.name as string,
       }),
   };
 
@@ -62,7 +65,7 @@ export const useSpacePage = () => {
     if (modal.isOpen) return;
 
     const fetchUserData = async () => {
-      const res = await getSearchCompanySpace({ page, size });
+      const res = await getSearchCompanyDevice({ page, size });
       if (!res.pass) {
         toast.error("데이터를 불러오지 못했습니다.");
         return;
@@ -79,17 +82,12 @@ export const useSpacePage = () => {
     Partial<Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalInput[]>>
   >(
     () => ({
-      [MODAL_TITLES.ADD]: [
-        { label: "공간명", key: "name", type: "text" },
-        { label: "시작시간", key: "startTime", type: "time" },
-        { label: "종료시간", key: "endTime", type: "time" },
-      ],
+      [MODAL_TITLES.ADD]: [{ label: "별칭", key: "name", type: "text" }],
       [MODAL_TITLES.EDIT]: [
-        { label: "공간 ID", key: "spaceId", type: "text", hide: true },
-        { label: "공간명", key: "name", type: "text" },
-        { label: "시작시간", key: "startTime", type: "time" },
-        { label: "종료시간", key: "endTime", type: "time" },
+        { label: "ID", key: "id", type: "text", disable: true },
+        { label: "별칭", key: "name", type: "text" },
       ],
+      [MODAL_TITLES.CONNECT]: [{ label: "", key: "QRCode", type: "image", disable: true }],
     }),
     []
   );
@@ -106,12 +104,12 @@ export const useSpacePage = () => {
     }
 
     if (!selectedRowId) {
-      toast.error("선택된 공간이 없습니다.");
+      toast.error("선택된 기기가 없습니다.");
       setIsDeleteMode(false);
       return;
     }
 
-    const res = await deleteSpace({ spaceId: selectedRowId });
+    const res = await deleteDevice({ deviceId: selectedRowId });
     if (res.pass) {
       toast.success("삭제되었습니다.");
       setIsDeleteMode(false);
@@ -135,23 +133,22 @@ export const useSpacePage = () => {
   );
 
   const handleTableRowClick = useCallback(
-    (row: UsageData) => {
-      const addInitialInputs = inputOption[MODAL_TITLES.EDIT]?.map((item) => {
+    (row: UsageData, title?: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES]) => {
+      const modalTitle = title ? title : MODAL_TITLES.SAVE;
+      const addInitialInputs = inputOption[modalTitle]?.map((item) => {
         const value =
-          item.key === "spaceId"
+          title === MODAL_TITLES.CONNECT && item.key === "QRCode"
             ? row.id
-            : item.key === "startTime"
-              ? formatTimetoDate(row.start_at as number[])
-              : item.key === "endTime"
-                ? formatTimetoDate(row.end_at as number[])
-                : row[item.key];
+            : item.key === "itemId"
+              ? row.id
+              : row[item.key];
         return {
           ...item,
           initial: typeof value === "object" && !(value instanceof Date) ? undefined : value,
         };
       });
       if (addInitialInputs) {
-        modal.openModal(MODAL_TITLES.EDIT, addInitialInputs);
+        modal.openModal(modalTitle, addInitialInputs);
       }
     },
     [inputOption, modal]
@@ -167,7 +164,7 @@ export const useSpacePage = () => {
 
   return {
     // State
-    spaceTableHeader,
+    machineTableHeader,
     totalPages,
     tableData,
     isDeleteMode,

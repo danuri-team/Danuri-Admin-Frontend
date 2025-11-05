@@ -34,7 +34,7 @@ const ManagementLayoutComponent = ({ children, title }: ManagementLayoutProps) =
     <div className="w-full">
       <MainHeader />
       <BannerButton />
-      <div className="w-full flex-1 max-w-360 justify-self-center text-nowrap">
+      <div className="w-full flex-1 max-w-360 justify-self-center pr-[50px] pl-[50px] text-nowrap">
         {title && (
           <div className="mr-[20px] ml-[20px] mb-[30px]">
             <h1 className="text-xl font-bold">{title}</h1>
