@@ -187,8 +187,8 @@ const UserPage = () => {
   useEffect(() => {
     const fetchJoinFormStatus = async () => {
       const res = await getJoinForm();
-      if (res.pass) {
-        setIsJoinForm(res.data.schema !== "");
+      if (res.pass && Array.isArray(res.data) && res.data.length > 0) {
+        setIsJoinForm(res.data[0].schema !== "");
       }
     };
     fetchJoinFormStatus();

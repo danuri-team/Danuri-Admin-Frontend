@@ -1,89 +1,73 @@
 import { PrivateAxios } from "../PrivateAxios";
+import { BaseAPI } from "./BaseAPI";
+import type { ApiResponse, PaginatedResponse, PaginationParams } from "@/types/api";
+import type {
+  Item,
+  CreateItemRequest,
+  UpdateItemRequest,
+  ItemIdRequest,
+} from "@/types/domains/item";
+import { validateItemQuantities } from "@/utils/validation/itemValidation";
 
-//아이템 생성
-export const postCreateItem = async ({
-  name,
-  totalQuantity,
-  availableQuantity,
-  status,
-}: {
-  name: string;
-  totalQuantity: string;
-  availableQuantity: string;
-  status: string;
-}) => {
-  try {
-    if (Number(availableQuantity) > Number(totalQuantity)) {
-      return { data: "사용 가능한 수량이 총 수량을 초과할 수 없습니다.", pass: false };
+class ItemAPIService extends BaseAPI {
+  async postCreateItem(data: CreateItemRequest): Promise<ApiResponse<Item>> {
+    const { name, totalQuantity, availableQuantity, status } = data;
+
+    const validation = validateItemQuantities(totalQuantity, availableQuantity);
+    if (!validation.valid) {
+      return {
+        data: validation.error as never,
+        pass: false,
+      };
     }
-    const res = await PrivateAxios.post("/admin/items", {
+
+    return this.post<Item>("/admin/items", {
       name,
       total_quantity: totalQuantity,
       available_quantity: availableQuantity,
       status,
     });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
   }
-};
 
-//아이템 수정
-export const putUpdateItem = async ({
-  itemId,
-  name,
-  totalQuantity,
-  availableQuantity,
-  status,
-}: {
-  itemId: string;
-  name: string;
-  totalQuantity: string;
-  availableQuantity: string;
-  status: string;
-}) => {
-  try {
-    if (Number(availableQuantity) > Number(totalQuantity)) {
-      return { data: "사용 가능한 수량이 총 수량을 초과할 수 없습니다.", pass: false };
+  async putUpdateItem(data: UpdateItemRequest): Promise<ApiResponse<Item>> {
+    const { itemId, name, totalQuantity, availableQuantity, status } = data;
+
+    const validation = validateItemQuantities(totalQuantity, availableQuantity);
+    if (!validation.valid) {
+      return {
+        data: validation.error as never,
+        pass: false,
+      };
     }
-    const res = await PrivateAxios.put(`/admin/items/${itemId}`, {
+
+    return this.put<Item>(`/admin/items/${itemId}`, {
       name,
       total_quantity: totalQuantity,
       available_quantity: availableQuantity,
       status,
     });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
   }
-};
 
-//아이템 삭제
-export const deleteItem = async ({ itemId }: { itemId: string }) => {
-  try {
-    const res = await PrivateAxios.delete(`/admin/items/${itemId}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async deleteItem({ itemId }: ItemIdRequest): Promise<ApiResponse<void>> {
+    return this.delete<void>(`/admin/items/${itemId}`);
   }
-};
 
-//아이템 조회
-export const getSearchItem = async ({ itemId }: { itemId: string }) => {
-  try {
-    const res = await PrivateAxios.get(`/admin/items/${itemId}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async getSearchItem({ itemId }: ItemIdRequest): Promise<ApiResponse<Item>> {
+    return this.get<Item>(`/admin/items/${itemId}`);
   }
-};
 
-//사내 아이템 조회
-export const getSearchCompanyItem = async ({ page, size }: { page: number; size: number }) => {
-  try {
-    const res = await PrivateAxios.get(`/admin/items?page=${page}&size=${size}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async getSearchCompanyItem(
+    params: PaginationParams
+  ): Promise<ApiResponse<PaginatedResponse<Item>>> {
+    return this.get<PaginatedResponse<Item>>("/admin/items", { params });
   }
-};
+}
+
+export const ItemAPI = new ItemAPIService(PrivateAxios);
+
+export const postCreateItem = (data: CreateItemRequest) => ItemAPI.postCreateItem(data);
+export const putUpdateItem = (data: UpdateItemRequest) => ItemAPI.putUpdateItem(data);
+export const deleteItem = (params: ItemIdRequest) => ItemAPI.deleteItem(params);
+export const getSearchItem = (params: ItemIdRequest) => ItemAPI.getSearchItem(params);
+export const getSearchCompanyItem = (params: PaginationParams) =>
+  ItemAPI.getSearchCompanyItem(params);

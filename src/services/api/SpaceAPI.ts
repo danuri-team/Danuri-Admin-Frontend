@@ -1,77 +1,52 @@
 import { PrivateAxios } from "../PrivateAxios";
+import { BaseAPI } from "./BaseAPI";
+import type { ApiResponse, PaginatedResponse, PaginationParams } from "@/types/api";
+import type {
+  Space,
+  CreateSpaceRequest,
+  UpdateSpaceRequest,
+  SpaceIdRequest,
+} from "@/types/domains/space";
 
-//공간 생성
-export const postCreateSpace = async ({
-  name,
-  startTime,
-  endTime,
-}: {
-  name: string;
-  startTime: string;
-  endTime: string;
-}) => {
-  try {
-    const res = await PrivateAxios.post("/admin/spaces", {
+class SpaceAPIService extends BaseAPI {
+  async postCreateSpace(data: CreateSpaceRequest): Promise<ApiResponse<Space>> {
+    const { name, startTime, endTime } = data;
+    return this.post<Space>("/admin/spaces", {
       name,
       start_at: startTime,
       end_at: endTime,
     });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
   }
-};
 
-//공간 수정
-export const putUpdateSpace = async ({
-  spaceId,
-  name,
-  startTime,
-  endTime,
-}: {
-  spaceId: string;
-  name: string;
-  startTime: string;
-  endTime: string;
-}) => {
-  try {
-    const res = await PrivateAxios.put(`/admin/spaces/${spaceId}`, {
+  async putUpdateSpace(data: UpdateSpaceRequest): Promise<ApiResponse<Space>> {
+    const { spaceId, name, startTime, endTime } = data;
+    return this.put<Space>(`/admin/spaces/${spaceId}`, {
       name,
       start_at: startTime,
       end_at: endTime,
     });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
   }
-};
 
-//공간 삭제
-export const deleteSpace = async ({ spaceId }: { spaceId: string }) => {
-  try {
-    const res = await PrivateAxios.delete(`/admin/spaces/${spaceId}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async deleteSpace({ spaceId }: SpaceIdRequest): Promise<ApiResponse<void>> {
+    return this.delete<void>(`/admin/spaces/${spaceId}`);
   }
-};
 
-//공간 조회
-export const getSearchSpace = async ({ spaceId }: { spaceId: string }) => {
-  try {
-    const res = await PrivateAxios.get(`/admin/spaces/${spaceId}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async getSearchSpace({ spaceId }: SpaceIdRequest): Promise<ApiResponse<Space>> {
+    return this.get<Space>(`/admin/spaces/${spaceId}`);
   }
-};
 
-//사내 공간 조회
-export const getSearchCompanySpace = async ({ page, size }: { page: number; size: number }) => {
-  try {
-    const res = await PrivateAxios.get(`/admin/spaces?page=${page}&size=${size}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async getSearchCompanySpace(
+    params: PaginationParams
+  ): Promise<ApiResponse<PaginatedResponse<Space>>> {
+    return this.get<PaginatedResponse<Space>>("/admin/spaces", { params });
   }
-};
+}
+
+export const SpaceAPI = new SpaceAPIService(PrivateAxios);
+
+export const postCreateSpace = (data: CreateSpaceRequest) => SpaceAPI.postCreateSpace(data);
+export const putUpdateSpace = (data: UpdateSpaceRequest) => SpaceAPI.putUpdateSpace(data);
+export const deleteSpace = (params: SpaceIdRequest) => SpaceAPI.deleteSpace(params);
+export const getSearchSpace = (params: SpaceIdRequest) => SpaceAPI.getSearchSpace(params);
+export const getSearchCompanySpace = (params: PaginationParams) =>
+  SpaceAPI.getSearchCompanySpace(params);
