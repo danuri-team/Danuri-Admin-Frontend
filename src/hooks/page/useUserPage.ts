@@ -1,19 +1,18 @@
-import { useEffect, useMemo, useReducer, useState, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useEffect, useMemo, useReducer, useState, useCallback } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   deleteUser,
   getSearchCompanyUser,
   postCreateUser,
   putUpdateUser,
-} from '@/services/api/UserAPI';
-import { getJoinForm } from '@/services/api/FormAPI';
-import { formatDatetoISOString } from '@/utils/format/dateFormat';
-import { MODAL_TITLES } from '@/constants/modals';
-import { useModal } from '@/hooks/useModal';
-import type { UsageData } from '@/components/CustomTable';
-import type { TableHeader } from '@/types/table';
-import type { ModalInput, modalState, ModalSubmitFnType } from '@/types/modal';
+} from "@/services/api/UserAPI";
+import { getJoinForm } from "@/services/api/FormAPI";
+import { formatDatetoISOString } from "@/utils/format/dateFormat";
+import { MODAL_TITLES } from "@/constants/modals";
+import { useModal } from "@/hooks/useModal";
+import type { TableHeader, UsageData } from "@/types/table";
+import type { ModalInput, modalState, ModalSubmitFnType } from "@/types/modal";
 
 // Types
 interface UserApiResponse {
@@ -32,20 +31,20 @@ interface SelectState {
 }
 
 type SelectAction =
-  | { type: 'CHANGE'; payload: { key: string; value: string | Date | null } }
-  | { type: 'RESET' };
+  | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
+  | { type: "RESET" };
 
 // Constants
 const FIXED_TABLE_HEADERS: TableHeader[] = [
-  { name: 'ID', id: 'id' },
-  { name: '전화번호', id: 'phone' },
-  { name: '가입일', id: 'created_at' },
+  { name: "ID", id: "id" },
+  { name: "전화번호", id: "phone" },
+  { name: "가입일", id: "created_at" },
 ];
 
 const INITIAL_SELECT_FORM: SelectState = {
   joinDate: null,
-  age: '나이대',
-  sex: '성별',
+  age: "나이대",
+  sex: "성별",
 };
 
 // Helper Functions
@@ -57,7 +56,7 @@ const parseSignUpFormSchema = (schemaString: string): Record<string, unknown> | 
     delete schema.id;
     return schema;
   } catch (error) {
-    console.error('[다누리] 폼 응답 값 파싱에 실패했어요:', error);
+    console.error("[다누리] 폼 응답 값 파싱에 실패했어요:", error);
     return null;
   }
 };
@@ -94,12 +93,12 @@ const matchesSearchForm = (item: UsageData, form: modalState): boolean => {
 // Reducer
 const selectReducer = (state: SelectState, action: SelectAction): SelectState => {
   switch (action.type) {
-    case 'CHANGE':
+    case "CHANGE":
       return {
         ...state,
         [action.payload.key]: action.payload.value,
       };
-    case 'RESET':
+    case "RESET":
       return INITIAL_SELECT_FORM;
   }
 };
@@ -116,13 +115,13 @@ export const useUserPage = () => {
   const [tableData, setTableData] = useState<UsageData[] | null>(null);
   const [filterData, setFilterData] = useState<UsageData[] | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState('');
+  const [selectedRowId, setSelectedRowId] = useState("");
   const [selectForm, selectDispatch] = useReducer(selectReducer, INITIAL_SELECT_FORM);
   const [isJoinForm, setIsJoinForm] = useState(false);
 
   // Extract search params
-  const page = Number(searchParams.get('page')) || 0;
-  const size = Number(searchParams.get('size')) || 10;
+  const page = Number(searchParams.get("page")) || 0;
+  const size = Number(searchParams.get("size")) || 10;
 
   // Modal Submit Functions
   const modalSubmitFn: Partial<
@@ -145,7 +144,7 @@ export const useUserPage = () => {
     const fetchJoinFormStatus = async () => {
       const res = await getJoinForm();
       if (res.pass && Array.isArray(res.data) && res.data.length > 0) {
-        setIsJoinForm(res.data[0].schema !== '');
+        setIsJoinForm(res.data[0].schema !== "");
       }
     };
     fetchJoinFormStatus();
@@ -187,7 +186,7 @@ export const useUserPage = () => {
       userTableHeader.map((header) => ({
         label: header.name,
         key: header.id,
-        type: 'text' as const,
+        type: "text" as const,
       })),
     [userTableHeader]
   );
@@ -198,8 +197,8 @@ export const useUserPage = () => {
     () => ({
       [MODAL_TITLES.ADD]: [...inputs],
       [MODAL_TITLES.EDIT]: [
-        { label: '사용자 ID', key: 'id', type: 'text', hide: true },
-        { label: '전화번호', key: 'phone', type: 'text' },
+        { label: "사용자 ID", key: "id", type: "text", hide: true },
+        { label: "전화번호", key: "phone", type: "text" },
       ],
       [MODAL_TITLES.SEARCH]: [...inputs],
     }),
@@ -208,7 +207,7 @@ export const useUserPage = () => {
 
   // Callbacks
   const handleChangeSelectedRow = useCallback(({ id }: { id: string | null }) => {
-    setSelectedRowId(id || '');
+    setSelectedRowId(id || "");
   }, []);
 
   const handleSearchTableData = useCallback(
@@ -228,17 +227,17 @@ export const useUserPage = () => {
     }
 
     if (!selectedRowId) {
-      toast.error('선택된 사용자가 없습니다.');
+      toast.error("선택된 사용자가 없습니다.");
       setIsDeleteMode(false);
       return;
     }
 
     const res = await deleteUser({ userId: selectedRowId });
     if (res.pass) {
-      toast.success('삭제되었습니다.');
+      toast.success("삭제되었습니다.");
       setIsDeleteMode(false);
     } else {
-      toast.error('삭제에 실패했습니다.');
+      toast.error("삭제에 실패했습니다.");
     }
   }, [isDeleteMode, selectedRowId]);
 
@@ -259,10 +258,10 @@ export const useUserPage = () => {
   const handleTableRowClick = useCallback(
     (row: UsageData) => {
       const addInitialInputs = inputOption[MODAL_TITLES.EDIT]?.map((item) => {
-        const value = item.key === 'itemId' ? row.id : row[item.key];
+        const value = item.key === "itemId" ? row.id : row[item.key];
         return {
           ...item,
-          initial: typeof value === 'object' && !(value instanceof Date) ? undefined : value,
+          initial: typeof value === "object" && !(value instanceof Date) ? undefined : value,
         };
       });
       if (addInitialInputs) {
@@ -284,16 +283,16 @@ export const useUserPage = () => {
   );
 
   const handleResetFilter = useCallback(() => {
-    selectDispatch({ type: 'RESET' });
+    selectDispatch({ type: "RESET" });
   }, []);
 
   const handleJoinFormNavigate = useCallback(() => {
-    navigate('/joinForm');
+    navigate("/joinForm");
   }, [navigate]);
 
   const handleFilterChange = useCallback((key: string, value: string | Date | null) => {
     selectDispatch({
-      type: 'CHANGE',
+      type: "CHANGE",
       payload: { key, value },
     });
   }, []);

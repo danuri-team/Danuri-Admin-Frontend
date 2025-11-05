@@ -1,20 +1,20 @@
 import ManagementLayout from "@/components/layouts/ManagementLayout";
 import Modal from "@/components/modal/Modal";
-import UserFilters from "./UserFilters";
-import UserActions from "./UserActions";
-import UserTable from "./UserTable";
-import { useUserPage } from "../../../hooks/page/useUserPage";
+import ItemFilters from "./ItemFilters";
+import ItemActions from "./ItemActions";
+import ItemTable from "./ItemTable";
+import { useItemPage } from "@/hooks/page/useItemPage";
+import type { UsageData } from "@/types/table";
 
-const UserPage = () => {
+const ItemPage = () => {
   const {
     // State
-    userTableHeader,
+    itemTableHeader,
     totalPages,
-    filterData,
+    sortTableData,
     isDeleteMode,
     selectedRowId,
     selectForm,
-    isJoinForm,
     modal,
 
     // Handlers
@@ -23,34 +23,28 @@ const UserPage = () => {
     handleTableRowClick,
     handleModalSubmit,
     handleResetFilter,
-    handleJoinFormNavigate,
     handleFilterChange,
-  } = useUserPage();
+  } = useItemPage();
 
   return (
     <ManagementLayout>
-      <ManagementLayout.Header title="사용자 관리">
+      <ManagementLayout.Header title="물품 관리">
         <ManagementLayout.Filters>
-          <UserFilters
+          <ItemFilters
             selectForm={selectForm}
             onFilterChange={handleFilterChange}
             onResetFilter={handleResetFilter}
           />
         </ManagementLayout.Filters>
         <ManagementLayout.Actions>
-          <UserActions
-            onTableButton={handleTableButton}
-            onJoinFormNavigate={handleJoinFormNavigate}
-            isDeleteMode={isDeleteMode}
-            isJoinForm={isJoinForm}
-          />
+          <ItemActions onTableButton={handleTableButton} isDeleteMode={isDeleteMode} />
         </ManagementLayout.Actions>
       </ManagementLayout.Header>
 
       <ManagementLayout.Table>
-        <UserTable
-          tableHeader={userTableHeader}
-          filterData={filterData}
+        <ItemTable
+          tableHeader={itemTableHeader}
+          filterData={sortTableData as UsageData[]}
           isDeleteMode={isDeleteMode}
           selectedRowId={selectedRowId}
           totalPages={totalPages}
@@ -72,4 +66,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default ItemPage;

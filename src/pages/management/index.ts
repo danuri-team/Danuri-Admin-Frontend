@@ -1,6 +1,6 @@
 export { default as InfoPage } from "./InfoPage";
 export { default as CampaignPage } from "./CampaignPage";
-export { default as ItemPage } from "./ItemPage";
+export { default as ItemPage } from "./ItemPage/index";
 export { default as JoinFormPage } from "./JoinFormPage";
 export { default as MachinePage } from "./MachinePage";
 export { default as NotiTalkPage } from "./NotiTalkPage";

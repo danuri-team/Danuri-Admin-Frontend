@@ -17,16 +17,6 @@ import type { TableHeader } from "@/types/table";
 import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 import { useSearchParams } from "react-router-dom";
 
-interface FilterSelectConfig {
-  id: keyof SelectState;
-  type: "select" | "date";
-  options: string[];
-}
-
-type SelectState = {
-  order: string;
-};
-
 type SelectAction =
   | { type: "CHANGE"; payload: { key: string; value: string | Date | null } }
   | { type: "RESET" };

@@ -3,7 +3,7 @@ import CustomTable from "@/components/CustomTable";
 import { EmptyState } from "@/components/layouts/ManagementLayout";
 import type { ManagementTableProps } from "@/types/table";
 
-const UserTable = memo<ManagementTableProps>(
+const ItemTable = memo<ManagementTableProps>(
   ({
     tableHeader,
     filterData,
@@ -13,8 +13,8 @@ const UserTable = memo<ManagementTableProps>(
     onRowClick,
     onChangeSelectedRow,
   }) => {
-    if (tableHeader.length === 0 || !filterData) {
-      return <EmptyState message="가입 폼 등록 후 이용 가능합니다." />;
+    if (!filterData || filterData.length === 0) {
+      return <EmptyState message="물품이 존재하지 않습니다." />;
     }
 
     return (
@@ -31,6 +31,6 @@ const UserTable = memo<ManagementTableProps>(
   }
 );
 
-UserTable.displayName = "UserTable";
+ItemTable.displayName = "ItemTable";
 
-export default UserTable;
+export default ItemTable;
