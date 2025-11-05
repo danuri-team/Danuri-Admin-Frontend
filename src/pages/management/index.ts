@@ -7,5 +7,5 @@ export { default as NotiTalkPage } from "./NotiTalkPage";
 export { default as RentalPage } from "./RentalPage";
 export { default as SpacePage } from "./SpacePage";
 export { default as UsagePage } from "./UsagePage";
-export { default as UserPage } from "./UserPage";
+export { default as UserPage } from "./UserPage/index";
 export { default as AdminAccountPage } from "./AdminAccountPage";
