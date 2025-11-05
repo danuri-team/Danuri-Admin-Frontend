@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "@/utils/searchTermOption";
 import { replacePhone } from "@/utils/format/infoFormat";
 import { toast } from "react-toastify";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 import type { modalAction, ModalInputTypesType, modalState, ModalType } from "@/types/modal"
 
 
@@ -77,6 +78,8 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const location = useLocation();
   const [modalForm, modalDispatch] = useReducer(modalReducer, getInitialModalForm(inputs));
   const [availableCount, setAvailableCount] = useState<number>(0);
+
+  useEscapeKey(onClose, isOpen);
 
   useEffect(() => {
     if (isOpen) {
