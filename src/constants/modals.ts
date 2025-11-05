@@ -7,6 +7,7 @@ export const MODAL_TITLES = {
   SAVE: "저장",
   DOWNLOAD: "다운로드",
   FORCED: "강제퇴실",
+  RENTAL: "대여관리",
 } as const;
 
 export const SEARCH_TERMS = {

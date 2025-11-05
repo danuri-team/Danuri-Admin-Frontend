@@ -3,25 +3,25 @@ import CustomSelect from "@/components/CustomSelect";
 
 interface FilterSelectConfig {
   id: string;
-  type: "select";
+  type: "select" | "date" | "rangeDate";
   options: string[];
 }
 
-interface ItemFiltersProps {
-  // 선택된 값
+interface UsageFiltersProps {
   selectForm: {
     order: string;
+    useDate: { startDate: Date | null; endDate: Date | null };
   };
-  // 선택 값 바뀌었을 때
   onFilterChange: (key: string, value: string | Date | null) => void;
   onResetFilter: () => void;
 }
 
 const FILTER_SELECTS: FilterSelectConfig[] = [
-  { id: "order", type: "select", options: ["재고순", "이름순", "이용 가능 여부 순"] },
+  { id: "order", type: "select", options: ["이용일순", "상태순"] },
+  { id: "useDate", type: "rangeDate", options: ["이용일"] },
 ];
 
-const ItemFilters = memo<ItemFiltersProps>(({ selectForm, onFilterChange }) => {
+const UsageFilters = memo<UsageFiltersProps>(({ selectForm, onFilterChange }) => {
   return (
     <>
       {FILTER_SELECTS.map((item) => (
@@ -37,6 +37,6 @@ const ItemFilters = memo<ItemFiltersProps>(({ selectForm, onFilterChange }) => {
   );
 });
 
-ItemFilters.displayName = "ItemFilters";
+UsageFilters.displayName = "UsageFilters";
 
-export default ItemFilters;
+export default UsageFilters;

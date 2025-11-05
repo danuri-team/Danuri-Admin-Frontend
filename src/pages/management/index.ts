@@ -6,6 +6,6 @@ export { default as MachinePage } from "./MachinePage/index";
 export { default as NotiTalkPage } from "./NotiTalkPage";
 export { default as RentalPage } from "./RentalPage";
 export { default as SpacePage } from "./SpacePage/index";
-export { default as UsagePage } from "./UsagePage";
+export { default as UsagePage } from "./UsagePage/index";
 export { default as UserPage } from "./UserPage/index";
 export { default as AdminAccountPage } from "./AdminAccountPage";

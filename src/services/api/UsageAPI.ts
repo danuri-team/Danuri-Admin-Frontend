@@ -1,6 +1,6 @@
 import { PrivateAxios } from "../PrivateAxios";
 import { BaseAPI } from "./BaseAPI";
-import type { ApiResponse } from "@/types/api";
+import type { ApiResponse, PaginatedResponse } from "@/types/api";
 import type {
   Usage,
   UsageSearchType,
@@ -29,7 +29,7 @@ class UsageAPIService extends BaseAPI {
     usageForm,
     page,
     size,
-  }: UsageSearchRequest): Promise<ApiResponse<unknown>> {
+  }: UsageSearchRequest): Promise<ApiResponse<PaginatedResponse<Usage>>> {
     return this.post(
       `/admin/usage/search`,
       {
@@ -66,7 +66,11 @@ class UsageAPIService extends BaseAPI {
         }
       );
 
-      const filename = generateFilename("이용내역", startDate ? new Date(startDate) : new Date(), "xlsx");
+      const filename = generateFilename(
+        "이용내역",
+        startDate ? new Date(startDate) : new Date(),
+        "xlsx"
+      );
       downloadBlob(res.data, filename);
 
       return { data: null, pass: true };
@@ -82,8 +86,7 @@ class UsageAPIService extends BaseAPI {
 
 export const UsageAPI = new UsageAPIService(PrivateAxios);
 
-export const postCreateUsage = (usageForm: UsageSearchType) =>
-  UsageAPI.postCreateUsage(usageForm);
+export const postCreateUsage = (usageForm: UsageSearchType) => UsageAPI.postCreateUsage(usageForm);
 export const postUsageSearch = (data: UsageSearchRequest) => UsageAPI.postUsageSearch(data);
 export const getUsageDetail = (params: UsageIdRequest) => UsageAPI.getUsageDetail(params);
 export const postUsageExcel = (data: ExportUsageRequest) => UsageAPI.postUsageExcel(data);

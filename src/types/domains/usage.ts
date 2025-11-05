@@ -4,6 +4,7 @@ export interface Usage {
   space_id: string;
   start_at: string;
   end_at: string | null;
+  [key: string]: unknown;
 }
 
 export interface UsageSearchType {
