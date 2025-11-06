@@ -1,7 +1,7 @@
+import type { UsageData } from "@/types/table";
 import { useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import type { UsageData } from "@/components/CustomTable";
+import { toast } from "react-toastify";;
 
 interface UseTableManagementProps {
   fetchFn: (params: { page: number; size: number }) => Promise<{

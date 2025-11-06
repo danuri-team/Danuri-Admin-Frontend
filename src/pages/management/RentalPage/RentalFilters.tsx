@@ -22,7 +22,6 @@ const FILTER_SELECTS: FilterSelectConfig[] = [
 ];
 
 const RentalFilters = memo<RentalFiltersProps>(({ selectForm, onFilterChange }) => {
-  console.log(selectForm);
   return (
     <>
       {FILTER_SELECTS.map((item) => (

@@ -67,7 +67,6 @@ export const useRentalPage = () => {
 
   const sortTableData = useMemo(() => {
     if (!tableData) return null;
-    console.log(selectForm.order);
     return tableData.filter(
       (item) =>
         selectForm.order === "처리 여부" ||
