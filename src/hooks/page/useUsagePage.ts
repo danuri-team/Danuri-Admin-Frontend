@@ -13,6 +13,7 @@ import {
   putForcedToLeave,
 } from "@/services/api/UsageAPI";
 import type { Usage } from "@/types/domains/usage";
+import { parseSignUpFormSchema } from "@/utils/parse/useSchemaParsing";
 
 // 사용 기록 검색 상태
 type UsageState = {
@@ -41,6 +42,7 @@ const FIXED_TABLE_HEADERS: TableHeader[] = [
   { name: "시작일", id: "start_at" },
   { name: "종료일", id: "end_at" },
   { name: "유저", id: "user_id" },
+  { name: "이름", id: "name" },
   { name: "상태", id: "status" },
 ];
 
@@ -57,6 +59,17 @@ const INITIAL_USAGE_FORM: UsageState = {
   endDate: "",
   spaceId: null,
   userId: null,
+};
+
+const transformUsageData = (usage: Usage): UsageData => {
+  const schema = parseSignUpFormSchema(usage.form_result);
+  const name: string =
+    schema?.["이름"] && typeof schema?.["이름"] === "string" ? schema?.["이름"] : "";
+
+  return {
+    ...usage,
+    name,
+  };
 };
 
 // Reducer
@@ -99,7 +112,7 @@ export const useUsagePage = () => {
   // State
   const userTableHeader = useMemo(() => FIXED_TABLE_HEADERS, []);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [tableData, setTableData] = useState<Usage[] | null>(null);
+  const [tableData, setTableData] = useState<UsageData[] | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState("");
   const [selectForm, selectDispatch] = useReducer(selectReducer, INITIAL_SELECT_FORM);
@@ -135,8 +148,9 @@ export const useUsagePage = () => {
     const fetchUserData = async () => {
       const res = await postUsageSearch({ usageForm, page, size });
       if (!res.pass) return;
-
-      setTableData(res.data.content);
+      const usage = res.data.content.map(transformUsageData);
+      console.log(usage);
+      setTableData(usage);
       setTotalPages(res.data.total_pages);
     };
 

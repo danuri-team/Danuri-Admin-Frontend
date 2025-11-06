@@ -4,6 +4,7 @@ export interface Usage {
   space_id: string;
   start_at: string;
   end_at: string | null;
+  form_result: string;
   [key: string]: unknown;
 }
 

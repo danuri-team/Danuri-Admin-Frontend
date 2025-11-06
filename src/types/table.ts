@@ -7,7 +7,7 @@ export interface TableHeader {
   id: string;
 }
 
-export type UsageData = Record<string, string | number | number[]>;
+export type UsageData = Record<string, string | number | number[] | null>;
 
 export interface ManagementTableProps {
   tableHeader: TableHeader[];
