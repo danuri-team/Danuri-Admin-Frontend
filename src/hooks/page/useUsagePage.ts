@@ -149,7 +149,6 @@ export const useUsagePage = () => {
       const res = await postUsageSearch({ usageForm, page, size });
       if (!res.pass) return;
       const usage = res.data.content.map(transformUsageData);
-      console.log(usage);
       setTableData(usage);
       setTotalPages(res.data.total_pages);
     };
