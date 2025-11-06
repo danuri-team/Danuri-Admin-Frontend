@@ -5,7 +5,6 @@ import { MODAL_TITLES } from "@/constants/modals";
 import { useModal } from "@/hooks/useModal";
 import type { TableHeader, UsageData } from "@/types/table";
 import type { ModalInput, modalState, ModalSubmitFnType } from "@/types/modal";
-import { formatDatetoTime, formatTimetoDate } from "@/utils/format/dateFormat";
 import {
   deleteDevice,
   getSearchCompanyDevice,
