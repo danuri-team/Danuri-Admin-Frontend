@@ -8,6 +8,7 @@ import type {
   UsageIdRequest,
   ForcedLeaveRequest,
   ExportUsageRequest,
+  ExportMonthUsageRequest,
 } from "@/types/domains/usage";
 import { downloadBlob, generateFilename } from "@/utils/file/downloadFile";
 
@@ -79,6 +80,22 @@ class UsageAPIService extends BaseAPI {
     }
   }
 
+  async getMonthUsage({
+    usageId,
+    year,
+    month,
+  }: ExportMonthUsageRequest): Promise<ApiResponse<null>> {
+    try {
+      const res = await this.axios.get(
+        `/admin/usage/${usageId}/monthly-usage-excel?year=${year}&month=${month}`
+      );
+      console.log(res.data);
+      return { data: null, pass: true };
+    } catch {
+      return { data: null, pass: false };
+    }
+  }
+
   async putForcedToLeave({ usageId, end_at }: ForcedLeaveRequest): Promise<ApiResponse<Usage>> {
     return this.put<Usage>(`/admin/usage/${usageId}`, { end_at });
   }
@@ -90,6 +107,7 @@ export const postCreateUsage = (usageForm: UsageSearchType) => UsageAPI.postCrea
 export const postUsageSearch = (data: UsageSearchRequest) => UsageAPI.postUsageSearch(data);
 export const getUsageDetail = (params: UsageIdRequest) => UsageAPI.getUsageDetail(params);
 export const postUsageExcel = (data: ExportUsageRequest) => UsageAPI.postUsageExcel(data);
+export const getMonthUsage = (params: ExportMonthUsageRequest) => UsageAPI.getMonthUsage(params);
 export const putForcedToLeave = (data: ForcedLeaveRequest) => UsageAPI.putForcedToLeave(data);
 
 export type { UsageSearchType };

@@ -43,3 +43,9 @@ export interface ExportUsageRequest {
   spaceId: string | null;
   userId: string | null;
 }
+
+export interface ExportMonthUsageRequest {
+  usageId: string;
+  year: string;
+  month: string;
+}
