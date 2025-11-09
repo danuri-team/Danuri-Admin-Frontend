@@ -8,9 +8,8 @@ import { selectTermAvailableCount } from "@/utils/searchTermOption";
 import { replacePhone } from "@/utils/format/infoFormat";
 import { toast } from "react-toastify";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
-import type { modalAction, ModalInputTypesType, modalState, ModalType } from "@/types/modal"
-
-
+import type { modalAction, ModalInputTypesType, modalState, ModalType } from "@/types/modal";
+import { MODAL_TITLES } from "@/constants/modals";
 
 const modalReducer = (state: modalState, action: modalAction) => {
   switch (action.type) {
@@ -115,8 +114,9 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const onClickSubmitModal = async () => {
     const result = await onSubmit(modalForm);
 
-    if (title !== "기기연결") {
+    if (title !== MODAL_TITLES.CONNECT) {
       const res = result as { data?: string; pass?: boolean };
+      console.log(res);
       if (res?.pass) {
         toast.success(`${title}되었습니다.`);
       } else {

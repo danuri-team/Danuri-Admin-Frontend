@@ -170,11 +170,11 @@ const ModalInput = ({
           >
             {options &&
               (value
-                ? changeEnumtoText(value as string, location.pathname) || (label as string)
-                : options[0].name)}
+                ? changeEnumtoText(value as string, location.pathname) || options[0].name
+                : "알 수 없음")}
           </button>
           {isFocus && options && (
-            <ul className="absolute w-full border-1 border-gray-200 rounded-xl p-[8px] bg-white mt-[10px] z-1">
+            <ul className="absolute w-full border-1 border-gray-200 max-h-70 overflow-scroll rounded-xl p-[8px] bg-white mt-[10px] z-1">
               {options.map((option) => (
                 <li
                   className={`cursor-pointer hover:bg-gray-100 p-[12px] rounded-sm`}

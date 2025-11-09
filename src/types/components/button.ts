@@ -1,3 +1,4 @@
+import type { MODAL_TITLES } from "@/constants/modals";
 import type { ButtonHTMLAttributes } from "react";
 
 export interface CustomButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
@@ -8,17 +9,8 @@ export interface CustomButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
   disabled?: boolean;
 }
 
-export type ButtonValues =
-  | "다운로드"
-  | "추가"
-  | "삭제"
-  | "검색"
-  | "대여관리"
-  | "가입 폼 관리"
-  | "강제퇴실";
-
 export interface TableButtonProps {
-  value: ButtonValues;
+  value: (typeof MODAL_TITLES)[keyof typeof MODAL_TITLES];
   onClick?: () => void;
   isDeleteMode?: boolean;
 }
