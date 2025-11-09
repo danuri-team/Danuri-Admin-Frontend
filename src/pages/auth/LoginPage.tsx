@@ -1,11 +1,8 @@
-//email, password
-import { useReducer } from "react";
+import { useReducer, useCallback } from "react";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
 import { useNavigate } from "react-router-dom";
-import { login } from "@/redux/reducers/authSlice";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/redux/store";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
 
 type LoginState = {
@@ -34,17 +31,17 @@ const loginReducer = (state: LoginState, action: LoginAction) => {
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const { login } = useAuth();
 
   const [loginForm, loginDispatch] = useReducer(loginReducer, initialLoginForm);
 
-  const onclickLogin = async () => {
+  const onclickLogin = useCallback(async () => {
     if (Object.values(loginForm).includes("")) {
       toast.error("모든 항목을 입력해주세요.");
       return;
     }
     try {
-      await dispatch(login({ email: loginForm.email, password: loginForm.password })).unwrap();
+      await login(loginForm.email, loginForm.password);
 
       toast.success("로그인되었습니다.");
       loginDispatch({ type: "RESET" });
@@ -53,15 +50,25 @@ const LoginPage = () => {
     } catch {
       toast.error("로그인에 실패했습니다.");
     }
-  };
+  }, [loginForm, login, navigate]);
+
+  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    loginDispatch({ type: "CHANGE", payload: { key: "email", value: e.target.value } });
+  }, []);
+
+  const handlePasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    loginDispatch({ type: "CHANGE", payload: { key: "password", value: e.target.value } });
+  }, []);
+
+  const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onclickLogin();
+  }, [onclickLogin]);
 
   return (
     <div className="w-full h-screen flex">
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onclickLogin();
-        }}
+        onSubmit={handleSubmit}
         className="m-auto w-[50%] min-w-xs max-w-lg"
       >
         <h1 className="justify-self-center text-4xl font-bold mb-[50px]">다누리</h1>
@@ -70,18 +77,14 @@ const LoginPage = () => {
             label="이메일"
             key="email"
             value={loginForm.email}
-            onChange={(e) =>
-              loginDispatch({ type: "CHANGE", payload: { key: "email", value: e.target.value } })
-            }
+            onChange={handleEmailChange}
             autoComplete="email"
           />
           <CustomInput
             label="비밀번호"
             key="password"
             value={loginForm.password}
-            onChange={(e) =>
-              loginDispatch({ type: "CHANGE", payload: { key: "password", value: e.target.value } })
-            }
+            onChange={handlePasswordChange}
             autoComplete="current-password"
           />
         </div>
@@ -89,13 +92,6 @@ const LoginPage = () => {
           <CustomButton value="로그인" onClick={() => {}} type="submit" />
         </div>
         <div className="w-[200px] flex items-center justify-between justify-self-center mt-[30px]">
-          {/* <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/password"}>
-            비밀번호 찾기
-          </Link>
-          <div className="w-[1px] h-[20px] border-l-1 border-gray-300"></div>
-          <Link className="w-[80px] text-sm text-gray-400 cursor-pointer" to={"/auth/signup"}>
-            회원가입
-          </Link> */}
         </div>
       </form>
     </div>

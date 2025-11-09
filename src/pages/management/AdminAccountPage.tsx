@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import BannerButton from "@/components/BannerButton";
-import CustomTable, { type UsageData } from "@/components/CustomTable";
+import CustomTable from "@/components/CustomTable";
 import MainHeader from "@/components/MainHeader";
 import TableButton from "@/components/TableButton";
 import Modal from "@/components/modal/Modal";
@@ -8,7 +8,7 @@ import { MODAL_TITLES } from "@/constants/modals";
 import { toast } from "react-toastify";
 import { getAllAdminInfo, deleteAdmin, putAdminInfo } from "@/services/api/AdminAPI";
 import type { ModalInputTypesType, ModalSubmitFnType } from "@/types/modal";
-import type { TableHeader } from "@/types/table";
+import type { TableHeader, UsageData } from "@/types/table";
 import { useSearchParams } from "react-router-dom";
 
 //수정 필요: 관리자 계정 관리 API로 변경해야함

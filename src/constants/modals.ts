@@ -5,8 +5,11 @@ export const MODAL_TITLES = {
   DELETE: "삭제",
   CONNECT: "기기연결",
   SAVE: "저장",
-  DOWNLOAD: "다운로드",
+  SELF_REPORT: "자체 리포트",
+  MONTH_REPORT: "달 별 리포트",
   FORCED: "강제퇴실",
+  RENTAL: "대여관리",
+  FORM: "가입 폼 관리",
 } as const;
 
 export const SEARCH_TERMS = {

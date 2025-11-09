@@ -1,66 +1,34 @@
 import { PrivateAxios } from "../PrivateAxios";
+import { BaseAPI } from "./BaseAPI";
+import type { ApiResponse, PaginatedResponse, PaginationParams } from "@/types/api";
+import type { Admin, UpdateAdminRequest, AdminIdRequest } from "@/types/domains/admin";
 
-//내 정보 조회
-export const getMyInfo = async () => {
-  try {
-    const res = await PrivateAxios.get(`/admin/management/me`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+class AdminAPIService extends BaseAPI {
+  async getMyInfo(): Promise<ApiResponse<Admin>> {
+    return this.get<Admin>("/admin/management/me");
   }
-};
 
-//특정 관리자 정보 조회
-export const getAdminInfo = async ({ adminId }: { adminId: string }) => {
-  try {
-    const res = await PrivateAxios.get(`/admin/management/${adminId}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async getAdminInfo({ adminId }: AdminIdRequest): Promise<ApiResponse<Admin>> {
+    return this.get<Admin>(`/admin/management/${adminId}`);
   }
-};
 
-//전체 관리자 정보 조회
-export const getAllAdminInfo = async ({ page, size }: { page: number; size: number }) => {
-  try {
-    const res = await PrivateAxios.get(`/admin/management?page=${page}&size=${size}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async getAllAdminInfo(params: PaginationParams): Promise<ApiResponse<PaginatedResponse<Admin>>> {
+    return this.get<PaginatedResponse<Admin>>("/admin/management", { params });
   }
-};
 
-//관리자 정보 수정
-export const putAdminInfo = async ({
-  id,
-  email,
-  phone,
-  role,
-}: {
-  id: string;
-  email: string;
-  phone: string;
-  role: string;
-}) => {
-  try {
-    const res = await PrivateAxios.put(`/admin/management`, {
-      id,
-      email,
-      phone,
-      role,
-    });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async putAdminInfo(data: UpdateAdminRequest): Promise<ApiResponse<Admin>> {
+    return this.put<Admin>("/admin/management", data);
   }
-};
 
-//관리자 삭제
-export const deleteAdmin = async ({ adminId }: { adminId: string }) => {
-  try {
-    const res = await PrivateAxios.delete(`/admin/management/${adminId}`);
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async deleteAdmin({ adminId }: AdminIdRequest): Promise<ApiResponse<void>> {
+    return this.delete<void>(`/admin/management/${adminId}`);
   }
-};
+}
+
+export const AdminAPI = new AdminAPIService(PrivateAxios);
+
+export const getMyInfo = () => AdminAPI.getMyInfo();
+export const getAdminInfo = (params: AdminIdRequest) => AdminAPI.getAdminInfo(params);
+export const getAllAdminInfo = (params: PaginationParams) => AdminAPI.getAllAdminInfo(params);
+export const putAdminInfo = (data: UpdateAdminRequest) => AdminAPI.putAdminInfo(data);
+export const deleteAdmin = (params: AdminIdRequest) => AdminAPI.deleteAdmin(params);
