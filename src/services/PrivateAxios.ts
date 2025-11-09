@@ -64,24 +64,16 @@ PrivateAxios.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // 쿠키의 refresh token으로 토큰 재발급
         await PublicAxios.get("/auth/common/refresh");
 
         processQueue(null);
         isRefreshing = false;
 
-        // 원래 요청 재시도
         return PrivateAxios(originalRequest);
       } catch (refreshError) {
-        // 토큰 재발급 실패 시 로그인 페이지로
         processQueue(refreshError);
         isRefreshing = false;
 
-        PublicAxios.get("/auth/common/sign-out");
-
-        if (!window.location.pathname.includes("/auth/login")) {
-          window.location.replace("/auth/login");
-        }
         return Promise.reject(refreshError);
       }
     }

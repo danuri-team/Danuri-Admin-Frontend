@@ -1,47 +1,32 @@
-import type { FormItemType } from "@/pages/management/JoinFormPage";
 import { PrivateAxios } from "../PrivateAxios";
+import { BaseAPI } from "./BaseAPI";
+import type { ApiResponse } from "@/types/api";
+import type { Form, UpdateFormRequest, FormItem } from "@/types/domains/form";
 
-//가입폼 생성
-export const postJoinForm = async (form: FormItemType[]) => {
-  try {
-    const res = await PrivateAxios.post("/admin/forms", {
+class FormAPIService extends BaseAPI {
+  async postJoinForm(form: FormItem[]): Promise<ApiResponse<Form>> {
+    return this.post<Form>("/admin/forms", {
       title: "가입폼",
       schema: JSON.stringify(form),
       is_sign_up_form: true,
     });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
   }
-};
 
-//가입폼 수정
-export const putJoinForm = async ({
-  deviceId,
-  spaceId,
-  isActivate,
-}: {
-  deviceId: string;
-  spaceId: string;
-  isActivate: boolean;
-}) => {
-  try {
-    const res = await PrivateAxios.put(`/admin/forms/${deviceId}`, {
+  async putJoinForm(data: UpdateFormRequest): Promise<ApiResponse<Form>> {
+    const { deviceId, spaceId, isActivate } = data;
+    return this.put<Form>(`/admin/forms/${deviceId}`, {
       space_id: spaceId,
       is_activate: isActivate,
     });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
   }
-};
 
-//가입폼 전체 조회
-export const getJoinForm = async () => {
-  try {
-    const res = await PrivateAxios.get("/admin/forms");
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async getJoinForm(): Promise<ApiResponse<Form[]>> {
+    return this.get<Form[]>("/admin/forms");
   }
-};
+}
+
+export const FormAPI = new FormAPIService(PrivateAxios);
+
+export const postJoinForm = (form: FormItem[]) => FormAPI.postJoinForm(form);
+export const putJoinForm = (data: UpdateFormRequest) => FormAPI.putJoinForm(data);
+export const getJoinForm = () => FormAPI.getJoinForm();

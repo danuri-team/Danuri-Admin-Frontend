@@ -1,81 +1,47 @@
 import { PublicAxios } from "../PublicAxios";
+import { BaseAPI } from "./BaseAPI";
+import type { ApiResponse } from "@/types/api";
+import type {
+  LoginRequest,
+  SignupRequest,
+  UpdatePasswordRequest,
+  SendPasswordCodeRequest,
+  ResetPasswordTokenRequest,
+} from "@/types/domains/auth";
 
-export const postLogin = async ({ email, password }: { email: string; password: string }) => {
-  try {
-    const res = await PublicAxios.post("/auth/admin/sign-in", {
-      email,
-      password,
-    });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+class AuthAPIService extends BaseAPI {
+  async postLogin(data: LoginRequest): Promise<ApiResponse<unknown>> {
+    return this.post("/auth/admin/sign-in", data);
   }
-};
 
-export const postSignup = async ({
-  companyId,
-  email,
-  phone,
-  password,
-  rePassword,
-}: {
-  companyId: string;
-  email: string;
-  phone: string;
-  password: string;
-  rePassword: string;
-}) => {
-  try {
-    const res = await PublicAxios.post("/auth/admin/sign-up", {
-      companyId,
-      email,
-      phone,
-      password,
-      rePassword,
-    });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async postSignup(data: SignupRequest): Promise<ApiResponse<unknown>> {
+    return this.post("/auth/admin/sign-up", data);
   }
-};
 
-export const updateAdminPassword = async ({
-  new_password,
-  confirm_password,
-}: {
-  new_password: string;
-  confirm_password: string;
-}) => {
-  try {
-    const res = await PublicAxios.put(`/admin/management/password`, {
-      new_password,
-      confirm_password,
-    });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async updateAdminPassword(data: UpdatePasswordRequest): Promise<ApiResponse<unknown>> {
+    return this.put("/admin/management/password", data);
   }
-};
 
-export const postSendPasswordCode = async ({ phone }: { phone: string }) => {
-  try {
-    const res = await PublicAxios.post(`/auth/admin/find-password`, {
-      phone,
-    });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
+  async postSendPasswordCode(data: SendPasswordCodeRequest): Promise<ApiResponse<unknown>> {
+    return this.post("/auth/admin/find-password", data);
   }
-};
 
-export const postPasswordResetToken = async ({ phone, code }: { phone: string; code: string }) => {
-  try {
-    const res = await PublicAxios.post(`/auth/admin/reset-token`, {
+  async postPasswordResetToken(data: ResetPasswordTokenRequest): Promise<ApiResponse<unknown>> {
+    const { phone, code } = data;
+    return this.post("/auth/admin/reset-token", {
       phone,
       auth_code: code,
     });
-    return { data: res.data, pass: true };
-  } catch (error) {
-    return { data: error, pass: false };
   }
-};
+}
+
+export const AuthAPI = new AuthAPIService(PublicAxios);
+
+export const postLogin = (data: LoginRequest) => AuthAPI.postLogin(data);
+export const postSignup = (data: SignupRequest) => AuthAPI.postSignup(data);
+export const updateAdminPassword = (data: UpdatePasswordRequest) =>
+  AuthAPI.updateAdminPassword(data);
+export const postSendPasswordCode = (data: SendPasswordCodeRequest) =>
+  AuthAPI.postSendPasswordCode(data);
+export const postPasswordResetToken = (data: ResetPasswordTokenRequest) =>
+  AuthAPI.postPasswordResetToken(data);
