@@ -56,7 +56,7 @@ class UsageAPIService extends BaseAPI {
   }: ExportUsageRequest): Promise<ApiResponse<null>> {
     try {
       const res = await this.axios.post(
-        "/admin/usage/export",
+        "/admin/usage/range-usage-excel",
         {
           start_date: startDate || null,
           end_date: endDate || null,
