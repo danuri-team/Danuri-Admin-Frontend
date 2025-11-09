@@ -11,6 +11,7 @@ import type {
   ExportMonthUsageRequest,
 } from "@/types/domains/usage";
 import { downloadBlob, generateFilename } from "@/utils/file/downloadFile";
+import { getSearchSpace } from "./SpaceAPI";
 
 const normalizeValue = (value: string | null): string | null => {
   return value === "" ? null : value;
@@ -68,7 +69,7 @@ class UsageAPIService extends BaseAPI {
       );
 
       const filename = generateFilename(
-        "이용내역",
+        "자체리포트",
         startDate ? new Date(startDate) : new Date(),
         "xlsx"
       );
@@ -81,15 +82,26 @@ class UsageAPIService extends BaseAPI {
   }
 
   async getMonthUsage({
-    usageId,
+    spaceId,
     year,
     month,
   }: ExportMonthUsageRequest): Promise<ApiResponse<null>> {
     try {
       const res = await this.axios.get(
-        `/admin/usage/${usageId}/monthly-usage-excel?year=${year}&month=${month}`
+        `/admin/usage/${spaceId}/monthly-usage-excel?year=${year}&month=${month}`,
+        {
+          responseType: "blob",
+        }
       );
-      console.log(res.data);
+      const spaceRes = (await getSearchSpace({ spaceId })).data;
+
+      const filename = generateFilename(
+        `달별리포트_${spaceRes.name}`,
+        year && month ? new Date(Number(year), Number(month) - 1) : new Date(),
+        "xlsx"
+      );
+      console.log(filename);
+      downloadBlob(res.data, filename);
       return { data: null, pass: true };
     } catch {
       return { data: null, pass: false };

@@ -45,7 +45,7 @@ export interface ExportUsageRequest {
 }
 
 export interface ExportMonthUsageRequest {
-  usageId: string;
+  spaceId: string;
   year: string;
   month: string;
 }

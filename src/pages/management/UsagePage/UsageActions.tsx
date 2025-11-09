@@ -13,8 +13,12 @@ const UsageActions = memo<UsageActionsProps>(
     return (
       <div className="flex gap-[10px]">
         <TableButton
-          value={MODAL_TITLES.DOWNLOAD}
-          onClick={() => onTableButton({ value: MODAL_TITLES.DOWNLOAD })}
+          value={MODAL_TITLES.SELF_REPORT}
+          onClick={() => onTableButton({ value: MODAL_TITLES.SELF_REPORT })}
+        />
+        <TableButton
+          value={MODAL_TITLES.MONTH_REPORT}
+          onClick={() => onTableButton({ value: MODAL_TITLES.MONTH_REPORT })}
         />
         <TableButton value={MODAL_TITLES.RENTAL} onClick={onRentalNavigate} />
         <TableButton

@@ -7,6 +7,7 @@ import { useModal } from "@/hooks/useModal";
 import type { TableHeader, UsageData } from "@/types/table";
 import type { ModalInput, modalState, ModalSubmitFnType } from "@/types/modal";
 import {
+  getMonthUsage,
   postCreateUsage,
   postUsageExcel,
   postUsageSearch,
@@ -133,12 +134,18 @@ export const useUsagePage = () => {
         startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
         endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
       }),
-    [MODAL_TITLES.DOWNLOAD]: (form: modalState) =>
+    [MODAL_TITLES.SELF_REPORT]: (form: modalState) =>
       postUsageExcel({
         userId: form.userId as string,
         spaceId: form.spaceId as string,
         startDate: form.startDate ? formatDatetoISOString(form.startDate as Date) : null,
         endDate: form.endDate ? formatDatetoISOString(form.endDate as Date) : null,
+      }),
+    [MODAL_TITLES.MONTH_REPORT]: (form: modalState) =>
+      getMonthUsage({
+        spaceId: form.spaceId as string,
+        year: form.year as string,
+        month: form.month as string,
       }),
   };
 
@@ -200,11 +207,16 @@ export const useUsagePage = () => {
         { label: "종료일", key: "endDate", type: "date" },
         { label: "유저", key: "userId", type: "search" },
       ],
-      [MODAL_TITLES.DOWNLOAD]: [
+      [MODAL_TITLES.SELF_REPORT]: [
         { label: "공간", key: "spaceId", type: "search" },
         { label: "시작일", key: "startDate", type: "date" },
         { label: "종료일", key: "endDate", type: "date" },
         { label: "유저", key: "userId", type: "search" },
+      ],
+      [MODAL_TITLES.MONTH_REPORT]: [
+        { label: "공간", key: "spaceId", type: "search" },
+        { label: "년도", key: "year", type: "option" },
+        { label: "월", key: "month", type: "option" },
       ],
     }),
     [inputs]
