@@ -1,5 +1,5 @@
 //company_id, email, password, phone
-import { useReducer, useCallback, useMemo } from "react";
+import { useReducer } from "react";
 import CustomInput from "@/components/CustomInput";
 import CustomButton from "@/components/CustomButton";
 import { Link, useNavigate } from "react-router-dom";
@@ -49,15 +49,15 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const [signupForm, dispatch] = useReducer(signupReducer, initialSignupForm);
 
-  const loginInputs = useMemo(() => [
+  const loginInputs = [
     { label: "회사", key: "companyId", type: "search", value: signupForm.companyId },
     { label: "이메일", key: "email", value: signupForm.email },
-    { label: "전화번호", key: "phone", value: signupForm.phone },
+    { label: "전화번호", key: "email", value: signupForm.phone },
     { label: "비밀번호", key: "password", value: signupForm.password },
     { label: "비밀번호 확인", key: "rePassword", value: signupForm.rePassword },
-  ], [signupForm]);
+  ];
 
-  const onclickSignup = useCallback(async () => {
+  const onclickSignup = async () => {
     if (Object.values(signupForm).includes("")) {
       toast.error("모든 항목을 입력해주세요.");
       return;
@@ -82,11 +82,7 @@ const SignupPage = () => {
     } else {
       toast.error("회원가입에 실패했습니다.");
     }
-  }, [signupForm, navigate]);
-
-  const handleInputChange = useCallback((key: string, value: string) => {
-    dispatch({ type: "CHANGE", payload: { key, value } });
-  }, []);
+  };
 
   return (
     <div className="w-full h-screen flex">
@@ -103,12 +99,14 @@ const SignupPage = () => {
               key={item.key}
               value={item.value}
               valid={item.key === "email" ? isValidEmail(signupForm.email) : undefined}
-              onChange={(e) => handleInputChange(item.key, e.target.value)}
+              onChange={(e) =>
+                dispatch({ type: "CHANGE", payload: { key: item.key, value: e.target.value } })
+              }
             />
           ))}
         </div>
         <div className="mt-[60px]">
-          <CustomButton value="완료" onClick={onclickSignup} />
+          <CustomButton value="완료" onClick={() => onclickSignup()} />
         </div>
       </div>
     </div>

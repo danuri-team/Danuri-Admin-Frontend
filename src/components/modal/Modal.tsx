@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState, memo } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput from "./ModalInput";
 import CustomButton from "../CustomButton";
@@ -7,9 +7,9 @@ import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "@/utils/searchTermOption";
 import { replacePhone } from "@/utils/format/infoFormat";
 import { toast } from "react-toastify";
-import { useEscapeKey } from "@/hooks/useEscapeKey";
-import type { modalAction, ModalInputTypesType, modalState, ModalType } from "@/types/modal";
-import { MODAL_TITLES } from "@/constants/modals";
+import type { modalAction, ModalInputTypesType, modalState, ModalType } from "@/types/modal"
+
+
 
 const modalReducer = (state: modalState, action: modalAction) => {
   switch (action.type) {
@@ -78,8 +78,6 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const [modalForm, modalDispatch] = useReducer(modalReducer, getInitialModalForm(inputs));
   const [availableCount, setAvailableCount] = useState<number>(0);
 
-  useEscapeKey(onClose, isOpen);
-
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -114,9 +112,8 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   const onClickSubmitModal = async () => {
     const result = await onSubmit(modalForm);
 
-    if (title !== MODAL_TITLES.CONNECT) {
+    if (title !== "기기연결") {
       const res = result as { data?: string; pass?: boolean };
-      console.log(res);
       if (res?.pass) {
         toast.success(`${title}되었습니다.`);
       } else {
@@ -204,4 +201,4 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   );
 };
 
-export default memo(Modal);
+export default Modal;

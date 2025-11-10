@@ -1,5 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "./redux/store";
+import { checkAuth } from "./redux/reducers/authSlice";
 
 import { LoginPage, SignupPage, FindPassword } from "./pages/auth";
 import {
@@ -18,6 +22,12 @@ import RequireLogin from "./components/guard/RequireLogin";
 import GuestGuard from "./components/guard/GuestGuard";
 
 function App() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
   return (
     <>
       <Routes>
@@ -37,7 +47,10 @@ function App() {
           <Route path="/rental" element={<RentalPage />} />
           <Route path="/space" element={<SpacePage />} />
           <Route path="/machine" element={<MachinePage />} />
+          {/* <Route path="/campaign" element={<CampaignPage />} /> */}
+          {/* <Route path="/talk" element={<NotiTalkPage />} /> */}
           <Route path="/joinForm" element={<JoinFormPage />} />
+          {/* <Route path="/admin" element={<AdminAccountPage />} /> */}
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

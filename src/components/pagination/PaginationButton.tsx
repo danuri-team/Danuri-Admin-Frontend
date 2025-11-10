@@ -1,59 +1,60 @@
-import { memo, useMemo } from "react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { usePagination } from "@/hooks/usePagination";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
+import { useSearchParams } from "react-router-dom";
 
-interface PaginationButtonProps {
-  totalPages: number;
-}
-
-const PaginationButton = memo<PaginationButtonProps>(({ totalPages }) => {
-  const { currentPage, prevPage, nextPage, goToPage } = usePagination();
-
-  const pageButtons = useMemo(() => {
-    const pageGroup = 10;
-    const currentGroup = Math.floor(currentPage / pageGroup);
-    const startPage = currentGroup * pageGroup;
-    const endPage = Math.min(startPage + pageGroup, totalPages);
-
-    return Array.from({ length: endPage - startPage }, (_, index) => {
-      const pageIndex = index + currentGroup * pageGroup;
-      return (
-        <button
-          key={pageIndex}
-          className={`${currentPage === pageIndex ? "font-medium bg-gray-200" : ""} cursor-pointer flex w-[30px] h-[30px] rounded-md items-center justify-center`}
-          onClick={() => goToPage(pageIndex)}
-          aria-label={`${pageIndex + 1}페이지로 이동`}
-          aria-current={currentPage === pageIndex ? "page" : undefined}
-        >
-          {pageIndex + 1}
-        </button>
-      );
-    });
-  }, [currentPage, totalPages, goToPage]);
-
+const PaginationButton = ({ totalPages }: { totalPages: number }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   return (
-    <div className="flex" role="navigation" aria-label="페이지네이션">
+    <div className="flex">
       <button
         className="flex w-[30px] h-[30px] text-gray-500 cursor-pointer disabled:text-gray-300 items-center justify-center"
-        disabled={currentPage === 0}
-        onClick={prevPage}
-        aria-label="이전 페이지"
+        disabled={(Number(searchParams.get("page")) || 0) - 1 < 0}
+        onClick={() => {
+          const current = Number(searchParams.get("page")) || 0;
+          searchParams.set("page", String(current - 1));
+          setSearchParams(searchParams);
+        }}
       >
         <IoIosArrowBack size={14} />
       </button>
-      {pageButtons}
+      {(() => {
+        const totalPageIndex = totalPages;
+        const currentPageIndex = Number(searchParams.get("page")) || 0;
+        const pageGroup = 10;
+
+        const currentGroup = Math.floor(currentPageIndex / pageGroup);
+        const startPage = currentGroup * pageGroup;
+        const endPage = Math.min(startPage + pageGroup, totalPageIndex);
+
+        return Array.from({ length: endPage - startPage }).map((_, index) => {
+          const pageIndex = index + currentGroup * pageGroup;
+          return (
+            <button
+              className={`${currentPageIndex === pageIndex ? "font-medium bg-gray-200" : ""} cursor-pointer flex w-[30px] h-[30px] rounded-md items-center justify-center `}
+              key={pageIndex}
+              onClick={() => {
+                searchParams.set("page", String(pageIndex));
+                setSearchParams(searchParams);
+              }}
+            >
+              {pageIndex + 1}
+            </button>
+          );
+        });
+      })()}
       <button
         className="flex w-[30px] h-[30px] text-gray-500 disabled:text-gray-300 items-center justify-center cursor-pointer"
-        disabled={currentPage + 1 >= totalPages}
-        onClick={nextPage}
-        aria-label="다음 페이지"
+        disabled={(Number(searchParams.get("page")) || 0) + 1 >= totalPages}
+        onClick={() => {
+          const current = Number(searchParams.get("page")) || 0;
+          searchParams.set("page", String(current + 1));
+          setSearchParams(searchParams);
+        }}
       >
         <IoIosArrowForward size={14} />
       </button>
     </div>
   );
-});
-
-PaginationButton.displayName = "PaginationButton";
+};
 
 export default PaginationButton;

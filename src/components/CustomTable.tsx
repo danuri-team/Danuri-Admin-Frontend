@@ -1,5 +1,9 @@
-import { memo } from "react";
-import { getCoreRowModel, useReactTable, type ColumnDef, flexRender } from "@tanstack/react-table";
+import {
+  getCoreRowModel,
+  useReactTable,
+  type ColumnDef,
+  flexRender,
+} from "@tanstack/react-table";
 import PageJump from "./pagination/PageJump";
 import PaginationButton from "./pagination/PaginationButton";
 import PageSizeSelector from "./pagination/PageSizeSelector";
@@ -7,10 +11,16 @@ import { IoIosCheckmark } from "react-icons/io";
 import renderTableCell from "../utils/table/renderTableCell";
 import type { MODAL_TITLES } from "@/constants/modals";
 import { useNavigate } from "react-router-dom";
-import type { TableHeader, UsageData } from "@/types/table";
 
-type CustomTableProps = {
-  header: TableHeader[];
+export type UsageData = Record<string, string | number | number[]>;
+
+export type HeaderType = {
+  name: string;
+  id: string;
+};
+
+type CustomTable = {
+  header: HeaderType[];
   data: UsageData[] | null;
   rowUpdate?: (
     row: UsageData,
@@ -30,7 +40,7 @@ const CustomTable = ({
   changeSelectedRow,
   selectedRowId,
   totalPages,
-}: CustomTableProps) => {
+}: CustomTable) => {
   const navigate = useNavigate();
 
   const columns: ColumnDef<UsageData>[] = header.map((item) => ({
@@ -60,7 +70,7 @@ const CustomTable = ({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="text-sm font-medium p-[8px] pl-5 pr-4 overflow-hidden text-ellipsis"
+                  className="text-sm font-medium p-[8px] px-4 overflow-hidden text-ellipsis"
                   // style={{ width: `${100 / headerGroup.headers.length}%` }}
                 >
                   {header.isPlaceholder
@@ -140,4 +150,4 @@ const CustomTable = ({
   );
 };
 
-export default memo(CustomTable);
+export default CustomTable;

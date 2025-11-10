@@ -1,42 +1,53 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BannerButton from "@/components/BannerButton";
 import CustomTable, { type UsageData } from "@/components/CustomTable";
 import MainHeader from "@/components/MainHeader";
-import TableButton from "@/components/TableButton";
 import Modal from "@/components/modal/Modal";
-import { MODAL_TITLES } from "@/constants/modals";
+import TableButton from "@/components/TableButton";
+import {
+  deleteSpace,
+  getSearchCompanySpace,
+  postCreateSpace,
+  putUpdateSpace,
+} from "@/services/api/SpaceAPI";
+import { formatDatetoTime, formatTimetoDate } from "@/utils/format/dateFormat";
 import { toast } from "react-toastify";
-import { getAllAdminInfo, deleteAdmin, putAdminInfo } from "@/services/api/AdminAPI";
-import type { ModalInputTypesType, ModalSubmitFnType } from "@/types/modal";
-import type { TableHeader } from "@/types/table";
+import { MODAL_TITLES } from "@/constants/modals";
+import type { ModalInputTypesType, modalState, ModalSubmitFnType } from "@/types/modal";
 import { useSearchParams } from "react-router-dom";
 
-//수정 필요: 관리자 계정 관리 API로 변경해야함
-
-type AdminListResponse = {
+type SpaceListResponse = {
   content: UsageData[];
   total_pages: number;
 };
 
-const tableHeader: TableHeader[] = [
-  { name: "ID", id: "id" },
-  { name: "추가일", id: "created_at" },
+const FIXED_TABLE_HEADERS = [
+  { name: "공간명", id: "name" },
+  { name: "시작시간", id: "start_at" },
+  { name: "종료시간", id: "end_at" },
+  { name: "사용횟수", id: "usage_count" },
+  { name: "상태", id: "status" },
 ];
 
-//모달 Submit 함수
 const modalSubmitFn: Partial<
   Record<(typeof MODAL_TITLES)[keyof typeof MODAL_TITLES], ModalSubmitFnType>
 > = {
-  [MODAL_TITLES.SAVE]: () =>
-    putAdminInfo({
-      id: "",
-      email: "",
-      phone: "",
-      role: "",
+  [MODAL_TITLES.ADD]: (form: modalState) =>
+    postCreateSpace({
+      name: form.name as string,
+      startTime: formatDatetoTime(form.startTime as Date),
+      endTime: formatDatetoTime(form.endTime as Date),
+    }),
+  [MODAL_TITLES.EDIT]: (form: modalState) =>
+    putUpdateSpace({
+      spaceId: form.spaceId as string,
+      name: form.name as string,
+      startTime: formatDatetoTime(form.startTime as Date),
+      endTime: formatDatetoTime(form.endTime as Date),
     }),
 };
 
-const AdminAccountPage = () => {
+const SpacePage = () => {
   const [searchParams] = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalInputs, setModalInputs] = useState<
@@ -54,13 +65,12 @@ const AdminAccountPage = () => {
   useEffect(() => {
     if (isModalOpen === true) return;
     const getTableData = async () => {
-      const res = await getAllAdminInfo({
+      const res = await getSearchCompanySpace({
         page: Number(searchParams.get("page")) || 0,
         size: Number(searchParams.get("size")) || 10,
       });
-
       if (res.pass) {
-        const { content, total_pages } = res.data as AdminListResponse;
+        const { content, total_pages } = res.data as SpaceListResponse;
         setTableData(content);
         setTotalPages(total_pages);
       } else {
@@ -86,15 +96,21 @@ const AdminAccountPage = () => {
           type: ModalInputTypesType;
           initial?: string | number | Date;
           hide?: boolean;
-          disable?: boolean;
         }[]
       >
     >
   >(
     () => ({
-      [MODAL_TITLES.SAVE]: [
-        { label: "ID", key: "id", type: "text", disable: true, hide: true },
-        { label: "관리 권한 허가 여부", key: "status", type: "option" },
+      [MODAL_TITLES.ADD]: [
+        { label: "공간명", key: "name", type: "text" },
+        { label: "시작시간", key: "startTime", type: "time" },
+        { label: "종료시간", key: "endTime", type: "time" },
+      ],
+      [MODAL_TITLES.EDIT]: [
+        { label: "공간 ID", key: "spaceId", type: "text", hide: true },
+        { label: "공간명", key: "name", type: "text" },
+        { label: "시작시간", key: "startTime", type: "time" },
+        { label: "종료시간", key: "endTime", type: "time" },
       ],
     }),
     []
@@ -109,11 +125,11 @@ const AdminAccountPage = () => {
       onClickDeleteButton();
       return;
     }
+    setIsModalOpen(true);
     setModalTitle(value);
     if (inputOption[value]) {
       setModalInputs(inputOption[value]);
     }
-    setIsModalOpen(true);
   };
 
   const onClickDeleteButton = async () => {
@@ -121,13 +137,11 @@ const AdminAccountPage = () => {
       setIsDeleteMode(true);
     } else {
       if (!selectedRowId) {
-        toast.error("선택된 계정이 없습니다.");
+        toast.error("선택된 공간이 없습니다.");
         setIsDeleteMode(false);
         return;
       }
-
-      //api 수정 필요
-      const res = await deleteAdmin({ adminId: selectedRowId });
+      const res = await deleteSpace({ spaceId: selectedRowId });
       if (res.pass) {
         toast.success("삭제되었습니다.");
         setIsDeleteMode(false);
@@ -137,28 +151,33 @@ const AdminAccountPage = () => {
     }
   };
 
-  const onClickTableRow = useCallback(
-    (row: UsageData) => {
-      setModalTitle(MODAL_TITLES.SAVE);
-      const addInitialInputs = inputOption[MODAL_TITLES.SAVE]?.map((item) => {
-        return {
-          ...item,
-          initial: item.key === "id" ? row.id : row[item.key],
-        };
-      });
-      if (addInitialInputs) {
-        setModalInputs(addInitialInputs);
-      }
-      setIsModalOpen(true);
-    },
-    [inputOption]
-  );
+  const onClickTableRow = (row: UsageData) => {
+    setModalTitle(MODAL_TITLES.EDIT);
+    const addInitialInputs = inputOption[MODAL_TITLES.EDIT]?.map((item) => {
+      return {
+        ...item,
+        initial:
+          item.key === "spaceId"
+            ? row.id
+            : item.key === "startTime"
+              ? formatTimetoDate(row.start_at as number[])
+              : item.key === "endTime"
+                ? formatTimetoDate(row.end_at as number[])
+                : row[item.key],
+      };
+    });
+    if (addInitialInputs) {
+      setModalInputs(addInitialInputs);
+    }
+    setIsModalOpen(true);
+  };
 
   const onCloseModal = () => {
     setIsModalOpen(false);
     setModalTitle(null);
     setModalInputs(null);
   };
+
   return (
     <div className="w-full">
       <MainHeader />
@@ -166,18 +185,22 @@ const AdminAccountPage = () => {
       <div className="flex-1 max-w-360 justify-self-center mr-[50px] ml-[50px] text-nowrap">
         <div className="mr-[20px] ml-[20px] mb-[30px] flex justify-between">
           <div className="flex items-center">
-            <h1 className="text-xl font-bold">관리자 계정 관리</h1>
+            <h1 className="text-xl font-bold">공간 관리</h1>
           </div>
           <div className="flex gap-[10px]">
             <TableButton
+              value="추가"
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.ADD })}
+            />
+            <TableButton
               value="삭제"
-              onClick={() => onClickTableButton({ value: "삭제" })}
+              onClick={() => onClickTableButton({ value: MODAL_TITLES.DELETE })}
               isDeleteMode={isDeleteMode}
             />
           </div>
         </div>
         <CustomTable
-          header={tableHeader}
+          header={FIXED_TABLE_HEADERS}
           data={tableData}
           rowUpdate={onClickTableRow}
           isDeleteMode={isDeleteMode}
@@ -199,4 +222,4 @@ const AdminAccountPage = () => {
   );
 };
 
-export default AdminAccountPage;
+export default SpacePage;
