@@ -30,8 +30,8 @@ export const selectStatusOption = (path: string, label: string) => {
   } else if (path === "/usage" && label === "년도") {
     const currentYear = Number(format(new Date(), "yyyy"));
     return Array.from({ length: 3 }).map((_, i) => ({
-      name: currentYear + i,
-      value: currentYear + i,
+      name: currentYear - i,
+      value: currentYear - i,
     }));
   } else if (path === "/usage" && label === "월") {
     return Array.from({ length: 12 }).map((_, i) => ({ name: i + 1, value: i + 1 }));
@@ -68,5 +68,7 @@ export const changeEnumtoText = (status: string, path?: string) => {
       return "고등학생";
     case "MIDDLE":
       return "중학생";
+    default:
+      return status;
   }
 };

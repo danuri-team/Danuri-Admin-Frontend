@@ -11,9 +11,7 @@ const isTimeInput = (props: CustomInputProps): props is CustomInputProps & { typ
   return "type" in props && props.type === "time";
 };
 
-const isSearchInput = (
-  props: CustomInputProps
-): props is CustomInputProps & { type: "search" } => {
+const isSearchInput = (props: CustomInputProps): props is CustomInputProps & { type: "search" } => {
   return "type" in props && props.type === "search";
 };
 
@@ -23,7 +21,7 @@ const CustomInput = memo<CustomInputProps>((props) => {
   const { isFocused, onFocus, onBlur } = useFocus();
 
   const searchTerms = useSearchTerms(
-    isSearchInput(props) ? (label as SearchLabel) : "" as SearchLabel,
+    isSearchInput(props) ? (label as SearchLabel) : ("" as SearchLabel),
     searchInput
   );
 
@@ -37,11 +35,12 @@ const CustomInput = memo<CustomInputProps>((props) => {
     }
   };
 
-  const borderColor = isValid && valid === false
-    ? "border-red-400"
-    : isFocused
-      ? "border-blue-400"
-      : "border-gray-200";
+  const borderColor =
+    isValid && valid === false
+      ? "border-red-400"
+      : isFocused
+        ? "border-blue-400"
+        : "border-gray-200";
 
   return (
     <div>
@@ -79,10 +78,16 @@ const CustomInput = memo<CustomInputProps>((props) => {
           <input
             disabled={disabled}
             className={`${label === "placeholder" ? "text-gray-300" : ""} outline-none w-full placeholder:text-gray-300`}
-            type={label === "비밀번호" ? "password" : (props as any).type || "text"}
+            type={label === "비밀번호" ? "password" : (props as CustomInputProps).type || "text"}
             placeholder={label !== "placeholder" ? `${label}를 입력해주세요` : ""}
             value={(props as CustomInputProps & { value: string }).value}
-            onChange={(props as CustomInputProps & { onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }).onChange}
+            onChange={
+              (
+                props as CustomInputProps & {
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+                }
+              ).onChange
+            }
             onFocus={onFocus}
             onBlur={onBlur}
             autoComplete={(props as CustomInputProps & { autoComplete?: string }).autoComplete}

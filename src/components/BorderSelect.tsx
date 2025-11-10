@@ -14,7 +14,7 @@ const BorderSelect = memo<BorderSelectProps>(({ isMust, label, value }) => {
         {label}
         {isMust && <span className="text-red-400"> *</span>}
       </p>
-      <div className="flex cursor-pointer items-center justify-between border-gray-200 border-1 rounded-xl p-[10px] min-w-2xs max-w-2xl">
+      <div className="flex items-center justify-between border-gray-200 border-1 rounded-xl p-[10px] min-w-2xs max-w-2xl">
         <span>{value}</span>
         <IoChevronDown className="text-gray-400" />
       </div>

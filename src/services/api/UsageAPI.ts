@@ -100,7 +100,6 @@ class UsageAPIService extends BaseAPI {
         year && month ? new Date(Number(year), Number(month) - 1) : new Date(),
         "xlsx"
       );
-      console.log(filename);
       downloadBlob(res.data, filename);
       return { data: null, pass: true };
     } catch {

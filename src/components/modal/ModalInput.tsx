@@ -169,9 +169,7 @@ const ModalInput = ({
             onBlur={() => setIsFocus(false)}
           >
             {options &&
-              (value
-                ? changeEnumtoText(value as string, location.pathname) || options[0].name
-                : "알 수 없음")}
+              (value ? changeEnumtoText(value as string, location.pathname) : options[0].name)}
           </button>
           {isFocus && options && (
             <ul className="absolute w-full border-1 border-gray-200 max-h-70 overflow-scroll rounded-xl p-[8px] bg-white mt-[10px] z-1">
