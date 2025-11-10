@@ -117,6 +117,7 @@ export const ResetFilterButton = memo<{ onClick: () => void; show?: boolean }>(
 
     return (
       <button
+        type="button"
         onClick={onClick}
         className="ml-[10px] text-sm cursor-pointer text-gray-500 hover:text-gray-700 underline"
       >

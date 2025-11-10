@@ -14,13 +14,14 @@ const PageJump = memo<PageJumpProps>(({ totalPages }) => {
   }, [currentPage]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
+    const value = Math.floor(Number(e.target.value));
     setInputValue(value);
   };
 
   const handleBlur = () => {
-    if (inputValue > 0 && inputValue <= totalPages) {
-      goToPage(inputValue - 1);
+    const normalized = Math.floor(inputValue);
+    if (normalized > 0 && normalized <= totalPages) {
+      goToPage(normalized - 1);
     } else {
       setInputValue(currentPage + 1);
     }

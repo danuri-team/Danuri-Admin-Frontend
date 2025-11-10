@@ -44,6 +44,7 @@ const selectReducer = (state: SelectState, action: SelectAction): SelectState =>
     case "RESET":
       return INITIAL_SELECT_FORM;
   }
+  return state;
 };
 
 // Hook

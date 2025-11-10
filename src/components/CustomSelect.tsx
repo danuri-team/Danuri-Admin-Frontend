@@ -11,11 +11,13 @@ interface DateRange {
   endDate: Date | null;
 }
 
+type CustomSelectValue = string | Date | DateRange | null;
+
 interface CustomSelectProps {
   type: "select" | "date" | "rangeDate";
   options: string[];
   value: string | Date | null | DateRange;
-  onChange: (value: any) => void;
+  onChange: (value: CustomSelectValue) => void;
 }
 
 const CustomSelect = memo<CustomSelectProps>((props) => {
@@ -39,7 +41,9 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
     (date: Date | null) => {
       if (date) {
         onChange(date);
+        return;
       }
+      onChange(null);
     },
     [onChange]
   );
@@ -48,7 +52,9 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
     (update: [Date | null, Date | null] | null) => {
       if (update) {
         onChange({ startDate: update[0], endDate: update[1] });
+        return;
       }
+      onChange({ startDate: null, endDate: null });
     },
     [onChange]
   );
@@ -99,10 +105,7 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
           onChange={handleDateChange}
           dateFormat="yyyy-MM-dd"
         />
-        <button
-          onClick={() => datePickerRef.current?.setOpen(true)}
-          aria-label="날짜 선택 열기"
-        >
+        <button onClick={() => datePickerRef.current?.setOpen(true)} aria-label="날짜 선택 열기">
           <IoChevronDown size={20} />
         </button>
       </div>
@@ -124,10 +127,7 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
         onChange={handleRangeDateChange}
         dateFormat="yyyy-MM-dd"
       />
-      <button
-        onClick={() => datePickerRef.current?.setOpen(true)}
-        aria-label="날짜 범위 선택 열기"
-      >
+      <button onClick={() => datePickerRef.current?.setOpen(true)} aria-label="날짜 범위 선택 열기">
         <IoChevronDown size={20} />
       </button>
     </div>

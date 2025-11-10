@@ -27,7 +27,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = useCallback(async () => {
     try {
       await PublicAxios.get("/auth/common/sign-out");
-    } catch {
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error("로그아웃 요청 실패", error);
+      }
     } finally {
       setIsAuthenticated(false);
     }

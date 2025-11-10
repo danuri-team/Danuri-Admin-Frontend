@@ -45,11 +45,6 @@ export const useMachinePage = () => {
       postAddDevice({
         name: form.name as string,
       }),
-    [MODAL_TITLES.SAVE]: (form: modalState) =>
-      putUpdateDevice({
-        deviceId: form.id as string,
-        name: form.name as string,
-      }),
     [MODAL_TITLES.CONNECT]: async () => {
       return { data: null, pass: true };
     },

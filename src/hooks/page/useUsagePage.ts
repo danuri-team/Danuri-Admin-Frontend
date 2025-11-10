@@ -56,7 +56,7 @@ const INITIAL_SELECT_FORM: SelectState = {
 };
 
 const INITIAL_USAGE_FORM: UsageState = {
-  startDate: "2025-03-01T00:00:00",
+  startDate: "",
   endDate: "",
   spaceId: null,
   userId: null,
