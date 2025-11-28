@@ -104,6 +104,12 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
     getCount();
   }, [modalForm.itemId, modalForm.rentalId, title, location]);
 
+  useEffect(() => {
+    if (inputs && inputs.some((item) => item.key === "company_id")) {
+      getMyCompanyId();
+    }
+  }, [inputs]);
+
   const getMyCompanyId = async () => {
     const res = await getMyInfo();
     if (res.pass) {
@@ -140,14 +146,11 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
           </div>
           <div className="p-[10px] mb-[15px]">
             {inputs?.map((item) => {
-              if (item.key === "company_id") {
-                getMyCompanyId();
-              }
               if (item.hide) return;
 
               return item.type === "date" || item.type === "time" ? (
                 <ModalInput
-                  disable={item.disable}
+                  disabled={item.disable}
                   key={item.label}
                   label={item.label}
                   type={item.type}
@@ -164,7 +167,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                 />
               ) : (
                 <ModalInput
-                  disable={item.disable}
+                  disabled={item.disable}
                   key={item.label}
                   label={item.label}
                   type={item.type}
