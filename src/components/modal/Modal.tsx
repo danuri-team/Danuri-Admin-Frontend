@@ -47,7 +47,9 @@ const modalReducer = (state: modalState, action: modalAction) => {
             ? null
             : action.payload.type === "number"
               ? 0
-              : "",
+              : action.payload.type === "checkbox"
+                ? false
+                : "",
       };
     case "RESET":
       return action.payload.initialModalForm;
@@ -178,7 +180,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                       payload: { key: item.key, value: value },
                     })
                   }
-                  value={modalForm[item.key] as string | number}
+                  value={modalForm[item.key] as string | number | boolean}
                   resetValue={() =>
                     modalDispatch({
                       type: "RESET_ITEM",

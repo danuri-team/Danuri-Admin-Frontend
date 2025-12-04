@@ -10,20 +10,22 @@ import type {
 
 class SpaceAPIService extends BaseAPI {
   async postCreateSpace(data: CreateSpaceRequest): Promise<ApiResponse<Space>> {
-    const { name, startTime, endTime } = data;
+    const { name, startTime, endTime, allowOverlap } = data;
     return this.post<Space>("/admin/spaces", {
       name,
       start_at: startTime,
       end_at: endTime,
+      allowOverlap,
     });
   }
 
   async putUpdateSpace(data: UpdateSpaceRequest): Promise<ApiResponse<Space>> {
-    const { spaceId, name, startTime, endTime } = data;
+    const { spaceId, name, startTime, endTime, allowOverlap } = data;
     return this.put<Space>(`/admin/spaces/${spaceId}`, {
       name,
       start_at: startTime,
       end_at: endTime,
+      allowOverlap,
     });
   }
 

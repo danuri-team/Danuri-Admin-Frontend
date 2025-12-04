@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalInputLayout, { type GenericInputProps } from "../ModalInput";
+import { type GenericInputProps, ModalInputLayout } from "../ModalInput";
 
 // 모달 검색 입력박스 컴포넌트
 const DefaultInput = ({

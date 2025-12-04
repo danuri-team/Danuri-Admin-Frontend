@@ -1,7 +1,7 @@
 import { SEARCH_TERMS } from "@/constants/modals";
 import { getSearchTerm, type SearchLabel } from "@/utils/searchTermOption";
 import { useEffect, useState } from "react";
-import ModalInputLayout, { type GenericInputProps } from "../ModalInput";
+import { type GenericInputProps, ModalInputLayout } from "../ModalInput";
 import { IoCloseCircleSharp } from "react-icons/io5";
 
 // 모달 검색 입력박스 컴포넌트

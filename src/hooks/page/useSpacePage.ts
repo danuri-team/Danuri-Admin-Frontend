@@ -48,6 +48,7 @@ export const useSpacePage = () => {
         name: form.name as string,
         startTime: formatDatetoTime(form.startTime as Date),
         endTime: formatDatetoTime(form.endTime as Date),
+        allowOverlap: !!form.allowOverlap as boolean,
       }),
     [MODAL_TITLES.EDIT]: (form: modalState) =>
       putUpdateSpace({
@@ -55,6 +56,7 @@ export const useSpacePage = () => {
         name: form.name as string,
         startTime: formatDatetoTime(form.startTime as Date),
         endTime: formatDatetoTime(form.endTime as Date),
+        allowOverlap: !!form.allowOverlap as boolean,
       }),
   };
 
@@ -83,12 +85,14 @@ export const useSpacePage = () => {
         { label: "공간명", key: "name", type: "text" },
         { label: "시작시간", key: "startTime", type: "time" },
         { label: "종료시간", key: "endTime", type: "time" },
+        { label: "중복 예약 여부", key: "allowOverlap", type: "checkbox" },
       ],
       [MODAL_TITLES.EDIT]: [
         { label: "공간 ID", key: "spaceId", type: "text", hide: true },
         { label: "공간명", key: "name", type: "text" },
         { label: "시작시간", key: "startTime", type: "time" },
         { label: "종료시간", key: "endTime", type: "time" },
+        { label: "중복 예약 여부", key: "allowOverlap", type: "checkbox" },
       ],
     }),
     []

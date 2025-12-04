@@ -5,6 +5,7 @@ import SearchInput from "./inputs/SearchInput";
 import OptionInput from "./inputs/OptionInput";
 import DefaultInput from "./inputs/DefaultInput";
 import QRInput from "./inputs/QRInput";
+import CheckboxInput from "./inputs/CheckboxInput";
 
 interface LabelProps {
   children: ReactNode;
@@ -34,9 +35,9 @@ export interface DateTimeInputProps extends BaseProps {
 }
 
 export interface GenericInputProps extends BaseProps {
-  type: "search" | "text" | "number" | "option" | "image";
-  value: string | number;
-  onChange: (value: string | number) => void;
+  type: "search" | "text" | "number" | "option" | "image" | "checkbox";
+  value: string | number | boolean;
+  onChange: (value: string | number | boolean) => void;
 }
 
 type ModalInputType = DateTimeInputProps | GenericInputProps;
@@ -50,6 +51,7 @@ const ModalInput = (props: ModalInputType) => {
     text: <DefaultInput {...(props as GenericInputProps)} />,
     number: <DefaultInput {...(props as GenericInputProps)} />,
     image: <QRInput {...(props as GenericInputProps)} />,
+    checkbox: <CheckboxInput {...(props as GenericInputProps)} />,
   };
 
   return <div className="text-sm mb-[15px]">{INPUT_COMPONENT_MAP[props.type]}</div>;
@@ -85,10 +87,10 @@ const TermItem = memo<TermItemProps>(({ id, value, onClick }) => {
 
 TermItem.displayName = "ModalInputLayout.TermItem";
 
-const ModalInputLayout = Object.assign(memo(ModalInput), {
+export const ModalInputLayout = Object.assign(memo(ModalInput), {
   Label,
   TermList,
   TermItem,
 });
 
-export default ModalInputLayout;
+export default ModalInput;

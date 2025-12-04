@@ -10,6 +10,7 @@ export interface CreateSpaceRequest {
   name: string;
   startTime: string;
   endTime: string;
+  allowOverlap: boolean;
 }
 
 export interface UpdateSpaceRequest {
@@ -17,6 +18,7 @@ export interface UpdateSpaceRequest {
   name: string;
   startTime: string;
   endTime: string;
+  allowOverlap: boolean;
 }
 
 export interface SpaceIdRequest {
