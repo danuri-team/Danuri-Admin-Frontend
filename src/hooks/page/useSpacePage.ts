@@ -46,8 +46,8 @@ export const useSpacePage = () => {
     [MODAL_TITLES.ADD]: (form: modalState) =>
       postCreateSpace({
         name: form.name as string,
-        startTime: formatDatetoTime(form.startTime as Date),
-        endTime: formatDatetoTime(form.endTime as Date),
+        startTime: formatDatetoTime(form.start_at as Date),
+        endTime: formatDatetoTime(form.end_at as Date),
         allowMultiSpaceBooking: !!form.allowOverlap as boolean,
         allowOverlap: !!form.allowOverlap as boolean,
       }),
@@ -55,8 +55,8 @@ export const useSpacePage = () => {
       putUpdateSpace({
         spaceId: form.spaceId as string,
         name: form.name as string,
-        startTime: formatDatetoTime(form.startTime as Date),
-        endTime: formatDatetoTime(form.endTime as Date),
+        startTime: formatDatetoTime(form.start_at as Date),
+        endTime: formatDatetoTime(form.end_at as Date),
         allowMultiSpaceBooking: !!form.allowOverlap as boolean,
         allowOverlap: !!form.allowOverlap as boolean,
       }),
@@ -85,16 +85,16 @@ export const useSpacePage = () => {
     () => ({
       [MODAL_TITLES.ADD]: [
         { label: "공간명", key: "name", type: "text" },
-        { label: "시작시간", key: "startTime", type: "time" },
-        { label: "종료시간", key: "endTime", type: "time" },
+        { label: "시작시간", key: "start_at", type: "time" },
+        { label: "종료시간", key: "end_at", type: "time" },
         { label: "동시 다중 공간 예약", key: "allowMultiSpaceBooking", type: "checkbox" },
         { label: "중복 예약", key: "allowOverlap", type: "checkbox" },
       ],
       [MODAL_TITLES.EDIT]: [
         { label: "공간 ID", key: "spaceId", type: "text", hide: true },
         { label: "공간명", key: "name", type: "text" },
-        { label: "시작시간", key: "startTime", type: "time" },
-        { label: "종료시간", key: "endTime", type: "time" },
+        { label: "시작시간", key: "start_at", type: "time" },
+        { label: "종료시간", key: "end_at", type: "time" },
         { label: "동시 다중 공간 예약", key: "allowMultiSpaceBooking", type: "checkbox" },
         { label: "중복 예약", key: "allowOverlap", type: "checkbox" },
       ],
@@ -148,9 +148,9 @@ export const useSpacePage = () => {
         const value =
           item.key === "spaceId"
             ? row.id
-            : item.key === "startTime"
+            : item.key === "start_at"
               ? formatTimetoDate(row.start_at as number[])
-              : item.key === "endTime"
+              : item.key === "end_at"
                 ? formatTimetoDate(row.end_at as number[])
                 : row[item.key];
         return {
