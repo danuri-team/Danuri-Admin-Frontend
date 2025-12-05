@@ -8,13 +8,11 @@ export interface User {
 export interface CreateUserRequest {
   company_id: string;
   phone: string;
-  allowMultiSpaceBooking: boolean
 }
 
 export interface UpdateUserRequest {
   userId: string;
   phone: string;
-  allowMultiSpaceBooking: boolean
 }
 
 export interface UserIdRequest {

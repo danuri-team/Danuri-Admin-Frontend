@@ -118,13 +118,11 @@ export const useUserPage = () => {
       postCreateUser({
         company_id: form.company_id as string,
         phone: form.phone as string,
-        allowMultiSpaceBooking: !!form.allowMultiSpaceBooking as boolean,
       }),
     [MODAL_TITLES.EDIT]: (form: modalState) =>
       putUpdateUser({
         userId: form.id as string,
         phone: form.phone as string,
-        allowMultiSpaceBooking: !!form.allowMultiSpaceBooking as boolean,
       }),
   };
 
