@@ -62,6 +62,7 @@ const SearchInput = ({ label, value, disabled, onChange, resetValue }: GenericIn
           <ModalInputLayout.TermList>
             {searchTerms.map((term) => (
               <ModalInputLayout.TermItem
+                key={term.id}
                 id={term.id}
                 value={term.name}
                 onClick={() => onClickSearchTerm(term)}

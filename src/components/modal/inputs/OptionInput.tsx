@@ -31,6 +31,7 @@ const OptionInput = ({ label, value, onChange }: GenericInputProps) => {
           <ModalInputLayout.TermList>
             {OPTIONS.map((option) => (
               <ModalInputLayout.TermItem
+                key={option.value}
                 id={String(option.value)}
                 value={String(option.name)}
                 onClick={() => onChange(option.value)}

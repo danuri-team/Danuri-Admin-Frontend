@@ -24,7 +24,7 @@ const MachinePage = () => {
 
   return (
     <ManagementLayout>
-      <ManagementLayout.Header title="물품 관리">
+      <ManagementLayout.Header title="기기 관리">
         <div></div>
         <ManagementLayout.Actions>
           <ItemActions onTableButton={handleTableButton} isDeleteMode={isDeleteMode} />
