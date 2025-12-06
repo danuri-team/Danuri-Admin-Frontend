@@ -10,23 +10,24 @@ import type {
 
 class SpaceAPIService extends BaseAPI {
   async postCreateSpace(data: CreateSpaceRequest): Promise<ApiResponse<Space>> {
-    const { name, startTime, endTime, allowOverlap, allowMultiSpaceBooking } = data;
+    const { name, startTime, endTime, allow_overlap, allow_multi_space_booking } = data;
     return this.post<Space>("/admin/spaces", {
       name,
       start_at: startTime,
       end_at: endTime,
-      allow_overlap: allowOverlap,
-      allow_multi_space_booking: allowMultiSpaceBooking,
+      allow_overlap,
+      allow_multi_space_booking,
     });
   }
 
   async putUpdateSpace(data: UpdateSpaceRequest): Promise<ApiResponse<Space>> {
-    const { spaceId, name, startTime, endTime, allowOverlap } = data;
+    const { spaceId, name, startTime, endTime, allow_overlap, allow_multi_space_booking } = data;
     return this.put<Space>(`/admin/spaces/${spaceId}`, {
       name,
       start_at: startTime,
       end_at: endTime,
-      allowOverlap,
+      allow_overlap,
+      allow_multi_space_booking,
     });
   }
 

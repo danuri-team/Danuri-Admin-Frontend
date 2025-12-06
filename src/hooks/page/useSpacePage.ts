@@ -48,8 +48,8 @@ export const useSpacePage = () => {
         name: form.name as string,
         startTime: formatDatetoTime(form.start_at as Date),
         endTime: formatDatetoTime(form.end_at as Date),
-        allowMultiSpaceBooking: !!form.allowOverlap as boolean,
-        allowOverlap: !!form.allowOverlap as boolean,
+        allow_multi_space_booking: !!form.allow_multi_space_booking as boolean,
+        allow_overlap: !!form.allow_overlap as boolean,
       }),
     [MODAL_TITLES.EDIT]: (form: modalState) =>
       putUpdateSpace({
@@ -57,8 +57,8 @@ export const useSpacePage = () => {
         name: form.name as string,
         startTime: formatDatetoTime(form.start_at as Date),
         endTime: formatDatetoTime(form.end_at as Date),
-        allowMultiSpaceBooking: !!form.allowOverlap as boolean,
-        allowOverlap: !!form.allowOverlap as boolean,
+        allow_multi_space_booking: !!form.allow_multi_space_booking as boolean,
+        allow_overlap: !!form.allow_overlap as boolean,
       }),
   };
 
@@ -87,16 +87,16 @@ export const useSpacePage = () => {
         { label: "공간명", key: "name", type: "text" },
         { label: "시작시간", key: "start_at", type: "time" },
         { label: "종료시간", key: "end_at", type: "time" },
-        { label: "동시 다중 공간 예약", key: "allowMultiSpaceBooking", type: "checkbox" },
-        { label: "중복 예약", key: "allowOverlap", type: "checkbox" },
+        { label: "동시 다중 공간 예약", key: "allow_multi_space_booking", type: "checkbox" },
+        { label: "중복 예약", key: "allow_overlap", type: "checkbox" },
       ],
       [MODAL_TITLES.EDIT]: [
         { label: "공간 ID", key: "spaceId", type: "text", hide: true },
         { label: "공간명", key: "name", type: "text" },
         { label: "시작시간", key: "start_at", type: "time" },
         { label: "종료시간", key: "end_at", type: "time" },
-        { label: "동시 다중 공간 예약", key: "allowMultiSpaceBooking", type: "checkbox" },
-        { label: "중복 예약", key: "allowOverlap", type: "checkbox" },
+        { label: "동시 다중 공간 예약", key: "allow_multi_space_booking", type: "checkbox" },
+        { label: "중복 예약", key: "allow_overlap", type: "checkbox" },
       ],
     }),
     []

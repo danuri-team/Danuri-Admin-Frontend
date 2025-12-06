@@ -10,8 +10,8 @@ export interface CreateSpaceRequest {
   name: string;
   startTime: string;
   endTime: string;
-  allowMultiSpaceBooking: boolean;
-  allowOverlap: boolean;
+  allow_multi_space_booking: boolean;
+  allow_overlap: boolean;
 }
 
 export interface UpdateSpaceRequest {
@@ -19,8 +19,8 @@ export interface UpdateSpaceRequest {
   name: string;
   startTime: string;
   endTime: string;
-  allowMultiSpaceBooking: boolean;
-  allowOverlap: boolean;
+  allow_multi_space_booking: boolean;
+  allow_overlap: boolean;
 }
 
 export interface SpaceIdRequest {

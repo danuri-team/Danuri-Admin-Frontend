@@ -120,6 +120,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
   };
 
   const onClickSubmitModal = async () => {
+    console.log(modalForm);
     const result = await onSubmit(modalForm);
 
     if (title !== MODAL_TITLES.CONNECT) {
