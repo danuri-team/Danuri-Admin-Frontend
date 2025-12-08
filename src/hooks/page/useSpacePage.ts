@@ -20,6 +20,8 @@ const FIXED_TABLE_HEADERS: TableHeader[] = [
   { name: "시작시간", id: "start_at" },
   { name: "종료시간", id: "end_at" },
   { name: "사용횟수", id: "usage_count" },
+  { name: "동시 다중 예약", id: "allow_multi_space_booking" },
+  { name: "중복 예약", id: "allow_overlap" },
   { name: "상태", id: "status" },
 ];
 

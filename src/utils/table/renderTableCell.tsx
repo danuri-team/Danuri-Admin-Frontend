@@ -22,6 +22,7 @@ type RenderCell = {
 };
 
 const headerDateNames = ["시작일", "종료일", "가입일", "추가일"];
+const headerBoolNames = ["동시 다중 예약", "중복 예약"];
 
 const renderTableCell = ({ item, rowData, value, header, rowUpdate, navigate }: RenderCell) => {
   if (item.name == "시작시간" || item.name === "종료시간") {
@@ -112,6 +113,9 @@ const renderTableCell = ({ item, rowData, value, header, rowUpdate, navigate }: 
         연결
       </button>
     );
+  } else if (headerBoolNames.includes(item.name)) {
+    const boolValue = value ? "O" : "X";
+    return <p className={value ? "text-danuri-500" : "text-red-500"}>{boolValue}</p>;
   }
   return <p>{value}</p>;
 };
