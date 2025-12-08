@@ -90,7 +90,7 @@ const InfoPage = () => {
           <h1 className="text-xl font-bold">정보 관리</h1>
         </div>
         <div className="w-sm flex flex-col gap-[30px]">
-          <CustomInput
+          {/* <CustomInput
             label="회사"
             value={infoForm.company_name}
             onChange={(e) =>
@@ -100,7 +100,7 @@ const InfoPage = () => {
               })
             }
             disabled={true}
-          />
+          /> */}
           <CustomInput
             label="이메일"
             value={infoForm.email}
