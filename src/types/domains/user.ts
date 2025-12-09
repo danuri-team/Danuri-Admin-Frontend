@@ -1,12 +1,10 @@
 export interface User {
   id: string;
-  company_id: string;
   phone: string;
   [key: string]: unknown;
 }
 
 export interface CreateUserRequest {
-  company_id: string;
   phone: string;
 }
 

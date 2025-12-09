@@ -116,7 +116,6 @@ export const useUserPage = () => {
   > = {
     [MODAL_TITLES.ADD]: (form: modalState) =>
       postCreateUser({
-        company_id: form.company_id as string,
         phone: form.phone as string,
       }),
     [MODAL_TITLES.EDIT]: (form: modalState) =>
@@ -170,11 +169,15 @@ export const useUserPage = () => {
   // Memoized Values
   const inputs = useMemo<ModalInput[]>(
     () =>
-      userTableHeader.map((header) => ({
-        label: header.name,
-        key: header.id,
-        type: "text" as const,
-      })),
+      userTableHeader
+        .filter((header) => header.id !== "id")
+        .map((header) => {
+          return {
+            label: header.name,
+            key: header.id,
+            type: "text" as const,
+          };
+        }),
     [userTableHeader]
   );
 

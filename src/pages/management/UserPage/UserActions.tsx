@@ -13,10 +13,10 @@ const UserActions = memo<UserActionsProps>(
   ({ onTableButton, onJoinFormNavigate, isDeleteMode, isJoinForm }) => {
     return (
       <div className="flex gap-[10px]">
-        <TableButton
+        {/* <TableButton
           value={MODAL_TITLES.ADD}
           onClick={() => onTableButton({ value: MODAL_TITLES.ADD })}
-        />
+        /> */}
         <TableButton
           value={MODAL_TITLES.SEARCH}
           onClick={() => onTableButton({ value: MODAL_TITLES.SEARCH })}

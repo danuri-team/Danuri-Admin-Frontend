@@ -1,6 +1,6 @@
 import { PrivateAxios } from "../PrivateAxios";
 import { BaseAPI } from "./BaseAPI";
-import type { ApiResponse } from "@/types/api";
+import type { ApiResponse, PaginatedResponse } from "@/types/api";
 import type { Form, UpdateFormRequest, FormItem } from "@/types/domains/form";
 
 class FormAPIService extends BaseAPI {
@@ -20,8 +20,8 @@ class FormAPIService extends BaseAPI {
     });
   }
 
-  async getJoinForm(): Promise<ApiResponse<Form[]>> {
-    return this.get<Form[]>("/admin/forms");
+  async getJoinForm(): Promise<ApiResponse<PaginatedResponse<Form>>> {
+    return this.get<PaginatedResponse<Form>>("/admin/forms");
   }
 }
 

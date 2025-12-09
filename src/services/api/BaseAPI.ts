@@ -9,10 +9,7 @@ export abstract class BaseAPI {
     this.axios = axios;
   }
 
-  protected async get<T>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  protected async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     try {
       const res = await this.axios.get<T>(url, config);
       return { data: res.data, pass: true };
@@ -47,10 +44,7 @@ export abstract class BaseAPI {
     }
   }
 
-  protected async delete<T>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  protected async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     try {
       const res = await this.axios.delete<T>(url, config);
       return { data: res.data, pass: true };
@@ -59,7 +53,7 @@ export abstract class BaseAPI {
     }
   }
 
-  protected handleError(error: unknown): ApiResponse<never> {
+  protected handleError<T>(error: unknown): ApiResponse<T> {
     const apiError = this.isAxiosError(error)
       ? ApiErrorClass.fromAxiosError(error)
       : ApiErrorClass.fromUnknown(error);
@@ -72,10 +66,10 @@ export abstract class BaseAPI {
       message: apiError.message,
       code: apiError.code,
       status: apiError.status,
-      details: apiError.details,
+      details: apiError.details as { status: string; status_message: string },
     };
 
-    return { data: apiErrorData as never, pass: false };
+    return { data: apiErrorData as unknown as T, pass: false };
   }
 
   protected buildQueryParams(params: Record<string, unknown>): string {

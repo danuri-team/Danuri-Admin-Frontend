@@ -7,7 +7,7 @@ export const formatDatetoTime = (date: Date): string => {
 };
 
 export const formatTimetoDate = (time: number[]) => {
-  if (time.length < 3) {
+  if (time.length < 2) {
     return set(new Date(), { hours: 0, minutes: 0, seconds: 0 });
   }
   return set(new Date(), { hours: time[0], minutes: time[1], seconds: time[2] });

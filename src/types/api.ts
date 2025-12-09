@@ -7,7 +7,7 @@ export interface ApiError {
   message: string;
   code?: string;
   status?: number;
-  details?: unknown;
+  details?: { status: string; status_message: string };
 }
 
 export interface PaginationParams {

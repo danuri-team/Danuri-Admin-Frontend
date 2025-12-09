@@ -2,7 +2,6 @@ import { useEffect, useReducer, useState, memo } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput from "./ModalInput";
 import CustomButton from "../CustomButton";
-import { getMyInfo } from "@/services/api/AdminAPI";
 import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "@/utils/searchTermOption";
 import { replacePhone } from "@/utils/format/infoFormat";
@@ -47,7 +46,9 @@ const modalReducer = (state: modalState, action: modalAction) => {
             ? null
             : action.payload.type === "number"
               ? 0
-              : "",
+              : action.payload.type === "checkbox"
+                ? false
+                : "",
       };
     case "RESET":
       return action.payload.initialModalForm;
@@ -104,13 +105,6 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
     getCount();
   }, [modalForm.itemId, modalForm.rentalId, title, location]);
 
-  const getMyCompanyId = async () => {
-    const res = await getMyInfo();
-    if (res.pass) {
-      modalDispatch({ type: "CHANGE", payload: { key: "company_id", value: res.data.company_id } });
-    }
-  };
-
   const onClickSubmitModal = async () => {
     const result = await onSubmit(modalForm);
 
@@ -140,14 +134,11 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
           </div>
           <div className="p-[10px] mb-[15px]">
             {inputs?.map((item) => {
-              if (item.key === "company_id") {
-                getMyCompanyId();
-              }
               if (item.hide) return;
 
               return item.type === "date" || item.type === "time" ? (
                 <ModalInput
-                  disable={item.disable}
+                  disabled={item.disable}
                   key={item.label}
                   label={item.label}
                   type={item.type}
@@ -164,7 +155,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                 />
               ) : (
                 <ModalInput
-                  disable={item.disable}
+                  disabled={item.disable}
                   key={item.label}
                   label={item.label}
                   type={item.type}
@@ -175,7 +166,7 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
                       payload: { key: item.key, value: value },
                     })
                   }
-                  value={modalForm[item.key] as string | number}
+                  value={modalForm[item.key] as string | number | boolean}
                   resetValue={() =>
                     modalDispatch({
                       type: "RESET_ITEM",
