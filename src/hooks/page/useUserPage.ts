@@ -116,7 +116,6 @@ export const useUserPage = () => {
   > = {
     [MODAL_TITLES.ADD]: (form: modalState) =>
       postCreateUser({
-        company_id: form.company_id as string,
         phone: form.phone as string,
       }),
     [MODAL_TITLES.EDIT]: (form: modalState) =>
