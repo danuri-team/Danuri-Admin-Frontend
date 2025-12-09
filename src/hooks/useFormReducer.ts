@@ -12,7 +12,7 @@ interface UseFormReducerOptions<T> {
   onChange?: (state: T) => void;
 }
 
-export function useFormReducer<T extends Record<string, any>>(
+export function useFormReducer<T extends Record<string, unknown>>(
   initialState: T,
   options: UseFormReducerOptions<T> = {}
 ) {
@@ -145,7 +145,7 @@ export function useFormReducer<T extends Record<string, any>>(
 }
 
 // 일반적인 폼 리듀서 (백워드 호환성)
-export function createFormReducer<T extends Record<string, any>>(
+export function createFormReducer<T extends Record<string, unknown>>(
   initialState: T,
   customHandlers?: {
     formatters?: Partial<Record<keyof T, (value: string) => string>>;

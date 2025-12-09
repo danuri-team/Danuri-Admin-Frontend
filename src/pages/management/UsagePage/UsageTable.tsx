@@ -31,6 +31,6 @@ const UsageTable = memo<ManagementTableProps>(
   }
 );
 
-UsageTable.displayName = "UserTable";
+UsageTable.displayName = "UsageTable";
 
 export default UsageTable;

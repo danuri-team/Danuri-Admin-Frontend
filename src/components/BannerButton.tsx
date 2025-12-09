@@ -6,7 +6,7 @@ const FEEDBACK_URL =
 
 const BannerButton = memo(() => {
   const handleClick = useCallback(() => {
-    window.open(FEEDBACK_URL);
+    window.open(FEEDBACK_URL, "_blank", "noopener,noreferrer");
   }, []);
 
   return (

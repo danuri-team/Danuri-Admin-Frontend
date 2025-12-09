@@ -12,6 +12,7 @@ const PageSizeSelector = memo(() => {
     <div className="text-sm">
       <div className="flex items-center gap-[5px]">
         <button
+          type="button"
           className="flex items-center gap-[5px] border-1 border-gray-200 rounded-md p-[3px] w-[50px] cursor-pointer justify-between pl-[10px]"
           onClick={() => setIsOpen(!isOpen)}
           onBlur={() => setIsOpen(false)}
