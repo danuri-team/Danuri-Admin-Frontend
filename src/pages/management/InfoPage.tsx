@@ -54,10 +54,6 @@ const InfoPage = () => {
       const res = await getMyInfo();
       if (res.pass) {
         infoDispatch({ type: "CHANGE", payload: { key: "id", value: res.data.id } });
-        infoDispatch({
-          type: "CHANGE",
-          payload: { key: "company_name", value: res.data.company_name },
-        });
         infoDispatch({ type: "CHANGE", payload: { key: "email", value: res.data.email } });
         infoDispatch({ type: "CHANGE", payload: { key: "phone", value: res.data.phone } });
       }

@@ -2,7 +2,6 @@ import { useEffect, useReducer, useState, memo } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import ModalInput from "./ModalInput";
 import CustomButton from "../CustomButton";
-import { getMyInfo } from "@/services/api/AdminAPI";
 import { useLocation } from "react-router-dom";
 import { selectTermAvailableCount } from "@/utils/searchTermOption";
 import { replacePhone } from "@/utils/format/infoFormat";
@@ -105,19 +104,6 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
     };
     getCount();
   }, [modalForm.itemId, modalForm.rentalId, title, location]);
-
-  useEffect(() => {
-    if (inputs && inputs.some((item) => item.key === "company_id")) {
-      getMyCompanyId();
-    }
-  }, [inputs]);
-
-  const getMyCompanyId = async () => {
-    const res = await getMyInfo();
-    if (res.pass) {
-      modalDispatch({ type: "CHANGE", payload: { key: "company_id", value: res.data.company_id } });
-    }
-  };
 
   const onClickSubmitModal = async () => {
     console.log(modalForm);

@@ -170,11 +170,15 @@ export const useUserPage = () => {
   // Memoized Values
   const inputs = useMemo<ModalInput[]>(
     () =>
-      userTableHeader.map((header) => ({
-        label: header.name,
-        key: header.id,
-        type: "text" as const,
-      })),
+      userTableHeader
+        .filter((header) => header.id !== "id")
+        .map((header) => {
+          return {
+            label: header.name,
+            key: header.id,
+            type: "text" as const,
+          };
+        }),
     [userTableHeader]
   );
 
