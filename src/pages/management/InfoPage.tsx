@@ -54,10 +54,6 @@ const InfoPage = () => {
       const res = await getMyInfo();
       if (res.pass) {
         infoDispatch({ type: "CHANGE", payload: { key: "id", value: res.data.id } });
-        infoDispatch({
-          type: "CHANGE",
-          payload: { key: "company_name", value: res.data.company_name },
-        });
         infoDispatch({ type: "CHANGE", payload: { key: "email", value: res.data.email } });
         infoDispatch({ type: "CHANGE", payload: { key: "phone", value: res.data.phone } });
       }
@@ -90,7 +86,7 @@ const InfoPage = () => {
           <h1 className="text-xl font-bold">정보 관리</h1>
         </div>
         <div className="w-sm flex flex-col gap-[30px]">
-          <CustomInput
+          {/* <CustomInput
             label="회사"
             value={infoForm.company_name}
             onChange={(e) =>
@@ -100,7 +96,7 @@ const InfoPage = () => {
               })
             }
             disabled={true}
-          />
+          /> */}
           <CustomInput
             label="이메일"
             value={infoForm.email}

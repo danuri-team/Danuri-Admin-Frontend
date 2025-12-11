@@ -1,13 +1,12 @@
 export interface FormItem {
   id: number;
-  type: string;
+  type: "INPUT" | "CHECK" | "PHONE";
   label: string;
-  options?: { id: number; option: string }[];
-  placeHolder?: string | null;
-  isRequired?: boolean;
-  isMultiSelect?: boolean;
+  options: { id: number; option: string }[];
+  placeHolder: string | null;
+  isRequired: boolean;
+  isMultiSelect: boolean;
 }
-
 export interface Form {
   id: string;
   title: string;

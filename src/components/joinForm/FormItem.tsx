@@ -27,15 +27,15 @@ import {
 } from "@dnd-kit/core";
 import MultipleChoiceItem from "./MultipleChoiceItem";
 import CustomInput from "../CustomInput";
-import type { FormItemType } from "@/pages/management/JoinFormPage";
+import type { FormItem } from "@/types/domains/form";
 
-type FormItemProps = FormItemType & {
+type FormItemProps = FormItem & {
   index: number;
   deleteFormItem: (id: number) => void;
   addFormItem: (id: number) => void;
   changeFormItem: (
     id: number,
-    key: keyof FormItemType,
+    key: keyof FormItem,
     value: string | { id: number; option: string }[] | boolean
   ) => void;
 };
@@ -55,7 +55,7 @@ type FormItemProps = FormItemType & {
  * @param type - 폼 아이템 타입 (객관식|전화번호|주관식)
  * @returns
  */
-const FormItem = ({
+const JoinFormItem = ({
   id,
   index,
   deleteFormItem,
@@ -119,15 +119,15 @@ const FormItem = ({
   };
 
   //객관식 문항 삭제
-  const deleteQuestion = (id: number) => {
-    const newQuestion = options.filter((item) => item.id !== id);
+  const deleteQuestion = (optionId: number) => {
+    const newQuestion = options.filter((item) => item.id !== optionId);
     changeFormItem(id, "options", newQuestion);
   };
 
   //객관식 문항 내용 수정
-  const changeQuestion = (id: number, value: string) => {
+  const changeQuestion = (optionId: number, value: string) => {
     const changeQuestion = options.map((item) => {
-      if (item.id === id) {
+      if (item.id === optionId) {
         return {
           ...item,
           option: value,
@@ -264,4 +264,4 @@ const FormItem = ({
   );
 };
 
-export default FormItem;
+export default JoinFormItem;

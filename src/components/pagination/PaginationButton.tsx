@@ -1,5 +1,4 @@
 import { memo, useMemo } from "react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { usePagination } from "@/hooks/usePagination";
 
 interface PaginationButtonProps {
@@ -39,7 +38,7 @@ const PaginationButton = memo<PaginationButtonProps>(({ totalPages }) => {
         onClick={prevPage}
         aria-label="이전 페이지"
       >
-        <IoIosArrowBack size={14} />
+        <span className="icon-[lucide--chevron-left] w-3.5 h-3.5"></span>
       </button>
       {pageButtons}
       <button
@@ -48,7 +47,7 @@ const PaginationButton = memo<PaginationButtonProps>(({ totalPages }) => {
         onClick={nextPage}
         aria-label="다음 페이지"
       >
-        <IoIosArrowForward size={14} />
+        <span className="icon-[lucide--chevron-right] w-3.5 h-3.5"></span>
       </button>
     </div>
   );

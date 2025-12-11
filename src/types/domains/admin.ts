@@ -2,9 +2,9 @@ export interface Admin {
   id: string;
   email: string;
   phone: string;
-  role: string;
+  status: string;
+  created_at: string;
   company_id: string;
-  company_name: string;
   [key: string]: unknown;
 }
 

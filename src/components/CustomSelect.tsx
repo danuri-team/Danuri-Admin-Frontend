@@ -1,5 +1,4 @@
 import { memo, useCallback, useRef, useState } from "react";
-import { IoChevronDown } from "react-icons/io5";
 import DatePicker from "react-datepicker";
 import { ko } from "date-fns/locale";
 
@@ -64,14 +63,14 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
     return (
       <div className="text-sm ml-[50px]">
         <button
-          className="flex items-center gap-[5px] cursor-pointer text-danuri-text"
+          className="flex items-center gap-[5px] cursor-pointer text-gray-600"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           onBlur={handleBlur}
           aria-label={`${stringValue} 선택`}
           aria-expanded={isDropdownOpen}
         >
           {stringValue}
-          <IoChevronDown size={20} />
+          <span className="icon-[lucide--chevron-down] w-5 h-5"></span>
         </button>
         {isDropdownOpen && (
           <ul className="absolute border-1 border-gray-200 rounded-xl p-[10px] w-[300px] mt-[15px] bg-white z-10">
@@ -94,7 +93,7 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
     const dateValue = value as Date | null;
     const isValueSet = dateValue !== null;
     return (
-      <div className="flex items-center text-danuri-text cursor-pointer text-sm ml-[50px]">
+      <div className="flex items-center text-gray-600 cursor-pointer text-sm ml-[50px]">
         <DatePicker
           ref={datePickerRef}
           className={`${isValueSet ? "w-[80px]" : "w-[37px]"} outline-none mr-[5px] placeholder:text-danuri-text transition-[width] duration-500 ease-in-out cursor-pointer caret-transparent`}
@@ -105,8 +104,12 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
           onChange={handleDateChange}
           dateFormat="yyyy-MM-dd"
         />
-        <button onClick={() => datePickerRef.current?.setOpen(true)} aria-label="날짜 선택 열기">
-          <IoChevronDown size={20} />
+        <button
+          className="flex"
+          onClick={() => datePickerRef.current?.setOpen(true)}
+          aria-label="날짜 선택 열기"
+        >
+          <span className="icon-[lucide--chevron-down] w-5 h-5 "></span>
         </button>
       </div>
     );
@@ -115,7 +118,7 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
   const rangeValue = value as DateRange;
   const isValueSet = rangeValue && rangeValue.startDate !== null;
   return (
-    <div className="flex items-center text-danuri-text cursor-pointer text-sm ml-[50px]">
+    <div className="flex items-center text-gray-600 cursor-pointer text-sm ml-[50px]">
       <DatePicker
         selectsRange
         ref={datePickerRef}
@@ -127,8 +130,12 @@ const CustomSelect = memo<CustomSelectProps>((props) => {
         onChange={handleRangeDateChange}
         dateFormat="yyyy-MM-dd"
       />
-      <button onClick={() => datePickerRef.current?.setOpen(true)} aria-label="날짜 범위 선택 열기">
-        <IoChevronDown size={20} />
+      <button
+        className="flex"
+        onClick={() => datePickerRef.current?.setOpen(true)}
+        aria-label="날짜 범위 선택 열기"
+      >
+        <span className="icon-[lucide--chevron-down] w-5 h-5 "></span>
       </button>
     </div>
   );
