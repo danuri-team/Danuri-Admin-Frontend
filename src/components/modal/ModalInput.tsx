@@ -74,7 +74,7 @@ const TermList = memo<TermListProps>(({ children }) => {
 
 TermList.displayName = "ModalInputLayout.TermList";
 
-const TermItem = memo<TermItemProps>(({ id, value, onClick }) => {
+const TermItem = memo<TermItemProps>(({value, onClick }) => {
   return (
     <li className={`cursor-pointer hover:bg-gray-100 p-[12px] rounded-sm`} onMouseDown={onClick}>
       {value}
