@@ -3,7 +3,6 @@ import { getCoreRowModel, useReactTable, type ColumnDef, flexRender } from "@tan
 import PageJump from "./pagination/PageJump";
 import PaginationButton from "./pagination/PaginationButton";
 import PageSizeSelector from "./pagination/PageSizeSelector";
-import { IoIosCheckmark } from "react-icons/io";
 import renderTableCell from "../utils/table/renderTableCell";
 import type { MODAL_TITLES } from "@/constants/modals";
 import { useNavigate } from "react-router-dom";
@@ -100,7 +99,7 @@ const CustomTable = ({
                       }}
                     />
                     {row.original.id === selectedRowId && (
-                      <IoIosCheckmark
+                      <span
                         onClick={(e) => {
                           e.stopPropagation();
                           if (row.original.id === selectedRowId) {
@@ -109,9 +108,8 @@ const CustomTable = ({
                             changeSelectedRow?.({ id: row.original.id as string });
                           }
                         }}
-                        className="absolute inset-0 cursor-pointer"
-                        color="white"
-                      />
+                        className="icon-[lucide--check] w-3 h-3 text-white absolute inset-0 left-0.5 top-0.5 cursor-pointer"
+                      ></span>
                     )}
                   </label>
                 </td>

@@ -1,5 +1,4 @@
 import { memo, useState } from "react";
-import { IoCaretDownOutline } from "react-icons/io5";
 import { usePagination } from "@/hooks/usePagination";
 
 const pageSizeOptions = [10, 50, 100] as const;
@@ -20,7 +19,7 @@ const PageSizeSelector = memo(() => {
           aria-expanded={isOpen}
         >
           {pageSize}
-          <IoCaretDownOutline size={10} />
+          <span className="icon-[lucide--chevron-down] w-2.5 h-2.5"></span>
         </button>
         <span className="text-gray-500 text-xs">씩 보기</span>
       </div>

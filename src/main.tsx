@@ -4,9 +4,11 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 
-import { initSentry } from "./utils/initSentry.ts";
-
-initSentry();
+if (import.meta.env.PROD) {
+  import("./utils/initSentry.ts").then(({ initSentry }) => {
+    initSentry();
+  });
+}
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>

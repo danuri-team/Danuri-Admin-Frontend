@@ -1,5 +1,4 @@
 import { useEffect, useReducer, useState, memo } from "react";
-import { IoCloseOutline } from "react-icons/io5";
 import ModalInput from "./ModalInput";
 import CustomButton from "../CustomButton";
 import { useLocation } from "react-router-dom";
@@ -125,8 +124,8 @@ const Modal = ({ isOpen, title, onClose, inputs, onSubmit }: ModalType) => {
       {isOpen && (
         <div className="relative w-sm bg-white bg-opacity-[100%] rounded-xl p-[20px] pt-[20px]">
           <div className="flex justify-center mb-[30px]">
-            <button className="absolute right-[25px]" onClick={onClose}>
-              <IoCloseOutline size={25} />
+            <button className="absolute right-[25px] cursor-pointer" onClick={onClose}>
+              <span className="icon-[lucide--x] w-6 h-6"></span>
             </button>
             <h2 className="text-lg font-semibold w-[240px] text-center whitespace-nowrap truncate">
               {title === "저장" ? String(modalForm["id"]) : title}

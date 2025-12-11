@@ -2,7 +2,6 @@ import { SEARCH_TERMS } from "@/constants/modals";
 import { getSearchTerm, type SearchLabel } from "@/utils/searchTermOption";
 import { useEffect, useState } from "react";
 import { type GenericInputProps, ModalInputLayout } from "../ModalInput";
-import { IoCloseCircleSharp } from "react-icons/io5";
 
 // 모달 검색 입력박스 컴포넌트
 const SearchInput = ({ label, value, disabled, onChange, resetValue }: GenericInputProps) => {
@@ -53,8 +52,8 @@ const SearchInput = ({ label, value, disabled, onChange, resetValue }: GenericIn
             onBlur={() => setIsFocus(false)}
           />
           {value && (
-            <button className="text-gray-300 cursor-pointer" onClick={resetValue}>
-              <IoCloseCircleSharp size={16} />
+            <button className="flex text-gray-300 cursor-pointer" onClick={resetValue}>
+              <span className="icon-[icon-park-solid--handle-x] w-4 h-4"></span>
             </button>
           )}
         </div>

@@ -1,5 +1,4 @@
 import { useReducer, useState } from "react";
-import { GoChevronLeft } from "react-icons/go";
 import { Link, useNavigate } from "react-router-dom";
 
 import EmailForFindPassword from "@/components/findPassword/EmailForFindPassword";
@@ -101,7 +100,7 @@ const FindPassword = () => {
     <div className="w-full h-screen flex">
       <div className="m-auto w-[50%] min-w-xs max-w-lg">
         <Link to={"/auth/login"}>
-          <GoChevronLeft size={30} />
+          <span className="icon-[lucide--chevron-left] w-7.5 h-7.5"></span>
         </Link>
         <h1 className="justify-self-center text-4xl font-bold mb-[50px] mt-[36px]">
           비밀번호 찾기

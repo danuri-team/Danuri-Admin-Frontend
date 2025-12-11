@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { postSignup } from "@/services/api/AuthAPI";
 import { isValidEmail } from "@/utils/infoValidation";
 import { replacePhone } from "@/utils/format/infoFormat";
-import { GoChevronLeft } from "react-icons/go";
 import { toast } from "react-toastify";
 
 type SignupState = {
@@ -49,13 +48,16 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const [signupForm, dispatch] = useReducer(signupReducer, initialSignupForm);
 
-  const loginInputs = useMemo(() => [
-    { label: "회사", key: "companyId", type: "search", value: signupForm.companyId },
-    { label: "이메일", key: "email", value: signupForm.email },
-    { label: "전화번호", key: "phone", value: signupForm.phone },
-    { label: "비밀번호", key: "password", value: signupForm.password },
-    { label: "비밀번호 확인", key: "rePassword", value: signupForm.rePassword },
-  ], [signupForm]);
+  const loginInputs = useMemo(
+    () => [
+      { label: "회사", key: "companyId", type: "search", value: signupForm.companyId },
+      { label: "이메일", key: "email", value: signupForm.email },
+      { label: "전화번호", key: "phone", value: signupForm.phone },
+      { label: "비밀번호", key: "password", value: signupForm.password },
+      { label: "비밀번호 확인", key: "rePassword", value: signupForm.rePassword },
+    ],
+    [signupForm]
+  );
 
   const onclickSignup = useCallback(async () => {
     if (Object.values(signupForm).includes("")) {
@@ -92,7 +94,7 @@ const SignupPage = () => {
     <div className="w-full h-screen flex">
       <div className="m-auto w-[50%] min-w-xs max-w-lg pt-[50px] pb-[50px]">
         <Link to={"/auth/login"}>
-          <GoChevronLeft size={30} />
+          <span className="icon-[lucide--chevron-left] w-7.5 h-7.5"></span>
         </Link>
         <h1 className="justify-self-center text-4xl font-bold mb-[50px] mt-[36px]">회원가입</h1>
         <div className="flex flex-col gap-[24px]">

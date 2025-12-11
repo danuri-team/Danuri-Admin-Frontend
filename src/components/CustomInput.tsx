@@ -1,7 +1,6 @@
 import { ko } from "date-fns/locale/ko";
 import { memo, useState } from "react";
 import DatePicker from "react-datepicker";
-import { FaCircleCheck, FaCircleExclamation } from "react-icons/fa6";
 import { useFocus } from "@/hooks/useFocus";
 import { useSearchTerms } from "@/hooks/useSearchTerms";
 import type { SearchLabel } from "@/utils/searchTermOption";
@@ -95,8 +94,16 @@ const CustomInput = memo<CustomInputProps>((props) => {
           />
         )}
         {isValid && (valid === true || valid === false) && (
-          <button className={`${isValid && valid === true ? "text-danuri-500" : "text-red-400"}`}>
-            {valid === false ? <FaCircleExclamation /> : valid === true && <FaCircleCheck />}
+          <button
+            className={`${isValid && valid === true ? "text-danuri-500" : "text-red-400"} flex`}
+          >
+            {valid === false ? (
+              <span className="icon-[icon-park-solid--handle-x] w-6 h-6"></span>
+            ) : (
+              valid === true && (
+                <span className="icon-[icon-park-solid--check-one] w-6 h-6 m-0"></span>
+              )
+            )}
           </button>
         )}
       </div>

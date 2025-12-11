@@ -1,4 +1,3 @@
-import { IoIosCheckmark } from "react-icons/io";
 import { ModalInputLayout, type GenericInputProps } from "../ModalInput";
 
 const CheckboxInput = ({ type, label, value, onChange }: GenericInputProps) => {
@@ -16,12 +15,12 @@ const CheckboxInput = ({ type, label, value, onChange }: GenericInputProps) => {
             }}
           />
           {value && (
-            <IoIosCheckmark
+            <span
               onClick={(e) => {
                 e.stopPropagation();
                 onChange(!value);
               }}
-              className="absolute inset-0 cursor-pointer"
+              className="icon-[lucide--check] w-3 h-3 text-white absolute inset-0 left-0.5 top-0.5 cursor-pointer"
               color="white"
             />
           )}
