@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import { memo, type JSX, type ReactNode } from "react";
 
 import DateTimeInput from "./inputs/DateTimeInput";
 import SearchInput from "./inputs/SearchInput";
@@ -42,19 +42,20 @@ export interface GenericInputProps extends BaseProps {
 
 type ModalInputType = DateTimeInputProps | GenericInputProps;
 
-const ModalInput = (props: ModalInputType) => {
-  const INPUT_COMPONENT_MAP = {
-    date: <DateTimeInput {...(props as DateTimeInputProps)} />,
-    time: <DateTimeInput {...(props as DateTimeInputProps)} />,
-    search: <SearchInput {...(props as GenericInputProps)} />,
-    option: <OptionInput {...(props as GenericInputProps)} />,
-    text: <DefaultInput {...(props as GenericInputProps)} />,
-    number: <DefaultInput {...(props as GenericInputProps)} />,
-    image: <QRInput {...(props as GenericInputProps)} />,
-    checkbox: <CheckboxInput {...(props as GenericInputProps)} />,
+const INPUT_COMPONENT_MAP: Record<ModalInputType["type"], (props: ModalInputType) => JSX.Element> =
+  {
+    date: (props) => <DateTimeInput {...(props as DateTimeInputProps)} />,
+    time: (props) => <DateTimeInput {...(props as DateTimeInputProps)} />,
+    search: (props) => <SearchInput {...(props as GenericInputProps)} />,
+    option: (props) => <OptionInput {...(props as GenericInputProps)} />,
+    text: (props) => <DefaultInput {...(props as GenericInputProps)} />,
+    number: (props) => <DefaultInput {...(props as GenericInputProps)} />,
+    image: (props) => <QRInput {...(props as GenericInputProps)} />,
+    checkbox: (props) => <CheckboxInput {...(props as GenericInputProps)} />,
   };
 
-  return <div className="text-sm mb-[15px]">{INPUT_COMPONENT_MAP[props.type]}</div>;
+const ModalInput = (props: ModalInputType) => {
+  return <div className="text-sm mb-[15px]">{INPUT_COMPONENT_MAP[props.type](props)}</div>;
 };
 
 const Label = memo<LabelProps>(({ children }) => {
@@ -73,13 +74,9 @@ const TermList = memo<TermListProps>(({ children }) => {
 
 TermList.displayName = "ModalInputLayout.TermList";
 
-const TermItem = memo<TermItemProps>(({ id, value, onClick }) => {
+const TermItem = memo<TermItemProps>(({value, onClick }) => {
   return (
-    <li
-      className={`cursor-pointer hover:bg-gray-100 p-[12px] rounded-sm`}
-      onMouseDown={onClick}
-      key={id}
-    >
+    <li className={`cursor-pointer hover:bg-gray-100 p-[12px] rounded-sm`} onMouseDown={onClick}>
       {value}
     </li>
   );

@@ -98,7 +98,7 @@ export const useJoinFormPage = () => {
       toast.success("저장되었습니다.");
     } else {
       const error = res.data as unknown as ApiError;
-      toast.error(error.details?.status_message);
+      toast.error(error.details?.status_message || error.message);
     }
   };
 
