@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { IoChevronDown } from "react-icons/io5";
 import { toast } from "react-toastify";
 
 type TargetProps = {
@@ -57,7 +56,7 @@ const CampaignTarget = ({ isMust, label }: TargetProps) => {
                 {tagValue && (
                   <button className="cursor-pointer flex items-center gap-[3px] bg-blue-200 p-[3px] pl-[10px] pr-[10px]">
                     {tagValue}
-                    <IoChevronDown />
+                    <span className="icon-[lucide--chevron-down]"></span>
                   </button>
                 )}
               </div>

@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { IoChevronDown } from "react-icons/io5";
 
 interface BorderSelectProps {
   isMust?: boolean;
@@ -16,7 +15,7 @@ const BorderSelect = memo<BorderSelectProps>(({ isMust, label, value }) => {
       </p>
       <div className="flex items-center justify-between border-gray-200 border-1 rounded-xl p-[10px] min-w-2xs max-w-2xl">
         <span>{value}</span>
-        <IoChevronDown className="text-gray-400" />
+        <span className="icon-[lucide--chevron-down] text-gray-400"></span>
       </div>
     </div>
   );

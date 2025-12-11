@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { BsPersonFill } from "react-icons/bs";
 import { useState } from "react";
 
 const navList = [
@@ -66,7 +65,7 @@ const MainHeader = () => {
             to={"/info"}
             aria-label="사용자 정보"
           >
-            <BsPersonFill size={20} color="white" />
+            <span className="icon-[ic--round-person] w-5 h-5 text-white"></span>
           </Link>
           <Link
             className="flex border-1 border-gray-200 rounded-md p-[5px] w-[80px] justify-center"
