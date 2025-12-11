@@ -1,23 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { type GenericInputProps, ModalInputLayout } from "../ModalInput";
 import { changeEnumtoText, selectStatusOption } from "@/utils/StatusSelectOption";
+import { useLocation } from "react-router-dom";
 
 // 모달 검색 입력박스 컴포넌트
 const OptionInput = ({ label, value, onChange }: GenericInputProps) => {
+  const location = useLocation();
   const [isFocus, setIsFocus] = useState<boolean>(false);
-  const OPTIONS = selectStatusOption(location.pathname as string, label);
+  const OPTIONS = useMemo(
+    () => selectStatusOption(location.pathname as string, label),
+    [location.pathname, label]
+  );
 
   useEffect(() => {
     if (OPTIONS && !value) {
       onChange(OPTIONS[0].value);
     }
-  }, [value, OPTIONS]);
+  }, [value, OPTIONS, onChange]);
 
   return (
     <>
       <ModalInputLayout.Label>{label}</ModalInputLayout.Label>
       <div className="relative">
         <button
+          type="button"
           className={`${isFocus ? "border-blue-400" : "border-gray-200"} flex items-center w-full border-1 rounded-xl p-[12px] cursor-pointer`}
           onClick={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}

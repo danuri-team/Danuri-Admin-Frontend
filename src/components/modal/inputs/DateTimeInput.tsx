@@ -4,7 +4,7 @@ import { ko } from "date-fns/locale";
 import DatePicker from "react-datepicker";
 
 // 모달 검색 입력박스 컴포넌트
-const DateTimeInput = ({ type, label, value, onChange }: DateTimeInputProps) => {
+const DateTimeInput = ({ type, label, value, onChange, disabled }: DateTimeInputProps) => {
   const [isFocus, setIsFocus] = useState<boolean>(false);
 
   return (
@@ -18,6 +18,7 @@ const DateTimeInput = ({ type, label, value, onChange }: DateTimeInputProps) => 
           selected={value as Date | null}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
+          disabled={disabled}
           locale={ko}
           onChange={onChange as (date: Date | null) => void}
           dateFormat={`${type === "date" ? "yyyy-MM-dd HH:mm" : "HH:mm"}`}
