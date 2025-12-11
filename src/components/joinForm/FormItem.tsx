@@ -119,15 +119,15 @@ const JoinFormItem = ({
   };
 
   //객관식 문항 삭제
-  const deleteQuestion = (id: number) => {
-    const newQuestion = options.filter((item) => item.id !== id);
+  const deleteQuestion = (optionId: number) => {
+    const newQuestion = options.filter((item) => item.id !== optionId);
     changeFormItem(id, "options", newQuestion);
   };
 
   //객관식 문항 내용 수정
-  const changeQuestion = (id: number, value: string) => {
+  const changeQuestion = (optionId: number, value: string) => {
     const changeQuestion = options.map((item) => {
-      if (item.id === id) {
+      if (item.id === optionId) {
         return {
           ...item,
           option: value,
